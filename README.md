@@ -10,8 +10,9 @@
 
 - https://web.mit.edu/6.031/www/sp21/
 
-> 自学指南：https://csdiy.wiki/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/6031/
+- 来自 [cs自学指南](https://csdiy.wiki/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/6031/)
 
-- OCW 上有 2016 年的课程，后续可能会用上。https://web.mit.edu/6.031/www/sp22/general/previous-semesters.html
+- OCW 上有 [2016](https://web.mit.edu/6.031/www/sp22/general/previous-semesters.html) 年的课程，后续可能会用上。
 
 - 后面的问题集应该就是依赖于 16 年来做，更新的年份需要 mit 校园账户才可以。
+- [中文版](https://www.cnblogs.com/liqiuhao/category/1167752.html)可以参考工大这几个大哥的。
