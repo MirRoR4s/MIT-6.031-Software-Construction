@@ -86,7 +86,7 @@ In **dynamically-typed languages** like Python, this kind of checking is deferre
 
 Static typing is a particular kind of **static checking**, which means checking for bugs at compile time. Bugs are the bane of programming. Many of the ideas in this course are aimed at eliminating bugs from your code, and static checking is the first idea that we’ve seen for this. Static typing prevents a large class of bugs from infecting your program: to be precise, bugs caused by applying an operation to the wrong types of arguments. If you write a broken line of code like:
 
-静态类型是一种特殊的静态检查，会在编译时就检查 bug 的存在。静态类型可以预防程序产生 bug，更准确地说，是预防那些对 operation 传入了不正确的参数类型而产生的 bug。
+静态类型是一种特殊的静态检查，会在编译时就检查 bug 的存在。静态类型可以预防程序产生 bug，更准确地说，是预防在 operation 上传入不正确参数类型而产生的 bug。
 
 ```java
 "5" * "6"
@@ -98,6 +98,8 @@ that tries to multiply two strings, then static typing will catch this error whi
 
 Even though Python is dynamically-typed, Python 3.5 and later allow you to declare [type hints](https://www.python.org/dev/peps/pep-0484/) in the code, e.g.:
 
+尽管 python 是一种动态类型的语言，但是在 python 3.5 之后的版本，我们可以在代码中声明类型提示以此指定变量和返回值的类型。
+
 ```python
 # Python function declared with type hints
 def hello(name:str)->str:
@@ -106,7 +108,11 @@ def hello(name:str)->str:
 
 The declared types can be used by a checker like [Mypy](http://mypy-lang.org/) to find type errors statically without having to run the code.
 
+类似于 Mypy 这样的检查器可以在不运行代码的情况下利用声明的类型来寻找静态错误。
+
 Other dynamically-typed languages have similar extensions. For example, JavaScript has been extended with static typing to create the language [TypeScript](https://www.typescriptlang.org/), e.g.:
+
+其他的动态类型的语言也有类似的扩展。举个例子，为 JavaScript 语言进行静态类型扩展就创造了 TypeScript。
 
 ```javascript
 // TypeScript function
@@ -116,6 +122,8 @@ function hello(name:string):string {
 ```
 
 The addition of static types to these dynamically-typed languages reflects a widespread belief among software engineers that the use of static types is essential to building and maintaining a large software system. The rest of this reading, and in fact this entire course, will show reasons for this belief. Compared to a language like Java that is statically-typed from the outset, adding static types to a dynamically-typed language enables a programming approach called [gradual typing](https://en.wikipedia.org/wiki/Gradual_typing), in which some parts of the code have static type declarations and other parts omit them. Gradual typing can provide a smoother path for a small experimental prototype to grow into a large, stable, maintainable system.
+
+为动态类型语言增加静态类型创造了一种名为渐进式类型化的编程方法，该方法在代码的某部分增添静态类型声明，而其他部分则略去。通过这种方法，即可以保留动态类型语言的灵活性，又可以拥有静态类型检查的优点。
 
 ## Static checking, dynamic checking, no checking
 
@@ -153,26 +161,10 @@ Dynamic checking, by contrast, tends to be about errors caused by specific value
 One trap in Java – and many other programming languages – is that its primitive numeric types have corner cases that do not behave like the integers and real numbers we’re used to. As a result, some errors that really should be dynamically checked are not checked at all. Here are the traps:
 
 - **Integer division**. `5/2` does not return a fraction, it returns a truncated integer. So this is an example of where what we might have hoped would be a dynamic error (because a fraction isn’t representable as an integer) frequently produces the wrong answer instead.
-- **Integer overflow**. The `int` and `long` types are actually finite sets of integers, with maximum and minimum values. What happens when you do a computation whose answer is too positive or too negative to fit in that finite range? The computation quietly *overflows* (wraps around), and returns an integer from somewhere in the legal range but not the right answer.
+- **Integer overflow**. The `int` and `long` types are actually finite sets of integers, with maximum and minimum values. What happens when you do a computation whose answer is too positive or too negative to fit in that finite range? The computation quietly **overflows** (wraps around), and returns an integer from somewhere in the legal range but not the right answer.
 - **Special values in floating-point types**. Floating-point types like `double` have several special values that aren’t real numbers: `NaN` (which stands for “Not a Number”), `POSITIVE_INFINITY`, and `NEGATIVE_INFINITY`. So when you apply certain operations to a `double` that you’d expect to produce dynamic errors, like dividing by zero or taking the square root of a negative number, you will get one of these special values instead. If you keep computing with it, you’ll end up with a bad final answer.
 
-#### READING EXERCISES
-
-Let’s try some examples of buggy code and see how they behave in Java. Are these bugs caught statically, dynamically, or not at all?
-
-1
-
-2
-
-3
-
-4
-
-5
-
-Note that these readings don’t keep track of the exercises you’ve previously done. When you reload the page, all exercises reset themselves.
-
-If you’re a registered student, you can see which exercises you’ve already done by looking at [Omnivore](https://omni.mit.edu/6.031/sp21/user/classes/).
+---
 
 ## Arrays and collections
 
@@ -180,7 +172,7 @@ Let’s change our hailstone computation so that it stores the sequence in a dat
 
 Arrays are fixed-length sequences of another type, like integers. For example, here’s how to declare an array variable and construct an array value to assign to it:
 
-```
+```java
 int[] a = new int[100];
 ```
 
@@ -228,8 +220,6 @@ And here are some of its operations:
 Why `List` on the left but `ArrayList` on the right? `List` is an interface, a type that can’t be constructed directly, but that instead just specifies the operations that a `List` must provide, like `get()` and `set()` and `size()`. `ArrayList` is a class, a concrete type that provides implementations of those operations. `ArrayList` isn’t the only implementation of the `List` type, though; `LinkedList` is another. So we prefer the `List` type when declaring variable types or return types, because it allows the code to be more general and flexible, not caring which concrete kind of list is actually being used. We will revisit this idea of interfaces and implementation classes several times throughout the course, so it’s okay if you don’t understand it deeply yet.
 
 You can see all the operations of `List` or the details of `ArrayList` or `LinkedList` in the Java API documentation: find it with a web search for “Java 15 API.” Get to know the Java API docs, they’re your friend. (“API” means “application programming interface,” and here it refers to the methods and classes that Java provides to help you build Java applications.)
-
-
 
 Why `List<Integer>` and not `List<int>`? Unfortunately, we can’t write `List<int>`. Lists only know how to deal with object types, not primitive types. Each primitive type has an equivalent object type: e.g. `int` and `Integer`, `long` and `Long`, `float` and `Float`, `double` and `Double`. Java requires us to use these object type equivalents when we parameterize one type using another. But in other contexts, Java automatically converts between `int` and `Integer`, so we can write `Integer i = 5;` without any type error.
 
@@ -298,7 +288,7 @@ Let’s explain a few of the new things here.
 
 `public` means that any code, anywhere in your program, can refer to the class or method. Other access modifiers, like `private`, are used to get more safety in a program, and to guarantee immutability for immutable types. We’ll talk more about them in an upcoming class.
 
-`static` means that the method is a function that doesn’t take a `self` parameter (which in Java is called `this`, and is passed implicitly, so you won’t ever see it as an explicit method parameter). Static methods aren’t called on an object. Contrast that with the `List` `add()` method or the `String` `length()` method, for example, which require an object to come first. Instead, the right way to call a static method uses the class name instead of an object reference: `Hailstone.hailstoneSequence(83)`.
+`static` means that the method is a function that doesn’t take a `self` parameter (which in Java is called `this`, and is passed implicitly, so you won’t ever see it as an explicit method parameter). Static methods aren’t called on an object. Contrast that with the `List.add()` method or the `String.length()` method, for example, which require an object to come first. Instead, the right way to call a static method uses the class name instead of an object reference: `Hailstone.hailstoneSequence(83)`.
 
 Take note also of the blue `/** ... */` comment before the method, because it’s very important. This comment is a specification of the method, describing the inputs and outputs of the operation. The specification should be concise, clear, and precise. The comment provides information that is not already clear from the method types. It doesn’t say, for example, that `n` is an integer, because the `int n` declaration just below already says that. But it does say that `n` must be positive, which is not captured by the type declaration but is very important for the caller to know.
 
@@ -306,7 +296,7 @@ We’ll have a lot more to say about how to write good specifications in a few c
 
 ## Mutating values vs. reassigning variables
 
-Change is a necessary evil. But good programmers try to avoid things that change, because they may change unexpectedly. Immutability – intentionally forbidding certain things from changing at runtime – will be a major design principle in this course.
+Change is a necessary evil（改变是必要之恶）. But good programmers try to avoid things that change, because they may change unexpectedly. Immutability – intentionally forbidding certain things from changing at runtime – will be a major design principle in this course.
 
 For example, an immutable type is a type whose values can never change once they have been created. The string type is immutable in both Python and Java.
 
@@ -320,9 +310,7 @@ If the Java compiler isn’t convinced that your `final` variable will only be a
 
 It’s good practice to use `final` for declaring the parameters of a method and as many local variables as possible. Like the type of the variable, these declarations are important documentation, useful to the reader of the code and statically checked by the compiler.
 
-#### READING EXERCISES
-
-final
+---
 
 ## Documenting assumptions
 
@@ -353,20 +341,7 @@ But software engineering is not hacking. Engineers are pessimists:
 - Good: document the assumptions that your code depends on
 - Good: defend your code against stupidity – especially your own! Static checking helps with that.
 
-#### READING EXERCISES
-
-Consider the following simple Python function:
-
-```python
-from math import sqrt
-def funFactAbout(person):
-  if sqrt(person.age) == int(sqrt(person.age)):
-    print("The age of " + person.name + " is a perfect square: " + str(person.age))
-```
-
-Assumptions
-
-Checkable assumptions
+---
 
 ## The goal of 6.031
 
@@ -378,13 +353,7 @@ Our primary goal in this course is learning how to produce software that is:
 
 There are other important properties of software (like performance, usability, security), and they may trade off against these three. But these are the Big Three that we care about in 6.031, and that software developers generally put foremost in the practice of building software. It’s worth considering every language feature, every programming practice, every design pattern that we study in this course, and understanding how they relate to the Big Three.
 
-#### READING EXERCISES
-
-SFB
-
-ETU
-
-RFC
+---
 
 ### Why we use Java in this course
 
@@ -409,13 +378,3 @@ The main idea we introduced today is **static checking**. Here’s how this idea
 - **Safe from bugs.** Static checking helps with safety by catching type errors and other bugs before runtime.
 - **Easy to understand.** It helps with understanding, because types are explicitly stated in the code.
 - **Ready for change.** Static checking makes it easier to change your code by identifying other places that need to change in tandem. For example, when you change the name or type of a variable, the compiler immediately displays errors at all the places where that variable is used, reminding you to update them as well.
-
-## More practice
-
-If you would like to get more practice with the concepts covered in this reading, you can visit the [question bank](https://qable.mit.edu:8001/practice.html#Static Checking). The questions in this bank were written in previous semesters by students and staff, and are provided for review purposes only – doing them will not affect your classwork grades.
-
-Collaboratively authored with contributions from: Saman Amarasinghe, Adam Chlipala, Srini Devadas, Michael Ernst, Max Goldman, John Guttag, Daniel Jackson, Rob Miller, Martin Rinard, and Armando Solar-Lezama. This work is licensed under [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/).
-
-MIT EECS
-
-  spring 2021 course site archive  |  latest site at [mit.edu/6.031](http://web.mit.edu/6.031/)  |  [accessibility](http://accessibility.mit.edu/)
