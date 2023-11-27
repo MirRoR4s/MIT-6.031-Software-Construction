@@ -324,6 +324,7 @@ We might write the two partitions compactly as follows:
 
 We still want to cover every subdomain with a test case, but now a single test case can cover multiple subdomains from different partitions, making the test suite more efficient. We can cover both partitions completely with just 6 test cases, as shown on the right.
 
+
 ![partitioning multiply() on the signs of a and b](https://web.mit.edu/6.031/www/sp21/classes/03-testing/figures/multiply-sign-partition.png)
 
 Partitioning *a* and *b* independently raises the risk that you’re no longer testing the interaction between them. For example, sign handling in multiplication is a possible source of bugs, and the sign of the result depends on the signs of both *a* and *b*. But we can add an additional partition that captures this interaction:
@@ -345,15 +346,7 @@ Sometimes we may want to use the Cartesian product approach on multiple partitio
 
 As a starting point for test-first programming, however, a small test suite that covers each subdomain of several thoughtfully-chosen partitions strikes a good balance between size and thoroughness. The test suite may then grow further with glass box testing, code coverage measurement, and regression testing, which we’ll see later in this reading.
 
-#### READING EXERCISES
-
-One partition vs. multiple partitions
-
-Covering every subdomain vs. covering Cartesian product
-
-Partitions expressed on outputs
-
-Partitioning
+---
 
 ## Automated unit testing with JUnit
 
