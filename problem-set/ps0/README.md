@@ -4,14 +4,12 @@
 
 ### Turtle graphics and the Logo language
 
-[Logo](https://en.wikipedia.org/wiki/Logo_%28programming_language%29) is a programming language created at MIT that originally was used to move a robot around in space. Turtle graphics, added to the Logo language, allows programmers to issue a series of commands to an on-screen "turtle" that moves, drawing a line as it goes. Turtle graphics have also been added to many different programming languages, [including Python](https://docs.python.org/2/library/turtle.html) , where it is part of the standard library.
-
 In the rest of problem set 0, we will be playing with a simple version of turtle graphics for Java that contains a restricted subset of the Logo language:
 
--   `forward(units)`
+- `forward(units)`
     Moves the turtle in the current direction by *units* pixels, where units is an integer. Following the original Logo convention, the turtle starts out facing up.
 
--   `turn(degrees)`
+- `turn(degrees)`
     Rotates the turtle by angle *degrees* to the right (clockwise), where degrees is a double precision floating point number.
 
 You can see the definitions of these commands in `Turtle.java`.
@@ -54,7 +52,6 @@ You should not change any of the *method declarations* ( [what’s a declaration
 #### Drawing polygons（多边形）
 
 - Implement `calculateRegularPolygonAngle`
-  There’s a simple formula for what the inside angles of a regular polygon should be; try to derive it before googling/binging/duckduckgoing.
 
 - Run the JUnit tests in `TurtleSoupTest`
   The method that tests `calculateRegularPolygonAngle `should now pass and show green instead of red.
@@ -64,12 +61,12 @@ You should not change any of the *method declarations* ( [what’s a declaration
 - Implement `calculatePolygonSidesFromAngle`
   This does the inverse of the last function; again, use the simple formula. However, **make sure you correctly round** to the nearest integer. Instead of implementing your own rounding, look at Java’s [`java.lang.Math `](https://docs.oracle.com/javase/8/docs/api/?java/lang/Math.html)class for the proper function to use.
 
-- Implement `drawRegularPolygon`
-  Use your implementation of `calculateRegularPolygonAngle `. To test this, change the `main `method to call `drawRegularPolygon `and verify that you see what you expect.
+- Implement `drawRegularPolygon` Use your implementation of `calculateRegularPolygonAngle`. To test this, change the `main`method to call `drawRegularPolygon `and verify that you see what you expect.
 
 ### Calculating headings
 
 - Implement `calculateHeadingToPoint`
-  This function calculates the parameter to `turn `required to get from a current point to a target point, with the current direction as an additional parameter. For example, if the turtle is at (0,1) facing 30 degrees, and must get to (0,0), it must turn an additional 150 degrees, so `calculateHeadingToPoint(30, 0, 1, 0, 0) `would return `150.0 `.
+  This function calculates the parameter to `turn` required to get from a current point to a target point, with the current direction as an additional parameter. For example, if the turtle is at (0,1) facing 30 degrees, and must get to (0,0), it must turn an additional 150 degrees, so `calculateHeadingToPoint(30, 0, 1, 0, 0)`would return `150.0`.
+
 - Implement `calculateHeadings`
   Make sure to use your `calculateHeadingToPoint `implementation here. For information on how to use Java’s `List `interface and classes implementing it, look up [`java.util.List `](https://docs.oracle.com/javase/8/docs/api/?java/util/List.html)in the Java library documentation. Note that for a list of *n* points, you will return *n-1* heading adjustments; this list of adjustments could be used to guide the turtle to each point in the list. For example, if the input lists consisted of `xCoords=[0,0,1,1] `and `yCoords=[1,0,0,1] `(representing points (0,1), (0,0), (1,0), and (1,1)), the returned list would consist of `[180.0, 270.0, 270.0] `.
