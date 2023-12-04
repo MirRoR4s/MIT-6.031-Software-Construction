@@ -2,36 +2,28 @@
 
 ## Part II
 
-### Turtle graphics and the Logo language
+### 乌龟图和 Logo 语言
 
-In the rest of problem set 0, we will be playing with a simple version of turtle graphics for Java that contains a restricted subset of the Logo language:
+实现以下两个方法控制乌龟的前进和转向：
 
-- `forward(units)`
-    Moves the turtle in the current direction by *units* pixels, where units is an integer. Following the original Logo convention, the turtle starts out facing up.
+- `forward(units)` 将乌龟在当前方向上移动 units 步，其中 units 上一个整数。根据 Logo 语言的惯例，乌龟的初始方向朝上。
 
-- `turn(degrees)`
-    Rotates the turtle by angle *degrees* to the right (clockwise), where degrees is a double precision floating point number.
+- `turn(degrees)` 将乌龟的移动方向向右转 degress 角度（顺时针），其中 degress 上一个双精度浮点数。
 
-You can see the definitions of these commands in `Turtle.java`.
-
-**Do NOT use any turtle commands other than `forward`and `turn`in your code for the following methods.**
+两个方法的具体定义在 `Turtle.java`。**在接下来的方法中不要使用除了 `forward` 和 `turn` 以外的任何 turtle 包中的命令。**
 
 #### Problem 4: drawSquare
 
-Look at the source code contained in `TurtleSoup.java`in package `turtle`.
+查看 `turtle` 包下的 `TurtleSoup.java`，然后使用以上的 `forward` 和 `turn` 方法实现 `drawSquare(Turtle turtle, int sideLength)`。实现完毕之后运行 TurtleSoup.java 中的 main 方法绘制乌龟图。
 
-Your task is to implement `drawSquare(Turtle turtle, int sideLength)`, using the two methods introduced above: `forward`and `turn`.
-
-Once you've implemented the method, run the `main`method in `TurtleSoup.java`. The `main`method in this case simply creates a new turtle, calls your `drawSquare`method, and instructs the turtle to draw. Run the method by going to *Run → Run As... → Java Application* . A window will pop up, and, once you click the "Run!" button, you should see a square drawn on the canvas.
-
-利用 forward 和 turn 方法画出一个正方形。乌龟一开始面是朝上的，我思考觉得这句话的意思是乌龟处在正方形的下边，这里我从左下角开始绘制图形，步骤如下：
+朴素想法：利用 forward 和 turn 方法画出一个正方形。乌龟一开始面是朝上的，我思考觉得这句话的意思是乌龟处在正方形的下边，这里我从左下角开始绘制图形，步骤如下：
 
 1. 在当前方向行进边长距离然后停止
-2. 向右转90°
+2. 向右转 90°
 3. 在当前方向行进边长距离然后停止
-4. 向右转90°
+4. 向右转 90°
 5. 在当前方向行进边长距离然后停止
-6. 向右转90°
+6. 向右转 90°
 7. 在当前方向行进边长距离然后停止
 8. 绘制完成
 
