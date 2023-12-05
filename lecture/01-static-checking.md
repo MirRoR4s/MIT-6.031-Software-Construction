@@ -89,7 +89,7 @@ The most important semantic difference between the Python and Java code above is
 
 A **type** is a set of values, along with operations that can be performed on those values.
 
-类型是一个值的集合，可对集合中的这些值执行某些操作。
+类型是一些值以及对这些值可进行的操作组成的集合。
 
 Java has several **primitive types**, among them:
 
@@ -106,7 +106,10 @@ Java also has **object types**, for example:
 Java 也有对象类型，比如：
 
 - `String` represents a sequence of characters, like a Python string.
+string 表示的是一个字符序列，类似于一个 python 的字符串。
+
 - `BigInteger` represents an integer of arbitrary size, so it acts like a Python integer.
+BigInteger 表示的是一个任意大小的整数，类似于一个 python 的整数。
 
 By Java convention, primitive types are lowercase, while object types start with a capital letter.
 
@@ -114,7 +117,7 @@ By Java convention, primitive types are lowercase, while object types start with
 
 **Operations** are functions that take inputs and produce outputs (and sometimes change the values themselves). The syntax for operations varies, but we still think of them as functions no matter how they’re written. Here are three different syntaxes for an operation in Python or Java:
 
-运算就是函数——接收输入然后产生输出（有时也会改变输入的值）。运算的语法多种多样，但我们仍可将它们视为函数，无论它们是怎样编写的。以下是 Python 或 Java 中的某操作的三种不同语法：
+操作实际上就是函数——接收输入然后产生输出（有时也会改变输入的值）。同一操作可能有不同的语法，但我们仍可将它们视为函数，无论它们是怎样编写的。以下是 Python 或 Java 中的某操作的三种不同语法：
 
 - *As an operator.* For example, `a + b` invokes the operation `+ : int × int → int`.
   (In this notation: `+` is the name of the operation, `int × int` before the arrow describes the two inputs, and `int` after the arrow describes the output.)
