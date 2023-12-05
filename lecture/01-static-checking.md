@@ -1,20 +1,25 @@
-# Reading 1: Static Checking
+<!-- # Reading 1: Static Checking
+# 静态检查
 
-## Objectives
+<!-- ## Objectives -->
+## 目标
 
-Today’s class has two topics:
+<!-- Today’s class has two topics: -->
+今天的课程有两个主题：
 
-- static typing
-- the big three properties of good software
-
+<!-- - static typing  -->
 - 静态类型
-- 好的软件应具有的三种性质
+
+<!-- - the big three properties of good software -->
+- 好的软件应具有的三大属性
 
 ---
 
-## Hailstone sequence
+<!-- ## Hailstone sequence -->
+## 冰雹序列
 
-As a running example, we’re going to explore the hailstone sequence, which is defined as follows. Starting with a number *n*, the next number in the sequence is *n/2* if *n* is even, or *3n+1* if *n* is odd. The sequence ends when it reaches 1. Here are some examples:
+<!-- As a running example, we’re going to explore the hailstone sequence, which is defined as follows. Starting with a number *n*, the next number in the sequence is *n/2* if *n* is even, or *3n+1* if *n* is odd. The sequence ends when it reaches 1. Here are some examples: -->
+冰雹序列的定义如下：从一个数字 n 开始，如果 n 是偶数，那么序列的下一项是 n/2，否则是 3n + 1，最后当序列到达 1 时结束。以下是一些例子：
 
 ```text
 2, 1
@@ -25,30 +30,70 @@ As a running example, we’re going to explore the hailstone sequence, which is 
 7, 22, 11, 34, 17, 52, 26, 13, 40, …? (where does this stop?)
 ```
 
-Because of the odd-number rule, the sequence may bounce up and down before decreasing to 1. It’s conjectured that all hailstones eventually fall to the ground – i.e., the hailstone sequence reaches 1 for all starting *n* – but that’s still an [open question](https://en.wikipedia.org/wiki/Collatz_conjecture). Why is it called a hailstone sequence? Because hailstones form in clouds by bouncing up and down, until they eventually build enough weight to fall to earth.
+<!-- Because of the odd-number rule, the sequence may bounce up and down before decreasing to 1. It’s conjectured that all hailstones eventually fall to the ground – i.e., the hailstone sequence reaches 1 for all starting *n* – but that’s still an [open question](https://en.wikipedia.org/wiki/Collatz_conjecture). Why is it called a hailstone sequence? Because hailstones form in clouds by bouncing up and down, until they eventually build enough weight to fall to earth. -->
+因为奇数规则，所以序列项在到达 1 之前可能会忽大忽小。对所有从 n 开始的冰雹序列来说，其最终是否一定会到达 1 是一个假设，这是一个开放性的问题。为什么要该序列称为冰雹序列呢？因为冰雹就是在云层中忽上忽下运动而形成的，当它们到达了足够的重量，就会跌落到地面。
 
-## Computing hailstones
+<!-- ## Computing hailstones -->
+## 计算冰雹序列
 
 Here’s some code for computing and printing the hailstone sequence for some starting *n*. We’ll write Java and Python side by side for comparison:
 
-| `// Java int n = 3; while (n != 1) {    System.out.println(n);    if (n % 2 == 0) {        n = n / 2;    } else {        n = 3 * n + 1;    } } System.out.println(n);` | `# Python n = 3 while n != 1:    print(n)    if n % 2 == 0:        n = n / 2    else:        n = 3 * n + 1  print(n)` |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-|                                                              |                                                              |
+以下是用于计算和打印从 n 开始的冰雹序列的 Python 和 Java 代码，可以对比一下。
+
+```java
+// Java
+int n = 3;
+while (n != 1) {
+    System.out.println(n);
+    if (n % 2 == 0) {
+        n = n / 2;
+    } else {
+        n = 3 * n + 1;
+    }
+}
+System.out.println(n);
+```
+
+```java
+# Python
+n = 3
+while n != 1:
+    print(n)
+    if n % 2 == 0:
+        n = n / 2
+    else:
+        n = 3 * n + 1
+
+
+print(n)
+```
 
 A few things are worth noting here:
 
+此处有一些重点值得指出：
+
 - The basic semantics of expressions and statements in Java are very similar to Python: `while` and `if` behave the same, for example.
+- Java 表达式和语句的基本语义和 Python 是非常相似的，比如 while 和 if 都具有相同的行为。
 - Java requires semicolons at the ends of statements.
+- Java 要求在每个语句的结尾添加分号。
 - Java requires parentheses around the conditions of the `if` and `while`.
+- Java 要求把 if 和 while 的条件用括号括起来。
 - Java uses curly braces around blocks, instead of indentation. You should always indent the block, even though Java won’t pay any attention to your extra spaces. Programming is a form of communication, and you’re communicating not only to the compiler, but to human beings. Humans need that indentation. We’ll come back to this later.
+- Java 使用花括号区分代码块，而非缩进。不过即使 Java 并不关心你额外的空格，你仍应该一直对代码块进行缩进。程序是一种交流的形式，你不仅是在和编译器进行交流，还在和人类进行交流。而人类需要缩进！
 
 ## Types
 
 The most important semantic difference between the Python and Java code above is the declaration of the variable `n`, which specifies its type: `int`.
 
+在上述 Java 和 Python 代码间最重要的语义差别就是变量 n 的声明，Java 在声明该变量时指定了其类型：int。
+
 A **type** is a set of values, along with operations that can be performed on those values.
 
+类型是一个值的集合，可对集合中的这些值执行某些操作。
+
 Java has several **primitive types**, among them:
+
+Java 有以下的原始类型：
 
 - `int` (for integers like 5 and -200, but limited to the range about ± 231, or roughly ± 2 billion)
 - `long` (for larger integers up to about ± 263)
@@ -58,12 +103,18 @@ Java has several **primitive types**, among them:
 
 Java also has **object types**, for example:
 
+Java 也有对象类型，比如：
+
 - `String` represents a sequence of characters, like a Python string.
 - `BigInteger` represents an integer of arbitrary size, so it acts like a Python integer.
 
 By Java convention, primitive types are lowercase, while object types start with a capital letter.
 
+根据 Java 的惯例，原始类型是小写的，对象类型的首字母是大写的。
+
 **Operations** are functions that take inputs and produce outputs (and sometimes change the values themselves). The syntax for operations varies, but we still think of them as functions no matter how they’re written. Here are three different syntaxes for an operation in Python or Java:
+
+运算就是函数——接收输入然后产生输出（有时也会改变输入的值）。运算的语法多种多样，但我们仍可将它们视为函数，无论它们是怎样编写的。以下是 Python 或 Java 中的某操作的三种不同语法：
 
 - *As an operator.* For example, `a + b` invokes the operation `+ : int × int → int`.
   (In this notation: `+` is the name of the operation, `int × int` before the arrow describes the two inputs, and `int` after the arrow describes the output.)
@@ -377,4 +428,4 @@ The main idea we introduced today is **static checking**. Here’s how this idea
 
 - **Safe from bugs.** Static checking helps with safety by catching type errors and other bugs before runtime.
 - **Easy to understand.** It helps with understanding, because types are explicitly stated in the code.
-- **Ready for change.** Static checking makes it easier to change your code by identifying other places that need to change in tandem. For example, when you change the name or type of a variable, the compiler immediately displays errors at all the places where that variable is used, reminding you to update them as well.
+- **Ready for change.** Static checking makes it easier to change your code by identifying other places that need to change in tandem. For example, when you change the name or type of a variable, the compiler immediately displays errors at all the places where that variable is used, reminding you to update them as well. -->

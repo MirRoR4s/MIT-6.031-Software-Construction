@@ -1,4 +1,4 @@
-# Reading 4: Code Review
+# [Reading 4: Code Review](https://web.mit.edu/6.031/www/sp21/classes/04-code-review/)
 
 **Software in 6.031**
 
@@ -15,7 +15,7 @@ In today’s class, we will practice:
 
 ---
 
-## Code review
+## Code review（代码审查）
 
 Code review is careful, systematic study of source code by people who are not the original author of the code. It’s analogous to proofreading a paper.
 
@@ -45,8 +45,6 @@ if (isOdd(n)) {
 - space after keyword (`if`), but not after function name (`isOdd`)
 - `{` at the end of a line, `}` on a line by itself
 - `{`…`}` around all blocks, even empty or one-statement blocks
-
-
 
 Eclipse has an autoformatter (*Source* → *Format*) whose default rules are similar to Google style.
 
