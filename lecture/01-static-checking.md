@@ -276,32 +276,32 @@ function hello(name:string):string {
 ## 数组和集合
 
 <!-- Let’s change our hailstone computation so that it stores the sequence in a data structure, instead of just printing it out. Java has two kinds of list-like types that we could use: arrays and Lists. -->
-修改上述计算冰雹序列的代码，将序列存储在一个数据结构中，而非直接打印它。Java 有两种类似于列表的类型可供我们使用：arrays 和 Lists。
+修改前面计算冰雹序列的代码，将序列存储在一个数据结构中，而不是直接打印它。Java 有两种类似于列表的类型可供我们使用：arrays 和 Lists。
 
 <!-- Arrays are fixed-length sequences of another type, like integers. For example, here’s how to declare an array variable and construct an array value to assign to it: -->
-类似于整数，arrays（数组）也是一种定长的类型。举个例子，以下代码演示了如何声明一个数组变量并构造一组数组值对其进行赋值。
+类似于整数，arrays（数组）也是一种定长的序列类型。举个例子，以下代码演示了如何声明一个数组变量并构造一个数组值赋值给它：
 
 ```java
 int[] a = new int[100];
 ```
 
 <!-- The `int[]` array type includes all possible array values, but a particular array value, once created, can never change its length. Operations on array types include: -->
-int[] 数组类型包括了所有可能的数组值，一个数组值一旦被创建，其长度就再也不可以更改。
+`int[]` 数组类型包括了所有可能的数组值，一个特定的数组值一旦被创建，其长度就再也不可以被更改。对数组类型的操作包括：
 
 <!-- - indexing: `a[2]` -->
-- 索引数组：a[2]
+- 索引：`a[2]`
 
 <!-- - assignment: `a[2] = 0` -->
-- 对数组项进行赋值：a[2] = 0
+- 赋值：`a[2] = 0`
 
 <!-- - length: `a.length` -->
-- 获取数组长度：a.length
+- 获取长度：`a.length`
 
 <!-- Note that `a.length` is different syntax from `String.length()`. Because `a.length` is an instance variable, rather than a method call, you don’t put parentheses after it. -->
-注意到 a.length 的语法和 String.length() 是不同的。因为 a.length 是一个实例变量，而非方法调用，所以你不能在其后面增加括号。
+注意到 `a.length` 的语法和 `String.length()` 是不同的。因为 `a.length` 是一个实例变量，而非方法调用，所以你不能在其后面增加括号。
 
 <!-- Here’s a crack at the hailstone code using an array. We start by constructing the array, and then use an index variable `i` to step through the array, storing values of the sequence as we generate them. -->
-以下代码使用一个数组存储冰雹序列。我们首先构造该数组，然后使用索引变量 i 对数组进行遍历，当我们生成一个冰雹序列项时就将其存放到数组中。
+以下代码使用一个数组存储冰雹序列。我们首先构造该数组，然后使用索引变量 i 来逐步遍历数组，当我们生成一个冰雹序列项时就将其存放到数组中。
 
 ```java
 int[] a = new int[100];  // <==== DANGER, WILL ROBINSON!
@@ -321,10 +321,10 @@ i++;
 ```
 
 <!-- Something should immediately smell wrong in this approach. What’s that magic number 100? What would happen if we tried an `n` that turned out to have a very long hailstone sequence? It wouldn’t fit in a length-100 array. We have a bug. Would Java catch the bug statically, dynamically, or not at all? Incidentally, this kind of bug is called a [buffer overflow](https://en.wikipedia.org/wiki/Buffer_overflow), because it is overflowing a fixed-length array. Fixed-length arrays are commonly used in less-safe languages like C and C++ that don’t do automatic runtime checking of array accesses. Buffer overflows have been responsible for a large number of network security breaches and internet worms. -->
-上述代码存在一个问题，如果冰雹序列的项数超过了100，那么我们声明的数组长度将无法容纳下该序列，所以代码存在一个 bug。Java 能够捕获到该 bug 吗？顺便说一下，此类 bug 被称为缓冲区溢出，因为其在一个定长的数组中发生了溢出。像 C 和 C++ 这样不对数组访问执行自动化的运行时检查的语言中大量使用了定长数组。缓冲区溢出导致了大量的网络安全漏洞和互联网蠕虫。
+上述代码存在一个问题，如果冰雹序列的项数超过了100，那么我们声明的数组（长度为100）将无法容纳下该序列，所以代码存在一个 bug。Java 能够捕获到该 bug 吗？顺便说一下，此类 bug 被称为缓冲区溢出，因为其在一个定长的数组中发生了溢出。像 C 和 C++ 这样不对数组访问自动执行运行时检查的语言就大量使用了定长数组。缓冲区溢出导致了大量的网络安全漏洞和互联网蠕虫。
 
 <!-- Instead of a fixed-length array, let’s use the `List` type. Lists are variable-length sequences of another type. Here’s how we can declare a `List` variable and make a list value: -->
-让我们使用 List（列表） 类型，而不是定长数组。列表是一种可变长度的序列类型。以下代码演示了如何声明一个 List 类型变量并得到一个 list 值。
+所以让我们使用 List（列表） 类型，而不是一个定长的数组。列表是一种变长长度的序列类型。以下代码演示了如何声明一个 List 类型的变量并得到一个 list 值。
 
 ```java
 List<Integer> list = new ArrayList<Integer>();
