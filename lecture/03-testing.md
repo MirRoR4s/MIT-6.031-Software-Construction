@@ -8,31 +8,56 @@
 | :----------------------------------------------- | :----------------------------------------------------------- | :------------------------------------------------ |
 | Correct today and correct in the unknown future. | Communicating clearly with future programmers, including future you. | Designed to accommodate change without rewriting. |
 
-## Objectives
+<!-- ## Objectives -->
+## 目标
 
-After today’s class, you should:
+<!-- After today’s class, you should: -->
+在今天的课程后，你应该能够：
 
-- understand the value of testing, and know the process of test-first programming;
-- be able to judge a test suite for correctness, thoroughness, and size;
-- be able to design a test suite for a method by partitioning its input space and choosing good test cases;
-- be able to judge a test suite by measuring its code coverage; and
-- understand and know when to use black box vs. glass box testing, unit tests vs. integration tests, and automated regression testing.
+<!-- - understand the value of testing, and know the process of test-first programming; -->
+- 理解测试的价值，并且知晓测试优先编程的流程。
 
-## Validation
+<!-- - be able to judge a test suite for correctness, thoroughness, and size; -->
+- 能够判断一个测试套件的正确性、完整性以及大小。
 
-Testing is an example of a more general process called *validation*. The purpose of validation is to uncover problems in a program and thereby increase your confidence in the program’s correctness. Validation includes:
+<!-- - be able to design a test suite for a method by partitioning its input space and choosing good test cases; -->
+- 能够分割一个方法的输入空间并为其设计一个测试套件，然后从中选择好的测试用例。
 
-- **Formal reasoning** about a program, usually called *verification*. Verification constructs a formal proof that a program is correct. Verification is tedious to do by hand, and automated tool support for verification is still an active area of research. Nevertheless, small, crucial pieces of a program may be formally verified, such as the scheduler in an operating system, or the bytecode interpreter in a virtual machine, or [the filesystem in an operating system](http://www.csail.mit.edu/crash_tolerant_data_storage).
-- **Code review.** Having somebody else carefully read your code, and reason informally about it, can be a good way to uncover bugs. It’s much like having somebody else proofread an essay you have written. We discuss [code review in another reading](https://web.mit.edu/6.031/www/sp21/classes/04-code-review/).
-- **Testing**. Running the program on carefully selected inputs and checking the results.
+<!-- - be able to judge a test suite by measuring its code coverage; and -->
+- 能够通过测量一个测试套件的代码覆盖率来判断它的好坏。
 
-Even with the best validation, it’s very hard to achieve perfect quality in software. Here are some typical *residual defect rates* (bugs left over after the software has shipped) per kloc (one thousand lines of source code):
+<!-- - understand and know when to use black box vs. glass box testing, unit tests vs. integration tests, and automated regression testing. -->
+- 能够理解并知晓黑盒测试和白盒测试、单元测试和集成测试以及自动化回归测试的区别。
 
-- 1 - 10 defects/kloc: Typical industry software.
-- 0.1 - 1 defects/kloc: High-quality validation. The Java libraries might achieve this level of correctness.
-- 0.01 - 0.1 defects/kloc: The very best, safety-critical validation. NASA and companies like Praxis can achieve this level.
+<!-- ## Validation -->
+## 验证
 
-This can be discouraging for large systems. For example, if you have shipped a million lines of typical industry source code (1 defect/kloc), it means you missed 1000 bugs!
+<!-- Testing is an example of a more general process called *validation*. The purpose of validation is to uncover problems in a program and thereby increase your confidence in the program’s correctness. Validation includes: -->
+测试是验证这个更一般过程的一个示例。验证的目的是发现程序中的问题，增加我们对程序正确性的信心，验证包括：
+
+<!-- - **Formal reasoning** about a program, usually called *verification*. Verification constructs a formal proof that a program is correct. Verification is tedious to do by hand, and automated tool support for verification is still an active area of research. Nevertheless, small, crucial pieces of a program may be formally verified, such as the scheduler in an operating system, or the bytecode interpreter in a virtual machine, or [the filesystem in an operating system](http://www.csail.mit.edu/crash_tolerant_data_storage). -->
+- 对程序进行形式推理，通常被称为验证。验证构造了一个形式的证明来说明程序是正确的。验证往往通过手工进行，自动化的验证工具现在仍是一个研究热点。不管怎样，必须要对程序中小而关键的部分进行形式地证明，比如操作系统中的调度或者是虚拟机中的字节码解释器亦或者是操作系统中的文件系统。
+
+<!-- - **Code review.** Having somebody else carefully read your code, and reason informally about it, can be a good way to uncover bugs. It’s much like having somebody else proofread an essay you have written. We discuss [code review in another reading](https://web.mit.edu/6.031/www/sp21/classes/04-code-review/). -->
+- 代码审查。让某人仔细阅读你的代码，并进行一个简略地逻辑思考是发现 bug 的一种好方法。这有点像让某人帮你校正论文
+
+<!-- - **Testing**. Running the program on carefully selected inputs and checking the results. -->
+- 测试。精心地选择输入然后运行程序，最后检查结果是否符合预期。
+
+<!-- Even with the best validation, it’s very hard to achieve perfect quality in software. Here are some typical *residual defect rates* (bugs left over after the software has shipped) per kloc (one thousand lines of source code): -->
+即使使用了最好的验证，也难以实现一个完美的软件。以下是几个典型的剩余缺陷率（在软件开发完毕后每一千行代码中存在的 bug 数）
+
+<!-- - 1 - 10 defects/kloc: Typical industry software. -->
+- 1-10：工业软件通常是这个级别。
+
+<!-- - 0.1 - 1 defects/kloc: High-quality validation. The Java libraries might achieve this level of correctness. -->
+- 0.1 - 1: 经过了高质量的验证。Java 库也许实现这种水平的正确性。
+
+<!-- - 0.01 - 0.1 defects/kloc: The very best, safety-critical validation. NASA and companies like Praxis can achieve this level. -->
+- 0.01 - 0.1： 非常好的，对安全性要求极高的验证。NASA 和 Praxis 这样的公司可以实现这种级别的验证。
+
+<!-- This can be discouraging for large systems. For example, if you have shipped a million lines of typical industry source code (1 defect/kloc), it means you missed 1000 bugs! -->
+这对于大型软件系统来说是非常不幸的，比如你的系统开发完毕后有一百万行代码，这意味着你可能遗漏了 1000 个 bug。
 
 ## Why software testing is hard
 
