@@ -141,7 +141,7 @@ sb.append("b");
 
 ![image-20231128204808105](images/image-20231128204808105.png)
 
-We can also have a *reassignable reference* to an *immutable value* where the value of the variable can change because it can be re-pointed to a different object:
+We can also have a *reassignable reference* to an **immutable value** where the value of the variable can change because it can be re-pointed to a different object:
 
 ```java
 String s = "a";

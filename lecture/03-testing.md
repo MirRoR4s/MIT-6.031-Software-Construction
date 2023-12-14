@@ -1,77 +1,57 @@
-# Reading 3: Testing
+# [Reading 3: Testing](https://web.mit.edu/6.031/www/sp21/classes/03-testing/)
 
-- 地址：<https://web.mit.edu/6.031/www/sp21/classes/03-testing/>
-
-## Software in 6.031
+**Software in 6.031**
 
 | Safe from bugs                                   | Easy to understand                                           | Ready for change                                  |
 | :----------------------------------------------- | :----------------------------------------------------------- | :------------------------------------------------ |
 | Correct today and correct in the unknown future. | Communicating clearly with future programmers, including future you. | Designed to accommodate change without rewriting. |
 
-<!-- ## Objectives -->
-## 目标
+ **Objectives**
 
-<!-- After today’s class, you should: -->
-在今天的课程后，你应该能够：
+After today’s class, you should:
 
-<!-- - understand the value of testing, and know the process of test-first programming; -->
-- 理解测试的价值，并且知晓测试优先编程的流程。
+- understand the value of testing, and know the process of test-first programming;
+- be able to judge a test suite for correctness, thoroughness, and size;
+- be able to design a test suite for a method by partitioning its input space and choosing good test cases;
+- be able to judge a test suite by measuring its code coverage; and
+- understand and know when to use black box vs. glass box testing, unit tests vs. integration tests, and automated regression testing.
 
-<!-- - be able to judge a test suite for correctness, thoroughness, and size; -->
-- 能够判断一个测试套件的正确性、完整性以及大小。
+---
 
-<!-- - be able to design a test suite for a method by partitioning its input space and choosing good test cases; -->
-- 能够分割一个方法的输入空间并为其设计一个测试套件，然后从中选择好的测试用例。
+##  Validation
 
-<!-- - be able to judge a test suite by measuring its code coverage; and -->
-- 能够通过测量一个测试套件的代码覆盖率来判断它的好坏。
 
-<!-- - understand and know when to use black box vs. glass box testing, unit tests vs. integration tests, and automated regression testing. -->
-- 能够理解并知晓黑盒测试和白盒测试、单元测试和集成测试以及自动化回归测试的区别。
+Testing is an example of a more general process called **validation**. The purpose of validation is to uncover problems in a program and thereby increase your confidence in the program’s correctness. Validation includes:
 
-<!-- ## Validation -->
-## 验证
+- **Formal reasoning**（形式推理） about a program, usually called **verification**（证明）. Verification constructs a formal proof that a program is correct. Verification is tedious to do by hand, and automated tool support for verification is still an active area of research. Nevertheless, small, crucial pieces of a program may be formally verified, such as the **scheduler**（调度程序） in an operating system, or the bytecode interpreter in a virtual machine, or [the filesystem in an operating system](http://www.csail.mit.edu/crash_tolerant_data_storage).
+- **Code review.** Having somebody else carefully read your code, and reason informally about it, can be a good way to uncover bugs. It’s much like having somebody else proofread an essay you have written. We discuss [code review in another reading](https://web.mit.edu/6.031/www/sp21/classes/04-code-review/).
+- **Testing**. Running the program on carefully selected inputs and checking the results.
 
-<!-- Testing is an example of a more general process called *validation*. The purpose of validation is to uncover problems in a program and thereby increase your confidence in the program’s correctness. Validation includes: -->
-测试是验证这个更一般过程的一个示例。验证的目的是发现程序中的问题，增加我们对程序正确性的信心，验证包括：
+Even with the best validation, it’s very hard to achieve perfect quality in software. Here are some typical **residual defect rates**（残余缺陷率） (bugs left over after the software has shipped) per kloc (one thousand lines of source code):
 
-<!-- - **Formal reasoning** about a program, usually called *verification*. Verification constructs a formal proof that a program is correct. Verification is tedious to do by hand, and automated tool support for verification is still an active area of research. Nevertheless, small, crucial pieces of a program may be formally verified, such as the scheduler in an operating system, or the bytecode interpreter in a virtual machine, or [the filesystem in an operating system](http://www.csail.mit.edu/crash_tolerant_data_storage). -->
-- 对程序进行形式推理，通常被称为验证。验证构造了一个形式的证明来说明程序是正确的。验证往往通过手工进行，自动化的验证工具现在仍是一个研究热点。不管怎样，必须要对程序中小而关键的部分进行形式地证明，比如操作系统中的调度或者是虚拟机中的字节码解释器亦或者是操作系统中的文件系统。
+- 1 - 10 defects/kloc: Typical industry software.
+- 0.1 - 1 defects/kloc: High-quality validation. The Java libraries might achieve this level of correctness.
+- 0.01 - 0.1 defects/kloc: The very best, safety-critical validation. NASA and companies like Praxis can achieve this level.
 
-<!-- - **Code review.** Having somebody else carefully read your code, and reason informally about it, can be a good way to uncover bugs. It’s much like having somebody else proofread an essay you have written. We discuss [code review in another reading](https://web.mit.edu/6.031/www/sp21/classes/04-code-review/). -->
-- 代码审查。让某人仔细阅读你的代码，并进行一个简略地逻辑思考是发现 bug 的一种好方法。这有点像让某人帮你校正论文
+This can be discouraging for large systems. For example, if you have shipped a million lines of typical industry source code (1 defect/kloc), it means you missed 1000 bugs!
 
-<!-- - **Testing**. Running the program on carefully selected inputs and checking the results. -->
-- 测试。精心地选择输入然后运行程序，最后检查结果是否符合预期。
-
-<!-- Even with the best validation, it’s very hard to achieve perfect quality in software. Here are some typical *residual defect rates* (bugs left over after the software has shipped) per kloc (one thousand lines of source code): -->
-即使使用了最好的验证，也难以实现一个完美的软件。以下是几个典型的剩余缺陷率（在软件开发完毕后每一千行代码中存在的 bug 数）
-
-<!-- - 1 - 10 defects/kloc: Typical industry software. -->
-- 1-10：工业软件通常是这个级别。
-
-<!-- - 0.1 - 1 defects/kloc: High-quality validation. The Java libraries might achieve this level of correctness. -->
-- 0.1 - 1: 经过了高质量的验证。Java 库也许实现这种水平的正确性。
-
-<!-- - 0.01 - 0.1 defects/kloc: The very best, safety-critical validation. NASA and companies like Praxis can achieve this level. -->
-- 0.01 - 0.1： 非常好的，对安全性要求极高的验证。NASA 和 Praxis 这样的公司可以实现这种级别的验证。
-
-<!-- This can be discouraging for large systems. For example, if you have shipped a million lines of typical industry source code (1 defect/kloc), it means you missed 1000 bugs! -->
-这对于大型软件系统来说是非常不幸的，比如你的系统开发完毕后有一百万行代码，这意味着你可能遗漏了 1000 个 bug。
+---
 
 ## Why software testing is hard
 
 Here are some approaches that unfortunately don’t work well in the world of software.
 
-**Exhaustive testing** is infeasible. The space of possible test cases is generally too big to cover exhaustively. Imagine exhaustively testing a 32-bit floating-point multiply operation, `a*b`. There are $2^{64}$ test cases!
+**Exhaustive testing** is infeasible. The space of possible test cases is generally too big to cover exhaustively. Imagine exhaustively testing a 32-bit floating-point multiply operation,`a*b`.There are $2^{64}$ test cases!
 
-**Haphazard testing** (“just try it and see if it works”) is less likely to find bugs, unless the program is so buggy that an arbitrarily-chosen input is more likely to fail than to succeed. It also doesn’t increase our confidence in program correctness.
+**Haphazard testing**（随意测试） ("just try it and see if it works") is less likely to find bugs, unless the program is so buggy that an arbitrarily-chosen input is more likely to fail than to succeed. It also doesn’t increase our confidence in program correctness.
 
-**Random or statistical testing** doesn’t work well for software. Other engineering disciplines can test small random samples (e.g. 1% of hard drives manufactured) and infer the defect rate for the whole production lot. Physical systems can use many tricks to speed up time, like opening a refrigerator 1000 times in 24 hours instead of 10 years. These tricks give known failure rates (e.g. mean lifetime of a hard drive), but they assume continuity or uniformity across the space of defects. This is true for physical artifacts.
+**Random or statistical testing** doesn’t work well for software. Other engineering disciplines（学科） can test small random samples (e.g. 1% of hard drives manufactured) and infer the defect rate for the whole production lot. Physical systems can use many tricks to speed up time, like opening a refrigerator 1000 times in 24 hours instead of 10 years. These tricks give known failure rates (e.g. mean lifetime of a hard drive), but they assume continuity or uniformity（均匀性） across the space of defects. This is true for **physical artifacts**（物理构件）.
 
 But it’s not true for software. Software behavior varies discontinuously and discretely across the space of possible inputs. The system may seem to work fine across a broad range of inputs, and then abruptly fail at a single boundary point. The [famous Pentium division bug](http://www.willamette.edu/~mjaneba/pentprob.html) affected approximately 1 in 9 billion divisions. Stack overflows, out of memory errors, and numeric overflow bugs tend to happen abruptly, and always in the same way, not with probabilistic variation. That’s different from physical systems, where there is often visible evidence that the system is approaching a failure point (cracks in a bridge) or failures are distributed probabilistically near the failure point (so that statistical testing will observe some failures even before the point is reached).
 
 Instead, test cases must be chosen carefully and systematically. Techniques for systematic testing are the primary focus of this reading.
+
+**阅读练习**
 
 ---
 
@@ -90,7 +70,7 @@ You’ve already seen and used these concepts on problem set 0. You were given s
 It turns out that this is a good pattern to follow when designing a program from scratch. In *test-first programming*, you write the spec and the tests before you even write any code. The development of a single function proceeds in this order:
 
 1. **Spec**: Write a specification for the function.
-2. **Test**: Write tests that exercise the specification.
+2. **Test**: Write tests that exercise（验证） the specification.
 3. **Implement**: Write the implementation.
 
 Once your implementation passes the tests you wrote, you’re done.
@@ -644,31 +624,3 @@ The topics of today’s reading connect to our three key properties of good soft
 - **Safe from bugs.** Testing is about finding bugs in your code, and test-first programming is about finding them as early as possible, right after you introduce them.
 - **Easy to understand.** Systematic testing with a documented testing strategy makes it easier to understand how test cases were chosen and how thorough a test suite is.
 - **Ready for change.** Correct test suites only depend on behavior in the spec, which allows the implementation to change within the confines of the spec. We also talked about automated regression testing, which helps keep bugs from coming back when changes are made to code.
-
-------
-
-### An exercise for the reader
-
-At this point you should have completed all the reading exercises above.
-
-Completing the reading exercises prepares you for the *nanoquiz* at the beginning of each class meeting, and submitting the exercises is required by 10:00pm US Eastern time the evening before class.
-
-At this point you should have also completed these levels of the Java Tutor:
-
-![img](https://web.mit.edu/6.031/www/sp21/classes/02-basic-java/figures/small-eclipse-window.png)
-
-**✓**Equality1/1
-
-**✓**Lists & Arrays1/1
-
-**✓**Methods1/1
-
-## More practice
-
-If you would like to get more practice with the concepts covered in this reading, you can visit the [question bank](https://qable.mit.edu:8001/practice.html#Testing). The questions in this bank were written in previous semesters by students and staff, and are provided for review purposes only – doing them will not affect your classwork grades.
-
-Collaboratively authored with contributions from: Saman Amarasinghe, Adam Chlipala, Srini Devadas, Michael Ernst, Max Goldman, John Guttag, Daniel Jackson, Rob Miller, Martin Rinard, and Armando Solar-Lezama. This work is licensed under [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/).
-
-MIT EECS
-
-  spring 2021 course site archive  |  latest site at [mit.edu/6.031](http://web.mit.edu/6.031/)  |  [accessibility](http://accessibility.mit.edu/)

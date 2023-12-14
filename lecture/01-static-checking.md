@@ -101,21 +101,26 @@ print(n)
 类型是一些值以及可对这些值执行的**操作**组成的集合。
 
 <!-- Java has several **primitive types**, among them: -->
-Java 有以下的原始数据类型：
+Java 的原始数据类型如下：
 
 <!-- - `int` (for integers like 5 and -200, but limited to the range about ± 231, or roughly ± 2 billion) -->
+
 - `int`：表示 5 和 200 这样的整数，但是其范围**大概**在正负 $2^{31}$ 之间
 
 <!-- - `long` (for larger integers up to about ± 263) -->
+
 - `long`：表示更大的整数，范围大概在正负 $2^{63}$ 之间
 
 <!-- - `boolean` (for true or false) -->
+
 - `boolean`：表示 true 或 false，即真和假
 
 <!-- - `double` (for floating-point numbers, which represent a subset of the real numbers) -->
+
 - `double`：表示浮点数，是实数的一个子集
 
 <!-- - `char` (for single characters like `'A'` and `'$'`) -->
+
 - `char`：表示 `'A'` 或 `'$'` 这样的单个字符
 
 <!-- Java also has **object types**, for example: -->
@@ -135,12 +140,14 @@ Java 也有对象类型，比如：
 **操作**实际上是一种函数——接收输入然后产生输出（有时也会改变输入本身）。操作可能会有不同的语法形式，但无论它们的编写方式如何，我们都可将它们视为函数。以下是 Python 或 Java 中某个操作的三种不同语法形式：
 
 <!-- - *As an operator.* For example, `a + b` invokes the operation `+ : int × int → int`. -->
+
 - 作为运算符。举个例子，`a + b` 执行了操作 `+ : int x int -> int`。<!-- (In this notation: `+` is the name of the operation, `int × int` before the arrow describes the two inputs, and `int` after the arrow describes the output.) -->（在该操作中，`+` 是操作的名称，箭头前的 `int x int` 描述了操作的两个输入，箭头后的 int 描述了操作的输出。）
 
 <!-- - *As a method of an object.* For example, `bigint1.add(bigint2)` calls the operation `add: BigInteger × BigInteger → BigInteger`. -->
 - 作为对象的方法。举个例子，`bigint1.add(bigint2)` 调用了操作 `add: BigInteger x BigInteger -> BigInteger`。
 
 <!-- - *As a function.* For example, `Math.sin(theta)` calls the operation `sin: double → double`. Here, `Math` is not an object. It’s the class that contains the `sin` function. -->
+
 - 作为函数。举个例子，`Math.sin(theta)` 调用了操作 `sin: double -> double`。此处的 `Math` 并不是一个对象，而是一个包含了 `sin` 函数的类。
 
 <!-- Contrast Java’s `str.length()` with Python’s `len(str)`. It’s the same operation in both languages – a function that takes a string and returns its length – but it just uses different syntax. -->
@@ -160,7 +167,7 @@ Java 是一种静态类型的语言，所有变量的类型在编译时（在程
 
 <!-- Static typing is a particular kind of **static checking**, which means checking for bugs at compile time. Bugs are the bane of programming. Many of the ideas in this course are aimed at eliminating bugs from your code, and static checking is the first idea that we’ve seen for this. Static typing prevents a large class of bugs from infecting your program: to be precise, bugs caused by applying an operation to the wrong types of arguments. If you write a broken line of code like: -->
 
-静态类型是一类特殊的**静态检查**，会在编译时就检查 bug 的存在。静态类型可以预防一类 bug 干扰你的程序：更准确地说，是预防对错误的参数类型应用某种操作而产生的 bug。如果你编写了一个如下的代码：
+静态类型是一类特殊的**静态检查**，会在编译时就检查 bug 的存在。静态类型可以预防一类 bug 干扰你的程序：更准确地说，是预防在执行某种操作时由于参数类型错误而产生的 bug。如果你编写了一个如下的代码：
 
 ```java
 "5" * "6"
@@ -174,7 +181,7 @@ Java 是一种静态类型的语言，所有变量的类型在编译时（在程
 ### 在动态类型语言中添加静态类型支持
 
 <!-- Even though Python is dynamically-typed, Python 3.5 and later allow you to declare [type hints](https://www.python.org/dev/peps/pep-0484/) in the code, e.g.: -->
-尽管 python 是一种动态类型的语言，但是在 python 3.5 之后的版本，我们可以在代码中声明[类型提示](https://www.python.org/dev/peps/pep-0484/)以此指定变量和返回值的类型，具体如下所示：
+尽管 python 是一种动态类型的语言，但在 python 3.5 之后的版本，我们可以在代码中声明[类型提示](https://www.python.org/dev/peps/pep-0484/)以此指定变量和返回值的类型，具体如下所示：
 
 ```python
 # Python function declared with type hints
@@ -196,7 +203,7 @@ function hello(name:string):string {
 ```
 
 <!-- The addition of static types to these dynamically-typed languages reflects a widespread belief among software engineers that the use of static types is essential to building and maintaining a large software system. The rest of this reading, and in fact this entire course, will show reasons for this belief. Compared to a language like Java that is statically-typed from the outset, adding static types to a dynamically-typed language enables a programming approach called [gradual typing](https://en.wikipedia.org/wiki/Gradual_typing), in which some parts of the code have static type declarations and other parts omit them. Gradual typing can provide a smoother path for a small experimental prototype to grow into a large, stable, maintainable system. -->
-为这些动态类型语言添加静态类型支持，反映了一种在软件工程师中广泛传播的理念——即静态类型的使用对于构建和维护大型软件系统来说是很重要的。对比于像 Java 这样的静态类型语言，为一种动态类型语言添加静态类型支持创造了一种名为[渐进式类型化](https://en.wikipedia.org/wiki/Gradual_typing)的编程方法，该方法在代码的某些部分添加静态类型声明，而其他部分则略去。
+为这些动态类型语言添加静态类型支持，反映了一种在软件工程师中广泛传播的理念即静态类型的使用对于构建和维护大型软件系统来说是很重要的。对比于像 Java 这样的静态类型语言，为一种动态类型语言添加静态类型支持创造了一种名为[渐进式类型化](https://en.wikipedia.org/wiki/Gradual_typing)的编程方法，该方法在代码的某些部分添加静态类型声明，而其他部分则略去。
 
 渐进式类型化可为一个小的试验原型逐步演变为为一个大型、稳定、可维护的系统提供更光滑的路径。
 
@@ -235,26 +242,29 @@ function hello(name:string):string {
 - 拼写错误，例如 `Math.sine(2)`，正确的写法是 `sin`。
 
 <!-- - wrong number of arguments, like `Math.sin(30, 20)`. -->
-- 错误的参数个数，例如 `Math.sin(30, 20)`。
+
+- 参数个数错误，例如 `Math.sin(30, 20)`。
 
 <!-- - wrong argument types, like `Math.sin("30")`. -->
-- 错误的参数类型，例如 `Math.sin("30")`。
+
+- 参数类型错误，例如 `Math.sin("30")`。
 
 <!-- - wrong return types, like `return "30";` from a function that’s declared to return an `int`. -->
-- 错误的返回类型，比如一个声明了返回类型为 `int` 的函数却返回了 `"30"`。
+- 返回类型错误，比如一个声明了返回类型为 `int` 的函数却返回了 `"30"`。
 
 <!-- **Dynamic checking** can catch: -->
 **动态检查**可以捕获：
 
 <!-- - illegal argument values. For example, the integer expression `x/y` is only erroneous when `y` is actually zero; for other values of `y`, its value is well-defined. So in this expression, divide-by-zero is not a static error, but a dynamic error. -->
 
-- 非法的参数值。举个例子，整数表达式 `x/y` 仅当 `y` 为零时才会产生错误；对于其他的 `y` 值，表达式的值是有明确定义的，所以在这个表达式中，除数为零不是一个静态错误，而是一个动态错误。
+- 非法参数值。举个例子，整数表达式 `x/y` 仅当 `y` 为零时才会产生错误；对于其他的 `y` 值，表达式的值是有明确定义的，所以在这个表达式中，除数为零不是一个静态错误，而是一个动态错误。
 
 <!-- - illegal conversions, i.e., when the specific value can’t be converted to or represented in the target type. For example, `Integer.valueOf("hello")` is a dynamic error, because the string `"hello"` cannot be parsed as a decimal integer. So is `Integer.valueOf("8000000000")`, because 8 billion is outside the legal range of `int` values in Java. -->
 
 - 非法转换，即当特定值无法被转换或表示成目标值时。举个例子，`Integer.valueOf("hello")` 是一个动态错误，因为字符串 `"hello"` 无法被解析为一个十进制整数。对 `Integer.valueOf("800000000")` 来说也是如此，因为在 Java 中 8 亿超出了 `int` 能够表示的范围。
 
 <!-- - out-of-range indices, e.g., using a negative or too-large index on a string. -->
+
 - 索引越界，例如使用了负数或是一个超大的数来索引字符串。
 
 <!-- - calling a method on a `null` object reference (`null` is like Python’s `None`). -->
@@ -274,7 +284,7 @@ function hello(name:string):string {
 ### 原始类型并不是真正的数字
 
 <!-- One trap in Java -- and many other programming languages -- is that its primitive numeric types have corner cases that do not behave like the integers and real numbers we’re used to. As a result, some errors that really should be dynamically checked are not checked at all. Here are the traps: -->
-在 Java 和其他许多编程语言中都有这样一个问题：原始数值类型的边界情况与我们日常使用的整数和实数具有不同的行为。这导致的后果是一些本应被动态检查到的错误没有被检查到。如下是一些具体示例：
+在 Java 和其他许多编程语言中都有这样一个问题：原始数值类型的边界情况与我们日常使用的整数和实数具有不同的行为，这导致的后果是一些本应被动态检查到的错误没有被检查到。如下是一些具体示例：
 
 <!-- - **Integer division**. `5/2` does not return a fraction, it returns a truncated integer. So this is an example of where what we might have hoped would be a dynamic error (because a fraction isn’t representable as an integer) frequently produces the wrong answer instead. -->
 
@@ -286,7 +296,7 @@ function hello(name:string):string {
 
 <!-- - **Special values in floating-point types**. Floating-point types like `double` have several special values that aren’t real numbers: `NaN` (which stands for “Not a Number”), `POSITIVE_INFINITY`, and `NEGATIVE_INFINITY`. So when you apply certain operations to a `double` that you’d expect to produce dynamic errors, like dividing by zero or taking the square root of a negative number, you will get one of these special values instead. If you keep computing with it, you’ll end up with a bad final answer. -->
 
-- **浮点类型中的特殊值**。像 `double` 这样的浮点类型有一些不为实数的特殊值：`NaN`（表示 "Not a Number"），`POSITIVE_INFINITY`，`NEGATIVE_INFINITY`。所以当你对一个 double 类型变量执行了某种操作，并且你预计该操作会产生动态错误，比如除数为零或是求取了负数的平方根，那么你就会得到上述的特殊值。（这就是问题所在，本应产生动态错误的值却产生了上述的特殊值）如果说你继续用得到的结果进行后续的计算，那么你最终会得到一个错误的答案。
+- **浮点类型中的特殊值**。像 `double` 这样的浮点类型有一些不为实数的特殊值：`NaN`（表示 "Not a Number"），`POSITIVE_INFINITY`，`NEGATIVE_INFINITY`。当对一个 double 变量执行了某种操作，但该操作的除数为零或是求取了负数的平方根，那么你就会得到上述的特殊值。（这就是问题所在，本应产生动态错误的值却产生了上述的特殊值）如果说你继续用得到的结果进行后续的计算，那么你最终会得到一个错误的答案。
 
 ### 阅读练习
 
