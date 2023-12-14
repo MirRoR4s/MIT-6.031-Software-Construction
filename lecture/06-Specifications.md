@@ -1,4 +1,4 @@
-# Reading 6: Specifications
+# [Reading 6: Specifications]([Reading 6: Specifications (mit.edu)](https://web.mit.edu/6.031/www/sp21/classes/06-specifications/))
 
 **Software in 6.031**
 
@@ -15,7 +15,7 @@
 
 ## Introduction
 
-Specifications are the linchpin of teamwork. It’s impossible to delegate responsibility for implementing a method without a specification. The specification acts as a contract: the implementer is responsible for meeting the contract, and a client that uses the method can rely on the contract. In fact, we’ll see that like real legal contracts, specifications place demands on both parties: when the specification has a precondition, the client has responsibilities too.
+Specifications are the **linchpin** of teamwork. It’s impossible to delegate responsibility for implementing a method without a specification. The specification acts as a contract: the implementer is responsible for meeting the contract, and a client that uses the method can rely on the contract. In fact, we’ll see that like real legal contracts, specifications place demands on both parties: when the specification has a precondition, the client has responsibilities too.
 
 In this reading we’ll look at the role played by specifications of methods. We’ll discuss what preconditions and postconditions are, and what they mean for the implementer and the client of a method. We’ll also talk about how to use exceptions, an important language feature found in Java, Python, and many other modern languages, which allows us to make a method’s interface safer from bugs and easier to understand.
 
@@ -34,7 +34,7 @@ Read these pages in the Java Tutorials.
 - [Unchecked Exceptions – the Controversy](https://docs.oracle.com/javase/tutorial/essential/exceptions/runtime.html)
 - [Advantages of Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/advantages.html)
 
-And keep making progress on Java by completing these categories in the Java Tutor: 
+<!-- And keep making progress on Java by completing these categories in the Java Tutor:  -->
 
 ## Behavioral equivalence（[行为等效性](https://chat.openai.com/c/4597739f-6c0d-4588-bee1-16a274453a97)）
 
@@ -71,19 +71,19 @@ The notion of behavioral equivalence is in the eye of the beholder — that is, 
 
 In this case, a specification that would allow these two implementations to be behaviorally equivalent might be:
 
-> static int find(int[] arr, int val)
->
-> - requires:
->
->   `val` occurs exactly once in `arr`
->
-> - effects:
->
->   returns index `i` such that `arr[i]` = `val`
+```java
+static int find(int[] arr, int val)
+```
 
-### READING EXERCISES
+- requires: `val` occurs exactly once in `arr`
 
-#### Something’s missing
+- effects: returns index `i` such that `arr[i]` = `val`
+
+READING EXERCISES
+
+---
+
+Something’s missing
 
 There’s a strange difference between the implementations and specification of `find` above. Both implementations end with `return -1`, but the spec never mentions `-1` at all! Why?
 
@@ -97,7 +97,7 @@ the phrase “returns index `i`…” in the spec covers this case: just make `i
 
 > The key thing to observe is the `requires` statement, which says that this method should only legally be called when the value occurs exactly once in the array. This guarantees that an index will be found, so the `return -1` statements are never reached. The spec doesn’t need to describe what it does if the requirement is not satisfied.
 
-#### Order matters
+Order matters
 
 The `find` spec we just showed will let you make this implementation change safely – but only if that spec existed at the right time! Which ordering of the steps below is safest from bugs?
 
@@ -129,7 +129,7 @@ I1, T, C, I2, S
 >
 > The most important point to take away is that any ordering in which C precedes S, i.e. the clients are written before the spec has been written down, is risky. In the absence of a spec that tells the client what they can expect from `find` in the future, clients could be depending on behavior that the I1 implementation just happened to exhibit, but that you actually need to change for I2. Specs should be written *first*.
 
-#### Behave nicely
+Behave nicely
 
 Consider these two implementations of `find`, which differ not only in the direction they search through the array, but also in what they return if the search fails:
 
@@ -163,7 +163,7 @@ In this case, are these two `find` implementations behaviorally equivalent?
 >
 > Once we define how specifications are structured, we’ll see that they are equivalent in this case because a strong precondition hides their potential differences in behavior.
 
-#### Best behavior
+Best behavior
 
 Now let’s change the spec.
 
@@ -182,19 +182,19 @@ No
 >
 > Once we define how specifications are structured, we’ll see that they are equivalent in this case because a weak postcondition permits their differences in behavior.
 
+---
+
 ## Why specifications?
 
 Our `find` example showed how a specification can help make a program both ready for change and safe from bugs. Many of the nastiest bugs in programs arise because of misunderstandings about behavior at the interface between two pieces of code. Although every programmer has specifications in mind, not all programmers write them down. As a result, different programmers on a team have *different* specifications in mind. When the program fails, it’s hard to determine where the error is. Precise specifications in the code let you apportion blame (to code fragments, not people!), and can spare you the agony of puzzling over where a bug fix should go.
 
 Specifications are good for the client of a module because they help make the module easier to understand. Having a specification lets you understand what the module does without having to read the module’s code. If you’re not convinced that reading a spec is easier than reading code, compare our spec for `find` on the left, with its tricky implementation on the right:
 
-| `static int find(int[] arr, int val)`requires:`val` occurs exactly once in `arr`effects:returns index `i` such that `arr[i]` = `val` | `Explainstatic int find(int[] arr, int val) {    for (int i = 0, j = arr.length-1; i <= j; i++, j--) {        if (arr[i] == val) return i;        if (arr[j] == val) return j;    }    return -1; }` |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-|                                                              |                                                              |
-
-![img](images/firewall.svg+xml)
+![Alt text](images/image.png)                                                      |
 
 Specifications are good for the implementer of a method because they give the implementer freedom to change the implementation without telling clients. Specifications can make code faster, too. We’ll see that a specification can rule out certain states in which a method might be called. This restriction on the inputs might allow the implementer to skip an expensive check that is no longer necessary and use a more efficient implementation.
+
+![Alt text](images/image-1.png)
 
 The contract acts as a *firewall* between client and implementer. It shields the client from the details of the *workings* of the module: as a client, you don’t need to read the source code of the module if you have its specification. And it shields the implementer from the details of the *usage* of the module: as an implementer, you don’t have to ask every client how they plan to use the module. This firewall results in *decoupling*, allowing the code of the module and the code of a client to be changed independently, so long as the changes respect the specification — each obeying its obligation.
 
@@ -206,16 +206,14 @@ Abstractly speaking, a *specification* of a method has several parts:
 - a *requires* clause, describing additional restrictions on the parameters
 - an *effects* clause, describing the return value, exceptions, and other effects of the method
 
-![img](images/firewall-implies.svg+xml)
-
-![img](images/firewall-unsat.svg+xml)
-
 Taken together, these parts form the *precondition* and the *postcondition* of the method.
 
-The precondition is an obligation on the client (the caller of the method). It is a condition over the state in which the method is invoked. One aspect of the precondition is the number and types of the parameters in the method signature. Additional conditions are written down in the *requires* clause, for example:
+The precondition is an obligation on the client (the caller of the method). It is a condition over the state in which the method is invoked. **One aspect of the precondition is the number and types of the parameters in the method signature. Additional conditions are written down in the *requires* clause, for example:**
 
 - narrowing a parameter type (e.g. `x >= 0` to say that an `int` parameter x must actually be a nonnegative `int`)
 - interactions between parameters (e.g., `val` occurs exactly once in `arr`)
+
+![Alt text](images/image-2.png)
 
 The postcondition is an obligation on the implementer of the method. It includes the parts that Java can statically check: the return type and declared checked exceptions. Additional conditions are written down in the *effects* clause, including:
 
@@ -229,11 +227,9 @@ The overall structure is a logical implication: *if* the precondition holds when
 
 If the precondition does *not* hold when the method is called, the implementation is *not* bound by the postcondition. It is free to do anything, including never returning, throwing an exception, returning arbitrary results, making arbitrary mutations, etc.
 
-#### READING EXERCISES
+READING EXERCISES
 
-Logical implication
-
-Logical implementation
+---
 
 ## Specifications in Java
 
@@ -243,22 +239,18 @@ Java does not go quite so far, but its static type declarations *are* effectivel
 
 Java has a convention for documentation comments called [Javadoc](http://en.wikipedia.org/wiki/Javadoc), in which parameters are described by `@param` clauses and results are described by `@return` clauses. You should put the preconditions into `@param` where possible, and postconditions into `@return`. So a specification like this:
 
-```
+```java
 static int find(int[] arr, int val)
 ```
 
-- requires:
+- requires: `val` occurs exactly once in `arr`
 
-  `val` occurs exactly once in `arr`
-
-- effects:
-
-  returns index `i` such that `arr[i]` = `val`
+- effects: returns index `i` such that `arr[i]` = `val`
 
 … might be rendered in Java like this:
 
 ```java
-Explain/**
+/**
  * Find a value in an array.
  * @param arr array to search, requires that val occurs exactly once
  *            in arr
@@ -270,9 +262,9 @@ static int find(int[] arr, int val)
 
 The [Java API documentation](https://docs.oracle.com/en/java/javase/15/docs/api/) is produced from Javadoc comments in the [Java standard library source code](http://hg.openjdk.java.net/jdk/jdk15/file/tip/src/java.base/share/classes/java). Documenting your specifications in Javadoc allows Eclipse to show you (and clients of your code) useful information, and allows you to [produce HTML documentation](http://help.eclipse.org/?topic=%2Forg.eclipse.jdt.doc.user%2Freference%2Fref-export-javadoc.htm) in the same format as the Java API docs.
 
-Read: **[Javadoc](https://en.wikipedia.org/wiki/Javadoc)**.
+> Read: **[Javadoc](https://en.wikipedia.org/wiki/Javadoc)**.
 
-#### READING EXERCISES
+READING EXERCISES
 
 Javadoc
 
@@ -287,6 +279,8 @@ Back to Python
 A specification of a method can talk about the parameters and return value of the method, but it should never talk about local variables of the method or private fields of the method’s class. You should consider the implementation invisible to the reader of the spec. It’s behind the firewall as far as clients are concerned.
 
 In Java, the source code of the method is often unavailable to the reader of your spec, because the Javadoc tool only extracts the spec comments from your code and renders them as HTML.
+
+---
 
 ## Do not allow null references
 
@@ -319,7 +313,7 @@ Note, in particular, that `null` is not the same as an empty string `""` or an e
 
 Also note that arrays of non-primitives and collections like `List` might be non-null but contain `null` as a value:
 
-![img](images/contain-null.svg+xml)
+![image-20231214090253551](images/image-20231214090253551.png)
 
 ```java
 String[] names = new String[] { null };
@@ -345,19 +339,21 @@ Google has their own [discussion of `null` in Guava, the company’s core Java l
 
 > Careless use of `null` can cause a staggering variety of bugs. Studying the Google code base, we found that something like 95% of collections weren’t supposed to have any null values in them, and having those **fail fast*** rather than silently accept `null` would have been helpful to developers.
 >
-> Additionally, `null` is unpleasantly ambiguous. It’s rarely obvious what a `null` return value is supposed to mean — for example, `Map.get(key)` can return `null` either because the value in the map is `null`, or the value is not in the map. Null can mean failure, can mean success, can mean almost anything. Using something other than `null` **makes your meaning clear**.*
+> Additionally, `null` is unpleasantly ambiguous. It’s rarely obvious what a `null` return value is supposed to mean — for example, `Map.get(key)` can return `null` either because the value in the map is `null`, or the value is not in the map. Null can mean failure, can mean success, can mean almost anything. Using something other than `null` **makes your meaning clear**.
 
 (*Boldface added for emphasis.)
 
 If you avoid using `null`, there is still sometimes a need for a parameter or return value to indicate that a value is missing. For example, what should [`Map.get(key)`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/Map.html#get(java.lang.Object)) return when the key is not found in the map? One good tool for this problem is [`Optional`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/Optional.html). You can think of `Optional<T>` like a very constrained `List<T>` of length at most 1. It either contains just one element of type `T`, or it is empty. The `isPresent()` method tests whether or not it is empty, and `get()` and `getOrElse()` unpack the value if present. The key advantage of `Optional<T>` is that it can be used *sparingly*, only in places where it’s sensible for the spec to allow for a missing value, and it clearly expresses the intention of the spec in those cases.
 
-#### READING EXERCISES
+**READING EXERCISES**
 
 NullPointerException accessing exercise.name()
 
 There are null exercises remaining
 
 Null preconditions and postconditions
+
+---
 
 ## Include emptiness
 
@@ -373,27 +369,23 @@ The upshot of this is that **empty values are always allowed as parameter or ret
 
 Vacuous statements
 
+---
+
 ## Testing and specifications
 
 In testing, we talk about *black box tests* that are chosen with only the specification in mind, and *glass box tests* that are chosen with knowledge of the actual implementation ([*Testing*](https://web.mit.edu/6.031/www/sp21/classes/03-testing/#black_box_and_glass_box_testing)). But it’s important to note that **even glass box tests must follow the specification**. Your implementation may provide stronger guarantees than the specification calls for, or it may have specific behavior where the specification is undefined. But your test cases should not count on that behavior. Test cases must be [correct](https://web.mit.edu/6.031/www/sp21/classes/03-testing/#systematic_testing), obeying the contract just like every other client.
 
 For example, suppose you are testing this specification of `find`, slightly different from the one we’ve used so far:
 
-```
-static int find(int[] arr, int val)
-```
-
-- requires:
-
-  `val` occurs in `arr`
-
-- effects:
-
-  returns index `i` such that `arr[i]` = `val`
+>  static int find(int[] arr, int val)
+>
+> requires: `val` occurs in `arr`
+>
+> effects: returns index `i` such that `arr[i]` = `val`
 
 This spec has a strong precondition in the sense that `val` is required to be found; and it has a fairly weak postcondition in the sense that if `val` appears more than once in the array, this specification says nothing about which particular index of `val` is returned. Even if you implemented `find` so that it always returns the lowest index, your test case can’t assume that specific behavior:
 
-```
+```java
 int[] array = new int[] { 7, 7, 7 };
 int i = find(array, 7);
 assertEquals(0, i);  // bad test case: assumes too much, more than the postcondition promises
