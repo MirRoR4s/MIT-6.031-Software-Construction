@@ -93,6 +93,8 @@ Designing a test suite for both thoroughness and small size requires having the 
 
 The need to adopt a testing attitude is another argument for test-first programming. It is all too tempting to treat code you’ve already written as a precious thing, a fragile eggshell, and test it very lightly just to see it work. For *thorough* testing, though, you have to be brutal. Test-first programming allows you to put on your testing hat, and adopt that brutal perspective, before you’ve even written any code.
 
+**READING EXERCISES**
+
 ---
 
 ## Choosing test cases by partitioning
