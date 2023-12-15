@@ -17,22 +17,24 @@ In today’s class, we will practice:
 
 ## Code review（代码审查）
 
-Code review is careful, systematic study of source code by people who are not the original author of the code. It’s analogous to proofreading a paper.
+Code review is careful, systematic study of source code by people who are not the original author of the code. It’s analogous to proofreading（校对） a paper.
 
 Code review really has two purposes:
 
-- **Improving the code.** Finding bugs, anticipating possible bugs, checking the clarity of the code, and checking for consistency with the project’s style standards.
+- **Improving the code.** Finding bugs, anticipating possible bugs, checking the clarity（清晰度） of the code, and checking for consistency with the project’s style standards.
 - **Improving the programmer.** Code review is an important way that programmers learn and teach each other, about new language features, changes in the design of the project or its coding standards, and new techniques. In open source projects, particularly, much conversation happens in the context of code reviews.
 
 Code review is widely practiced in open source projects like Apache and [Mozilla](http://blog.humphd.org/vocamus-1569/?p=1569). Code review is also widely practiced in industry. In [Google’s code review process](https://google.github.io/eng-practices/review/), for example, you can’t push any code into the main repository until another engineer has signed off on it in a code review.
 
-Why is code review widely used? There are many ideas out there for software development processes (some with buzzwords like Agile and Scrum). But code review is a practice with good evidence that it actually works. [Hillel Wayne](https://twitter.com/hillelogram/status/1120495752969641986) has collected some of the research highlights, among them that code review can find 70-90% of software defects, and that overwhelming numbers of software engineers at Google and Microsoft find it valuable and worth doing.
+Why is code review widely used? There are many ideas out there for software development processes (some with buzzwords like Agile and Scrum). But code review is a practice with good evidence that it actually works. [Hillel Wayne](https://twitter.com/hillelogram/status/1120495752969641986) has collected some of the research highlights（研究亮点）, among them that code review can find 70-90% of software defects, and that overwhelming numbers of software engineers at Google and Microsoft find it valuable and worth doing.
 
 In 6.031, we’ll do code review on problem sets, as described in the [Code Reviewing document](https://web.mit.edu/6.031/www/sp21/general/code-review.html) on the course website.
 
+---
+
 ### Style standards
 
-Most companies and large projects have coding style standards. These can get pretty detailed, even to the point of specifying whitespace (how deep to indent) and where curly braces and parentheses should go. These kinds of questions often lead to [holy wars](http://www.outpost9.com/reference/jargon/jargon_23.html#TAG897) since they end up being a matter of taste and style.
+Most companies and large projects have coding style standards（编码风格标准）. These can get pretty detailed, even to the point of specifying whitespace (how deep to indent) and where curly braces and parentheses should go. These kinds of questions often lead to [holy wars](http://www.outpost9.com/reference/jargon/jargon_23.html#TAG897) since they end up being a matter of taste（品味） and style（风格）.
 
 In 6.031, we have no official style guide. If you are new to Java and want a recommendation, [Google Java Style](http://google.github.io/styleguide/javaguide.html) is widely used and appealing for its readability, particularly rules like these:
 
@@ -48,13 +50,15 @@ if (isOdd(n)) {
 
 Eclipse has an autoformatter (*Source* → *Format*) whose default rules are similar to Google style.
 
-But we won’t dictate where to put your curly braces in this class. That’s a personal decision that each programmer should make. It’s important to be self-consistent, however, and it’s *very* important to follow the conventions of the project you’re working on. If you’re the programmer who reformats every module you touch to match your personal style, your teammates will hate you, and rightly so. Be a team player.
+But we won’t dictate where to put your curly braces in this class. That’s a personal decision that each programmer should make. It’s important to be self-consistent（首尾一致的）, however, and it’s *very* important to follow the conventions of the project you’re working on. If you’re the programmer who reformats every module you touch to match your personal style, your teammates will hate you, and rightly so. Be a team player.
 
-But there are some rules that are quite sensible and target our big three properties, in a stronger way than placing curly braces. The rest of this reading talks about some of these rules, at least the ones that are relevant at this point in the course, where we’re mostly talking about writing basic Java. These are some things you should start to look for when you’re code reviewing other students, and when you’re looking at your own code for improvement. Don’t consider it an exhaustive list of code style guidelines, however. Over the course of the semester, we’ll talk about a lot more things — specifications, abstract data types with representation invariants, concurrency and thread safety — which will then become fodder for code review.
+But there are some rules that are quite sensible（合理的） and target our big three properties, in a stronger way than placing curly braces. The rest of this reading talks about some of these rules, at least the ones that are relevant at this point in the course, where we’re mostly talking about writing basic Java. These are some things you should start to look for when you’re code reviewing other students, and when you’re looking at your own code for improvement. Don’t consider it an exhaustive list of code style guidelines, however. Over the course of the semester, we’ll talk about a lot more things — specifications, abstract data types with representation invariants, concurrency and thread safety — which will then become fodder for code review.
+
+---
 
 ### Smelly example #1
 
-Programmers often describe bad code as having a “bad smell” that needs to be removed. “Code hygiene” is another word for this. Let’s start with some smelly code.
+Programmers often describe bad code as having a “bad smell” that needs to be removed. "Code hygiene"（代码卫生） is another word for this. Let’s start with some smelly code.
 
 ```java
 public static int dayOfYear(int month, int dayOfMonth, int year) {
@@ -87,21 +91,45 @@ public static int dayOfYear(int month, int dayOfMonth, int year) {
 
 The next few sections and exercises will pick out the particular smells in this code example.
 
+---
+
 ### Don’t repeat yourself (DRY)
 
 Duplicated code is a risk to safety. If you have identical or very similar code in two places, then the fundamental risk is that there’s a bug in both copies, and some maintainer fixes the bug in one place but not the other.
 
-Avoid duplication like you’d avoid crossing the street without looking. Copy-and-paste is an enormously tempting programming tool, and you should feel a frisson of danger run down your spine every time you use it. The longer the block you’re copying, the riskier it is.
+Avoid duplication like you’d avoid crossing the street without looking. Copy-and-paste is an enormously tempting（诱人的） programming tool, and you should feel a frisson of danger run down your spine（危险的颤栗顺着你的脊椎流过） every time you use it. The longer the block you’re copying, the riskier it is.
 
-[Don’t Repeat Yourself](http://en.wikipedia.org/wiki/Don't_repeat_yourself), or DRY for short, has become a programmer’s mantra.
+[Don’t Repeat Yourself](http://en.wikipedia.org/wiki/Don't_repeat_yourself), or DRY for short, has become a programmer’s mantra（口头禅）.
 
 The `dayOfYear` example is full of identical code. How would you DRY it out?
+
+#### READING EXERCISES
+
+##### Don't repeat yourself
+
+some of the repetition in `dayOfYear()` is repeated valueds. How many times is the number of days in April written in `dayOfYear()`?
+
+![image-20231215100431328](images/image-20231215100431328.png)
+
+##### Don't repeat yourself
+
+One reason why repeated code is bad is because a problem in the repeated code has to be fixed in many places, not just one. Suppose our calendar changed so that February really has 30 days instead of 28. How many numbers in this code have to be changed?
+
+![image-20231215100631277](images/image-20231215100631277.png)
+
+##### Don't repeat yourself
+
+Another kind of repetition in the code is `dayOfMonth+=`. Assume you have an array:
+`int[] monthLengths = new int[] { 31, 28, 31, 30, ..., 31 };`
+Which of the following code skeletons（代码框架） could be used to DRY the code out enough so that `dayOfMonth+=` appears only once?
+
+![image-20231215100915573](images/image-20231215100915573.png)
 
 ---
 
 ### Comments where needed
 
-Good software developers write comments in their code, and do it judiciously. Good comments should make the code easier to understand, safer from bugs (because important assumptions have been documented), and readier for change.
+Good software developers write comments in their code, and do it judiciously（明智而审慎地）. Good comments should make the code easier to understand, safer from bugs (because important assumptions have been documented), and readier for change.
 
 One kind of crucial comment is a specification, which appears above a method or above a class and documents the behavior of the method or class. In Java, this is conventionally written as a Javadoc comment, meaning that it starts with `/**` and includes `@`-syntax, like `@param` and `@return` for methods. Here’s an example of a spec:
 
@@ -120,7 +148,7 @@ public static List<Integer> hailstoneSequence(int n) {
 
 Specifications document assumptions. We’ve already mentioned specs a few times, and there will be much more to say about them in a future reading.
 
-Another crucial comment is one that specifies the provenance or source of a piece of code that was copied or adapted from elsewhere. This is vitally important for practicing software developers, and is required by the [6.031 collaboration policy](https://web.mit.edu/6.031/www/sp21/general/collaboration.html) when you adapt code you found on the web. Here is an example:
+Another crucial comment is one that specifies the provenance（出处） or source of a piece of code that was copied or adapted from elsewhere. This is vitally important for practicing software developers, and is required by the [6.031 collaboration policy](https://web.mit.edu/6.031/www/sp21/general/collaboration.html) when you adapt code you found on the web. Here is an example:
 
 ```java
 // read a web page into a string
@@ -128,7 +156,7 @@ Another crucial comment is one that specifies the provenance or source of a piec
 String mitHomepage = new Scanner(new URL("http://www.mit.edu").openStream(), "UTF-8").useDelimiter("\\A").next();
 ```
 
-One reason for documenting sources is to avoid violations of copyright. Small snippets of code on Stack Overflow are typically in the public domain, but code copied from other sources may be proprietary or covered by other kinds of open source licenses, which are more restrictive. Another reason for documenting sources is that the code can fall out of date; the [Stack Overflow answer](http://stackoverflow.com/questions/4328711/read-url-to-string-in-few-lines-of-java-code) from which this code came has evolved significantly in the years since it was first answered.
+One reason for documenting sources is to avoid violations of copyright. Small snippets of code on Stack Overflow are typically in the public domain, but code copied from other sources may be proprietary（私有的） or covered by other kinds of open source licenses, which are more restrictive. Another reason for documenting sources is that the code can fall out of date; the [Stack Overflow answer](http://stackoverflow.com/questions/4328711/read-url-to-string-in-few-lines-of-java-code) from which this code came has evolved significantly in the years since it was first answered.
 
 Some comments are bad and unnecessary. Direct transliterations of code into English, for example, do nothing to improve understanding, because you should assume that your reader at least knows Java:
 
@@ -139,7 +167,7 @@ while (n != 1) { // test whether n is 1   (don't write comments like this!)
 }
 ```
 
-But obscure code should get a comment:
+But obscure（晦涩的） code should get a comment:
 
 ```java
 int sum = n*(n+1)/2;  // Gauss's formula for the sum of 1...n
@@ -152,9 +180,35 @@ double moonDiameterInMeters = moonDistanceInMeters * apparentAngleInRadians;
 
 #### READING EXERCISES
 
+##### Comments where needed
+
+Which comments are useful additions to the code? Consider each comment independently, as if the other comments weren’t there.
+
+```java
+/**
+ * @param month month of the year, where January=1 and December=12  [C1]
+ */
+public static int dayOfYear(int month, int dayOfMonth, int year) {
+    if (month == 2) {      // we're in February  [C2]
+        dayOfMonth += 31;  // add in the days of January that already passed  [C3]
+    } else if (month == 3) {
+        dayOfMonth += 59;  // month is 3 here  [C4]
+    } else if (month == 4) {
+        dayOfMonth += 90;
+    }
+    ...
+    } else if (month == 12) {
+        dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 31;
+    }
+    return dayOfMonth; // the answer  [C5]
+}
+```
+
+![image-20231215103119598](images/image-20231215103119598.png)
+
 ---
 
-### Fail fast
+### Fail fast（快速失败）
 
 *Failing fast* means that code should reveal its bugs as early as possible. The earlier a problem is observed (the closer to its cause), the easier it is to find and fix. As we saw in the [first reading](https://web.mit.edu/6.031/www/sp21/classes/01-static-checking/#static_checking_dynamic_checking_no_checking), static checking fails faster than dynamic checking, and dynamic checking fails faster than producing a wrong answer that may corrupt subsequent computation.
 
@@ -164,13 +218,54 @@ The `dayOfYear` function doesn’t fail fast — if you pass it the arguments in
 
 ****
 
+##### Fail Fast
 
+```java
+public static int dayOfYear(int month, int dayOfMonth, int year) {
+    if (month == 2) {
+        dayOfMonth += 31;
+    } else if (month == 3) {
+        dayOfMonth += 59;
+    } else if (month == 4) {
+        dayOfMonth += 90;
+    } else if (month == 5) {
+        dayOfMonth += 31 + 28 + 31 + 30;
+    } else if (month == 6) {
+        dayOfMonth += 31 + 28 + 31 + 30 + 31;
+    } else if (month == 7) {
+        dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30;
+    } else if (month == 8) {
+        dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31;
+    } else if (month == 9) {
+        dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31;
+    } else if (month == 10) {
+        dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30;
+    } else if (month == 11) {
+        dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31;
+    } else if (month == 12) {
+        dayOfMonth += 31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 31;
+    }
+    return dayOfMonth;
+}
+```
+
+Suppose the date is February 9, 2019. The correct `dayOfYear()` result for this date is 40, since it’s the fortieth day of the year.
+
+People write dates in various ways, and date libraries can represent dates in various ways. A programmer’s prior experience can easily lead them to make wrong assumptions about the arguments of `dayOfYear()`.
+
+Here are some ways that a programmer might try to call `dayOfYear()` for February 9, 2019. Which ones are buggy, and does the bug lead to a static error, dynamic error, or wrong answer?
+
+```java
+dayOfYear(2, 9, 2019)
+```
+
+---
 
 ### Avoid magic numbers
 
 There’s a computer science joke that the only numbers that computer scientists understand are 0, 1, and sometimes 2.
 
-All other constants are called [magic](https://en.wikipedia.org/wiki/Magic_number_(programming)#Unnamed_numerical_constants) because they appear as if out of thin air with no explanation.
+All other constants are called [magic](https://en.wikipedia.org/wiki/Magic_number_(programming)#Unnamed_numerical_constants) because they appear as if out of thin air with no explanation.（因为它们似乎是凭空出现的，没有任何解释。）
 
 One way to explain a number is with a comment, but a far better way is to declare the number as a named constant with a good, clear name.
 
@@ -178,13 +273,60 @@ One way to explain a number is with a comment, but a far better way is to declar
 
 - **A number is less readable than a name.** In `dayOfYear`, the month values 2, …, 12 would be far more readable as `FEBRUARY`, …, `DECEMBER`.
 - **Constants may need to change in the future.** Using a named constant, instead of repeating the literal number in various places, is more ready for change.
-- **Constants may be dependent on other constants.** In `dayOfYear`, the mysterious numbers 59 and 90 are particularly pernicious examples. Not only are they uncommented and undocumented, they are actually the result of a *computation done by hand* by the programmer – summing the lengths of certain months. This is less easy to understand, less ready for change, and definitely less safe from bugs. Don’t hardcode numbers that you’ve computed by hand. Use a named constant that visibly computes the relationship in terms of other named constants.
+- **Constants may be dependent on other constants.** In `dayOfYear`, the mysterious numbers 59 and 90 are particularly pernicious（有害的） examples. Not only are they uncommented and undocumented, they are actually the result of a *computation done by hand* by the programmer – summing the lengths of certain months. This is less easy to understand, less ready for change, and definitely less safe from bugs. Don’t hardcode numbers that you’ve computed by hand. Use a named constant that visibly computes the relationship in terms of other named constants.
 
-What about constants that seem constant and eternal, like π, or the total angle of a triangle, or the gravitational constant `G`? Is it necessary to give names to fundamental constants of mathematics and physics that don’t depend on other constants? First, the number itself may be complex to express, so repeating it multiple times is not safe from bugs. Is it easy to tell which is right: `3.14159265358979323846` or `3.1415926538979323846`? Second, even these numbers encode design decisions that might change in the future, such as the number of digits of precision, or the units of measurement. A named constant is more ready for change when those design decisions change.
+What about constants that seem constant and eternal, like π, or the total angle of a triangle, or the gravitational constant（引力常数） `G`? Is it necessary to give names to fundamental constants of mathematics and physics that don’t depend on other constants? First, the number itself may be complex to express, so repeating it multiple times is not safe from bugs. Is it easy to tell which is right: `3.14159265358979323846` or `3.1415926538979323846`? Second, even these numbers encode design decisions that might change in the future, such as the number of digits of precision, or the units of measurement. A named constant is more ready for change when those design decisions change.
 
-If you have a profusion of magic numbers in your code, it can be a sign that you need to take a step back and treat those numbers *as data* rather than named constants, and put them into a data structure that allows for simpler code. In `dayOfYear`, the lengths of the months (30, 31, 28, etc.) would be more readable, and far more DRY, if they were instead stored in a data structure like an array, list, or map, e.g. `MONTH_LENGTH[month]`.
+If you have a profusion（大量） of magic numbers in your code, it can be a sign that you need to take a step back and treat those numbers *as data* rather than named constants, and put them into a data structure that allows for simpler code. In `dayOfYear`, the lengths of the months (30, 31, 28, etc.) would be more readable, and far more DRY, if they were instead stored in a data structure like an array, list, or map, e.g. `MONTH_LENGTH[month]`.
 
 #### READING EXERCISES
+
+##### Avoid magic numbers
+
+In the code:
+
+```java
+if (month == 2) { ... }
+```
+
+what might a reasonable programmer plausibly assume about the meaning of the magic number 2?
+
+![image-20231215112143458](images/image-20231215112143458.png)
+
+##### What happens when you assume
+
+Suppose you’re reading some code that uses a turtle graphics library that you don’t know well, and you see the code:
+
+```java
+turtle.rotate(3);
+```
+
+Just from reading this line (not consulting the documentation), which of the following are likely assumptions you might make about the meaning of the number 3?
+
+![image-20231215112301926](images/image-20231215112301926.png)
+
+##### Names instead of numbers
+
+Consider this code, which is intended to draw a regular pentagon:
+
+```java
+for (int i = 0; i < 5; ++i) {
+    turtle.forward(36);
+    turtle.turn(72);
+}
+```
+
+The magic numbers in this code cause it to fail all three of our measures of code quality: it’s not safe from bugs (SFB), not easy to understand (ETU) and not ready for change (RFC).
+
+For each of the following rewrites, judge whether it improves SFB, ETU, and/or RFC, or none of the above.
+
+![image-20231215112851837](images/image-20231215112851837.png)
+
+##### Now you see it, now you don't
+
+In which of the following lines of code is `0` a magic number?
+
+![image-20231215113017350](images/image-20231215113017350.png)
 
 ---
 
@@ -192,9 +334,9 @@ If you have a profusion of magic numbers in your code, it can be a sign that you
 
 In the `dayOfYear` example, the parameter `dayOfMonth` is reused to compute a very different value — the return value of the function, which is not the day of the month.
 
-Don’t reuse parameters, and don’t reuse variables. Variables are not a scarce resource in programming. Introduce them freely, give them good names, and just stop using them when you stop needing them. You will confuse your reader if a variable that used to mean one thing suddenly starts meaning something different a few lines down.
+Don’t reuse parameters, and don’t reuse variables. Variables are not a scarce（稀有的） resource in programming. Introduce them freely, give them good names, and just stop using them when you stop needing them. You will confuse your reader if a variable that used to mean one thing suddenly starts meaning something different a few lines down.
 
-Not only is this an ease-of-understanding question, but it’s also a safety-from-bugs and ready-for-change question.
+Not only is this an ease-of-understanding question（易理解性问题）, but it’s also a safety-from-bugs and ready-for-change question.
 
 Method parameters, in particular, should generally be left unmodified. (This is important for being ready-for-change — in the future, some other part of the method may want to know what the original parameters of the method were, so you shouldn’t blow them away while you’re computing.) It’s a good idea to use `final` for method parameters, and as many other variables as you can. The `final` keyword says that the variable should never be reassigned, and the Java compiler will check it statically. For example:
 
@@ -203,6 +345,8 @@ public static int dayOfYear(final int month, final int dayOfMonth, final int yea
     ...
 }
 ```
+
+---
 
 ### Smelly example #2
 

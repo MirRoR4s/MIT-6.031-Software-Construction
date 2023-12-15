@@ -102,7 +102,7 @@ Starting a thread in Java
 
 You can start new threads by making an instance of [`Thread`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/Thread.html) and telling it to `start()`. You provide code for the new thread to run by creating a class implementing `Runnable`. The first thing the new thread will do is call the `run()` method in this class. For example:
 
-```
+```java
 `// ... in the main method:
 new Thread(new HelloRunnable()).start();
 
@@ -116,7 +116,7 @@ public class HelloRunnable implements Runnable {
 
 But a very common idiom is starting a thread with an [anonymous](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) `Runnable`, which eliminates the need to name the `HelloRunnable` class at all:
 
-```
+```java
 new Thread(new Runnable() {
     public void run() {
         System.out.println("Hello from a thread!");
@@ -126,12 +126,14 @@ new Thread(new Runnable() {
 
 The next two sections discuss the idea of anonymous classes, because they're widely used in Java beyond just threads.
 
+---
+
 Anonymous classes
 -----------------
 
 Usually when we implement an interface, we do so by declaring a class. For example, given the interface [`Comparator`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/Comparator.html) in the Java API:
 
-```
+```java
 `/** A comparison function that imposes a total ordering on some objects.
  *  ... */
 public interface Comparator<T> {
@@ -145,7 +147,7 @@ public interface Comparator<T> {
 
 We might declare:
 
-```
+```java
 `/** Orders Strings by length (shorter first) and then lexicographically. */
 public class StringLengthComparator implements Comparator<String> {
     @Override public int compare(String s1, String s2) {
@@ -161,16 +163,16 @@ One purpose of `Comparator` is for sorting. A [`SortedSet`](http://docs.oracl
 
 Without a `Comparator`, the `SortedSet` implementation uses the `compareTo` method provided by the class of objects in the set:
 
-```
-`SortedSet<String> strings = new TreeSet<>();
+```java
+SortedSet<String> strings = new TreeSet<>();
 strings.addAll(List.of("yolanda", "zach", "alice", "bob"));
 // strings is { "alice", "bob", "yolanda", "zach" }`
 ```
 
 With a `Comparator`:
 
-```
-`// uses StringLengthComparator declared above
+```java
+// uses StringLengthComparator declared above
 Comparator<String> compareByLength = new StringLengthComparator();
 SortedSet<String> strings = new TreeSet<>(compareByLength);
 strings.addAll(List.of("yolanda", "zach", "alice", "bob"));
@@ -179,8 +181,8 @@ strings.addAll(List.of("yolanda", "zach", "alice", "bob"));
 
 If we only intend to use this comparator in this one place, we already know how to eliminate the variable:
 
-```
-`// uses StringLengthComparator declared above
+```java
+// uses StringLengthComparator declared above
 SortedSet<String> strings = new TreeSet<>(new StringLengthComparator());
 strings.addAll(List.of("yolanda", "zach", "alice", "bob"));
 // strings is { "bob", "zach", "alice", "yolanda" }`
@@ -188,8 +190,8 @@ strings.addAll(List.of("yolanda", "zach", "alice", "bob"));
 
 An [**anonymous class**](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) declares an unnamed class that implements an interface and immediately creates the one and only instance of that class. Compare to the code above:
 
-```
-`// no StringLengthComparator class!
+```java
+// no StringLengthComparator class!
 SortedSet<String> strings = new TreeSet<>(new Comparator<String>() {
     @Override public int compare(String s1, String s2) {
         if (s1.length() == s2.length()) {
@@ -214,11 +216,30 @@ Disadvantages:
 
 -   If the implementation of the anonymous class is long, it interrupts the surrounding code, making it harder to understand. A named class is separated out as a modular piece.
 
-So anonymous classes are good for short one-off implementations of a method.
+So anonymous classes are good for short one-off（一次性的） implementations of a method.
 
-#### READING EXERCISES
+---
 
-Comparator
+### READING EXERCISES
+
+#### Comparator
+
+Here’s the code with a different anonymous `Comparator`:
+
+```java
+SortedSet<String> strings = new TreeSet<>(new Comparator<String>() {
+    @Override public int compare(String s1, String s2) {
+        return s1.substring(1).compareTo(s2.substring(1));
+    }
+});
+strings.addAll(List.of("yolanda", "zach", "alice", "bob"));
+```
+
+How are the names sorted in `strings`?
+
+>  注意：弄清楚 substring(1) 是什么意思。
+
+---
 
 Using an anonymous `Runnable` to start a thread
 -----------------------------------------------
@@ -227,7 +248,7 @@ The `Runnables` we use to create new threads are almost always short, one-off 
 
 Here's the example we used above:
 
-```
+```java
 new Thread(new Runnable() {
     public void run() {
         System.out.println("Hello from a thread!");
@@ -239,23 +260,100 @@ Rather than (1) declare a class that implements `Runnable` where the `run` m
 
 If you're feeling clever, you can go one step further with Java's [lambda expressions](https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html):
 
-```
-`new Thread(() -> System.out.println("Hello from a thread!")).start();`
+```java
+new Thread(() -> System.out.println("Hello from a thread!")).start();
 ```
 
 Whether that's more or less *easy to understand* is up for debate. `Runnable` and `run` never appear at all, so you certainly have to do more research to understand this construction the first time you come across it.
 
-#### READING EXERCISES
+### READING EXERCISES
 
-Thread lifecycle
+#### Thread lifecycle
 
-Processes and threads 1
+For this code that starts a thread:
 
-Processes and threads 2
+```java
+new Thread(new Runnable() {
+    public void run() {
+        System.out.println("Hello from a thread!");
+    }
+}).start();
+```
 
-Processes and threads 3
+Put the following events in the order that they occur.
 
-Threads and exceptions
+![image-20231215092119496](images/image-20231215092119496.png)
+
+#### Processes and threads 1
+
+When you run a Java program (for example, using the Run button in Eclipse), how many processors, processes, and threads are created at first?
+
+![image-20231215092418369](images/image-20231215092418369.png)
+
+---
+
+#### Processes and threads 2
+
+Suppose we run `main` in this program, which contains bugs:
+
+```java
+public class Moirai {
+    public static void main(String[] args) {
+        Thread clotho = new Thread(new Runnable() {
+            public void run() { System.out.println("spinning"); }
+        });
+        clotho.start();
+        new Thread(new Runnable() {
+            public void run() { System.out.println("measuring"); }
+        }).start();
+        new Thread(new Runnable() {
+            public void run() { System.out.println("cutting"); }
+        });
+    }
+}
+```
+
+![image-20231215092752760](images/image-20231215092752760.png)
+
+---
+
+#### Processes and threads 3
+
+Suppose we run `main` in this program, which demonstrates two common bugs:
+
+```java
+public class Parcae {
+    public static void main(String[] args) {
+        Thread nona = new Thread(new Runnable() {
+            public void run() { System.out.println("spinning"); }
+        });
+        nona.run();
+        Runnable decima = new Runnable() {
+            public void run() { System.out.println("measuring"); }
+        };
+        decima.run();
+        // ...
+    }
+}
+```
+
+![image-20231215093510138](images/image-20231215093510138.png)
+
+---
+
+#### Threads and exceptions
+
+Suppose we run this JUnit test:
+
+```java
+@Test public void testOops() {
+    throw new Error("oops");
+}
+```
+
+TODO
+
+---
 
 Shared memory example
 ---------------------
