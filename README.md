@@ -7,11 +7,24 @@
 1. 课程来源：[CS自学指南](https://csdiy.wiki/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/6031/)
 2. 课程地址：[MIT 6.031-21年版本](https://web.mit.edu/6.031/www/sp21/)
 3. 课程视频：[B站-2016年版本](https://www.bilibili.com/video/BV1Tp4y197XX?spm_id_from=333.999.0.0)
-
-- OCW 上有 [2016](https://ocw.mit.edu/courses/6-005-software-construction-spring-2016/) 年的课程，后续可能会用上。
+4. 作业地址：[OCW-2016](https://ocw.mit.edu/courses/6-005-software-construction-spring-2016/)
 
 - 后面的问题集应该就是依赖于 16 年来做，更新的年份需要 mit 校园账户才可以。
 - [中文版](https://www.cnblogs.com/liqiuhao/category/1167752.html)可以参考工大这几个大哥的，但是翻译的还是有点差强人意，有些地方读起来很怪。
+
+## 学习路线
+
+- 尝试制定一份合理的学习计划，在看完一些 reading 完进行适当的练习。我在 OCW 2016 版上发现了官方给出的[日历](https://ocw.mit.edu/courses/6-005-software-construction-spring-2016/pages/calendar/)，里面有 reading 和 ps 的日期计划。
+
+### 第一周-2023年12月18日-2023年12月24日
+
+1. 周一到周二看完 Static Checking 和 Basic Java
+2. 周三写完 ps 0
+3. 周四到周六看完 Testing、Code Review、Version Control
+4. 周日对问题集进行代码审查
+
+> 注意，要学会在工作中学习，在学习中工作。进度可以快，但最好不要慢。
+
 
 ## 问题
 
