@@ -78,20 +78,6 @@ public class TurtleSoup {
                     turtle.turn((double)180 - internal_angles);
                 }
                 turtle.forward(sideLength);
-
-            
-//            else {
-//                if (i == 0) {
-//                    turtle.turn(360.00 - internal_angles + 90.00);
-//                }
-//                else {
-//                    turtle.turn(internal_angles / (double)2);
-//                }
-//                turtle.forward(sideLength);
-//            }
-
-
-
         }
     }
 

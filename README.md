@@ -31,17 +31,3 @@
 怎样获取 problem set 的源码？
 
 在 2016 年的 ocw 上放出了所有 ps 的源码！
-
-The 2016 version opensourced the starter code of all the problem sets and projects.
-
-Problemset 0: Turtle Graphics -- Intro to Java.
-
-Problemset 1: Tweet -- test-first programming.
-
-Problemset 2: Poetic Walks -- Design and implement mutable abstract data types.
-
-Problemset 3: Expressivo -- Design and implement immutable abstract data types.
-
-Problemset 4: Multiplayer minesweeper -- Concurrence programming.
-
-Project : ABC music player
