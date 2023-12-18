@@ -322,6 +322,10 @@ For each of the following rewrites, judge whether it improves SFB, ETU, and/or R
 
 ![image-20231215112851837](images/image-20231215112851837.png)
 
+![image-20231215114436684](images/image-20231215114436684.png)
+
+---
+
 ##### Now you see it, now you don't
 
 In which of the following lines of code is `0` a magic number?
