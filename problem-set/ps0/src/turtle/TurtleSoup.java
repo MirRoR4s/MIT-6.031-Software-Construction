@@ -100,40 +100,20 @@ public class TurtleSoup {
      * @return adjustment to heading (right turn amount) to get to target point,
      *         must be 0 <= angle < 360
      */
-    public static double calculateHeadingToPoint(double currentHeading, int currentX, int currentY,
-                                                 int targetX, int targetY) {
+    public static double calculateHeadingToPoint(double currentHeading, int currentX, int currentY, int targetX, int targetY) {
         // throw new RuntimeException("implement me!");
         double result = 0.0;
-        if (currentX == targetX && targetY > currentY) {
-            result = (360 - currentHeading) % 360;
+        double angleToTarget = Math.toDegrees(Math.atan2(targetY - currentY, targetX - currentX));
+        System.out.println(angleToTarget);
+        double tmp = 90.0 - currentHeading;
+        if (angleToTarget > tmp) {
+            result =  tmp + 270 + (90.0 - angleToTarget);
         }
-        else if (currentX == targetX && targetY < currentY) {
-            result = 180 - currentHeading;
+        else if (angleToTarget < tmp) {
+            result = tmp - angleToTarget;
         }
-        else if (currentX > targetX && targetY == currentY) {
-            result = 270 - currentHeading;
-        }
-        else if (currentX < targetX && currentY == targetY) {
-            result = 90 - currentHeading;
-        }
-                // 求直线斜率
-        double k = (double)(targetY - currentY) / (targetX - currentX);
-        double angle = Math.atan(k); 
-        if (currentX > targetX && currentY < targetY) {
-            result = 270 - currentHeading + angle;
-        }
-        else if (currentX < targetX && currentY < targetY) {
-            result = 90 - currentHeading - angle;
-        }
-        else if (currentX > targetX && currentY < targetY) {
-            result = 180 - currentHeading + angle;
-        }
-        else {
-            result = 180 - currentHeading - angle;
-        }
-
-
         return result;
+        
     }
 
     /**
@@ -151,7 +131,23 @@ public class TurtleSoup {
      *         otherwise of size (# of points) - 1
      */
     public static List<Double> calculateHeadings(List<Integer> xCoords, List<Integer> yCoords) {
-        throw new RuntimeException("implement me!");
+        //throw new RuntimeException("implement me!");
+        List<Double> result = new ArrayList<>();
+        for (int i = 0; i < xCoords.size() - 1; i++) {
+            int cx = xCoords.get(i);
+            int cy = yCoords.get(i);
+            int tx = xCoords.get(i + 1);
+            int ty = xCoords.get(i + 1);
+            double ca = 0;
+            if (tx - ty != 0) {
+                double k = (double)(cx - cy) / (tx - ty);
+                double angle = Math.atan(k); 
+                ca = 90 - angle;
+            }
+
+            result.add(TurtleSoup.calculateHeadingToPoint(ca, cx, cy, tx, ty));
+        }
+        return result;
     }
 
     /**
@@ -180,8 +176,10 @@ public class TurtleSoup {
 //
 //        // draw the window
 //        turtle.draw();
-        drawRegularPolygon(turtle, 80, 10);
-        turtle.draw();
+        // drawRegularPolygon(turtle, 80, 10);
+        // turtle.draw();
+        double ans = TurtleSoup.calculateHeadingToPoint(0.0, 0, 0, 1, 1);
+        System.out.println(ans);
     }
 
 }

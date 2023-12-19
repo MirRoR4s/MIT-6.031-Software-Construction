@@ -117,10 +117,7 @@ This does the inverse of the last function; again, use the simple formula. Howev
 
 - 实现 calculateHeadingToPoint 函数，该函数计算从当前坐标到目的坐标需要转动的角度。举个例子，如果乌龟位于 (0,1) 且面向 30 度角，并且想要去到 (0,0)，那么乌龟必须转动 150 度，所以 `calculateHeadingToPoint(30, 0, 1, 0, 0)` 会返回 150.0。
 
-思考：已知了初始方向，我们只需要把目的方向求出来，然后两方向（直线）的夹角就是所求的角度了。为了求目的方向，需要连接起点和终点
-
-- Implement `calculateHeadings`
-  Make sure to use your `calculateHeadingToPoint ` implementation here. For information on how to use Java’s `List `interface and classes implementing it, look up [`java.util.List `](https://docs.oracle.com/javase/8/docs/api/?java/util/List.html)in the Java library documentation. Note that for a list of *n* points, you will return *n-1* heading adjustments; this list of adjustments could be used to guide the turtle to each point in the list. For example, if the input lists consisted of `xCoords=[0,0,1,1] `and `yCoords=[1,0,0,1] `(representing points (0,1), (0,0), (1,0), and (1,1)), the returned list would consist of `[180.0, 270.0, 270.0] `.
+<!-- 思考：已知了初始方向，我们只需要把目的方向求出来，然后两方向（直线）的夹角就是所求的角度了。为了求目的方向，需要连接起点和终点
 
 k 是连接两点形成的直线的斜率和 x 轴 的夹角
 
@@ -131,4 +128,17 @@ k 是连接两点形成的直线的斜率和 x 轴 的夹角
 5. 西北方：270 - CA + k
 6. 东北方：90 - CA - k
 7. 西南方：180 - CA  + k
-8. 东南方：90 - CA + k 或者 180 - CA - k
+8. 东南方：90 - CA + k 或者 180 - CA - k -->
+
+
+给出的两个坐标是相对于某个初始原点来说的，这里我想出的解决方案是以起点为坐标原点，然后连接终点，构造一个平面直角坐标系。大概是这样子：
+
+![Alt text](images/image.png)
+
+这里 A 是起点，B 是变化后的终点。AD 是 90 - currentHeading 斜率对应的直线。然后根据 AD 在 AB 的上方、下方、重合三种情况来计算偏转角度就可以了。
+
+#### 实现 calculateHeadings 方法
+
+- Implement `calculateHeadings`
+Make sure to use your `calculateHeadingToPoint ` implementation here. For information on how to use Java’s `List `interface and classes implementing it, look up [`java.util.List `](https://docs.oracle.com/javase/8/docs/api/?java/util/List.html)in the Java library documentation. Note that for a list of *n* points, you will return *n-1* heading adjustments; this list of adjustments could be used to guide the turtle to each point in the list. For example, if the input lists consisted of `xCoords=[0,0,1,1] `and `yCoords=[1,0,0,1] `(representing points (0,1), (0,0), (1,0), and (1,1)), the returned list would consist of `[180.0, 270.0, 270.0] `.
+

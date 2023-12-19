@@ -71,3 +71,5 @@ public class TurtleSoupTest {
         assertEquals(315.0, result.get(1), 0.001);
     }
 }
+
+// (0,0) (1, 1)
