@@ -102,7 +102,38 @@ public class TurtleSoup {
      */
     public static double calculateHeadingToPoint(double currentHeading, int currentX, int currentY,
                                                  int targetX, int targetY) {
-        throw new RuntimeException("implement me!");
+        // throw new RuntimeException("implement me!");
+        double result = 0.0;
+        if (currentX == targetX && targetY > currentY) {
+            result = (360 - currentHeading) % 360;
+        }
+        else if (currentX == targetX && targetY < currentY) {
+            result = 180 - currentHeading;
+        }
+        else if (currentX > targetX && targetY == currentY) {
+            result = 270 - currentHeading;
+        }
+        else if (currentX < targetX && currentY == targetY) {
+            result = 90 - currentHeading;
+        }
+                // 求直线斜率
+        double k = (double)(targetY - currentY) / (targetX - currentX);
+        double angle = Math.atan(k); 
+        if (currentX > targetX && currentY < targetY) {
+            result = 270 - currentHeading + angle;
+        }
+        else if (currentX < targetX && currentY < targetY) {
+            result = 90 - currentHeading - angle;
+        }
+        else if (currentX > targetX && currentY < targetY) {
+            result = 180 - currentHeading + angle;
+        }
+        else {
+            result = 180 - currentHeading - angle;
+        }
+
+
+        return result;
     }
 
     /**
