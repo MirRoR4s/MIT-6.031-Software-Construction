@@ -19,8 +19,8 @@
 ### 第一周-2023年12月18日-2023年12月24日
 
 1. 周一到周二看完 Static Checking 和 Basic Java
-2. 周三写完 ps 0
-3. 周四到周六看完 Testing、Code Review、Version Control
+2. 周三写完 ps 0 并阅读完 Testing（阅读练习也要做）
+3. 周四到周六看完 Code Review、Version Control
 4. 周日对问题集进行代码审查
 
 > 注意，要学会在工作中学习，在学习中工作。进度可以快，但最好不要慢。

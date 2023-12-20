@@ -45,13 +45,102 @@ Here are some approaches that unfortunately don’t work well in the world of so
 
 **Haphazard testing**（随意测试） ("just try it and see if it works") is less likely to find bugs, unless the program is so buggy that an arbitrarily-chosen input is more likely to fail than to succeed. It also doesn’t increase our confidence in program correctness.
 
-**Random or statistical testing** doesn’t work well for software. Other engineering disciplines（学科） can test small random samples (e.g. 1% of hard drives manufactured) and infer the defect rate for the whole production lot. Physical systems can use many tricks to speed up time, like opening a refrigerator 1000 times in 24 hours instead of 10 years. These tricks give known failure rates (e.g. mean lifetime of a hard drive), but they assume continuity or uniformity（均匀性） across the space of defects. This is true for **physical artifacts**（物理构件）.
+**Random or statistical testing** doesn’t work well for software. Other engineering disciplines（学科） can test small random samples (e.g. 1% of hard drives manufactured) and infer the defect rate for the whole production lot. Physical systems can use many tricks to speed up time, like opening a refrigerator 1000 times in 24 hours instead of 10 years. These tricks give known failure rates (e.g. mean lifetime of a **hard drive**（硬盘）), but they assume continuity or uniformity（均匀性） across the space of defects. This is true for **physical artifacts**（物理构件）.
 
 But it’s not true for software. Software behavior varies discontinuously and discretely across the space of possible inputs. The system may seem to work fine across a broad range of inputs, and then abruptly fail at a single boundary point. The [famous Pentium division bug](http://www.willamette.edu/~mjaneba/pentprob.html) affected approximately 1 in 9 billion divisions. Stack overflows, out of memory errors, and numeric overflow bugs tend to happen abruptly, and always in the same way, not with probabilistic variation. That’s different from physical systems, where there is often visible evidence that the system is approaching a failure point (cracks in a bridge) or failures are distributed probabilistically near the failure point (so that statistical testing will observe some failures even before the point is reached).
 
 Instead, test cases must be chosen carefully and systematically. Techniques for systematic testing are the primary focus of this reading.
 
-**阅读练习**
+### 阅读练习
+
+#### Needle in a haystack
+
+Here is a buggy method:
+
+```java
+/**
+ * @param bits an array of 32 true/false values
+ * @return the Boolean AND of all values in the array
+ */
+boolean andAll(boolean[] bits) {
+  boolean result = bits[0];
+  for (int i = 1; i < 31; i++) {
+    result = result && bits[i];
+  }
+  return result;
+}
+```
+
+Louis Reasoner, who wrote this method and thinks it should work, tries it on a couple of *haphazardly-chosen* test cases shown below. What is the result of each test case?
+
+```
+andAll([true, true, true, ..., true, true]) // 32 true values
+```
+
+correctly returns true, !
+
+correctly returns false,
+
+incorrectly returns true,
+
+incorrectly returns false
+
+```
+andAll([false, true, false, true, ..., false, true]) // 32 values alternating between false and true
+```
+
+correctly returns true,
+
+correctly returns false, !
+
+incorrectly returns true,
+
+incorrectly returns false
+
+Louis is satisfied. But unfortunately his code has an *off-by-one* error（差一错误）. Which expression has the bug?
+
+1. bits[0]
+2. i = 1
+3. i < 31 !
+4. i++
+
+Which is closest to the number of test cases required to test this function *exhaustively*?
+
+1. tens
+2. hundreds
+3. thousands
+4. millions
+5. billions !
+6. trillions
+
+Which is closest to the probability of finding the off-by-one bug with a *random test* (i.e. picking a single input to try, uniformly at random from the possible inputs)?
+
+1. 1 in 32
+2. 1 in $2^{31}$
+3. 1 in $2^{32}$ !
+4. 1 in $2^{64}$
+
+---
+
+#### A real crash
+
+In the 1990s, the Ariane 5 launch vehicle（阿丽亚娜5号运载火箭）, designed and built for the European Space Agency, self-destructed 37 seconds after its first launch.
+
+The reason was a control software bug that went undetected. The Ariane 5’s guidance software was reused from the Ariane 4, which was a slower rocket. When the **velocity** （速度）calculation converted from a 64-bit floating point number (a `double` in Java terminology, though this software wasn’t written in Java) to a 16-bit signed integer (a `short`), it overflowed the small integer and caused an exception to be thrown. The exception handler had been disabled for efficiency reasons, so the guidance software crashed. Without guidance, the rocket crashed too. The cost of the failure was $1 billion.
+
+What ideas does this story demonstrate?
+
+1. Even high-quality safety-critical software may still have residual bugs.
+
+2. Testing all possible inputs is the best solution to this problem.
+
+3. Software exhibits discontinuous behavior, unlike many physically-engineered systems.
+
+4. Static type checking could have detected this bug.
+
+   > Testing all inputs is not feasible, because even just one 64-bit floating point number has 264 possible values, which is more than the age of the universe in microseconds.
+   >
+   > Static type checking wouldn’t have detected this bug, because the code intentionally converted a 64-bit double into a 16-bit short.
 
 ---
 
@@ -67,7 +156,7 @@ Before we dive in, we need to define some terms:
 
 You’ve already seen and used these concepts on problem set 0. You were given some specifications for Java methods and asked to write an implementation for each one. You were also given a test suite for each method that you could run to see if your implementation obeyed the spec.
 
-It turns out that this is a good pattern to follow when designing a program from scratch. In *test-first programming*, you write the spec and the tests before you even write any code. The development of a single function proceeds in this order:
+It turns out that this is a good pattern to follow when designing a program **from scratch**（从零开始）. In **test-first programming**, you write the spec and the tests before you even write any code. The development of a single function proceeds in this order:
 
 1. **Spec**: Write a specification for the function.
 2. **Test**: Write tests that exercise（验证） the specification.
@@ -76,6 +165,46 @@ It turns out that this is a good pattern to follow when designing a program from
 Once your implementation passes the tests you wrote, you’re done.
 
 The biggest benefit of test-first programming is safety from bugs. Don’t leave testing until the end of development, when you have a big pile of unvalidated code. Leaving testing until the end only makes debugging longer and more painful, because bugs may be anywhere in your code. It’s far more pleasant to test your code as you develop it.
+
+---
+
+### 阅读练习
+
+#### Test-first programming
+
+In which stage of test-first programming for a method would you…
+
+…first write the method signature:
+
+1. spec, ！
+2. test,
+3. implement
+
+> The method signature consists of the method’s name, parameter types, and return type, which are all part of the specification.
+
+…write the method’s first `return` statement:
+
+1. spec,
+2. test,
+3. implement
+
+> A `return` statement is part of the implementation of the method.
+
+…write the first client of the module:
+
+1. spec,
+2. test, !
+3. implement
+
+> Every test case is a client of the module.
+
+…first write a comment:
+
+1. spec
+2. test
+3. implement
+
+> The comment above the method is part of its specification, so it should be written first.
 
 ---
 
@@ -91,9 +220,46 @@ By these criteria, exhaustive testing is thorough but infeasibly large. Haphazar
 
 Designing a test suite for both thoroughness and small size requires having the right attitude. Normally when you’re coding, your goal is to make the program work. But as a test suite designer, you want to *make it fail*. That’s a subtle but important difference. A good tester intentionally pokes at all the places the program might be vulnerable, so that those vulnerabilities can be eliminated.
 
-The need to adopt a testing attitude is another argument for test-first programming. It is all too tempting to treat code you’ve already written as a precious thing, a fragile eggshell, and test it very lightly just to see it work. For *thorough* testing, though, you have to be brutal. Test-first programming allows you to put on your testing hat, and adopt that brutal perspective, before you’ve even written any code.
+The need to adopt（需要） a testing attitude（态度） is another argument（论据） for test-first programming. It is all too tempting to treat code you’ve already written as a precious thing, a fragile eggshell, and test it very lightly just to see it work. For *thorough* testing, though, you have to be brutal. Test-first programming allows you to put on your testing hat, and adopt that brutal perspective, before you’ve even written any code.
 
-**READING EXERCISES**
+### 阅读练习
+
+#### Correctness and thoroughness
+
+A test suite is *correct* if:
+
+1. all its test cases fail when run on a buggy implementation
+2. some test case fails when run on a buggy implementation
+3. all its test cases pass when run on a legal implementation
+4. some test case passes when run on a legal implementation
+
+> A correct test suite should accept any legal implementation, which means all its test cases have to pass.
+>
+> Failing on buggy implementations is also desirable, of course, but that is thoroughness, not correctness.
+
+A test suite T1 is more *thorough* than a test suite T2 if:
+
+1. the number of test cases in T1 is larger than the number of test cases in T2
+2. the buggy implementations that fail at least one test in T1 is a strict superset of those that fail at least one test in T2
+3. the legal implementations that pass all tests in T1 is a strict superset of those that pass all tests in T2
+
+> T1 can be larger than T2 without being more thorough – redundant test cases in T1 can find the same bugs, or even fewer bugs than T2.
+>
+> But if T1 rejects a superset of buggy implementations compared to T2, then T1 is more thorough than T2.
+>
+> If T1 accepts more legal implementations than T2, then T1 may be correct, and T2 certainly is incorrect. However, this does not speak to their relative *thoroughness*.
+
+An empty test suite contains no test cases. Assuming a nontrivial specification, an empty test suite is:
+
+1. correct !
+
+2. thorough
+
+3. small !
+
+> All test cases pass, so an empty test suite passes all legal implementations, so it is correct, and clearly as small as possible. But it also passes all buggy implementations, so it is not thorough.
+>
+> We are striving to design a test suite that has all three properties: correct, thorough, *and* small.
 
 ---
 
@@ -175,6 +341,105 @@ Our test suite might then be:
 
 ---
 
+### 阅读练习
+
+#### Square root
+
+Suppose you want to partition the input space of this integer square root function:
+
+```java
+/**
+ * @param x   must be nonnegative
+ * @returns nearest int to the square root of x
+ */
+public static int sqrt(int x)
+```
+
+Assess the quality of each of the following candidate partitions. Are the proposed subdomains disjoint and complete, thus forming a partition? Are they correct, in the sense that each subdomain can be covered by a legal test case? A good partition should check all three boxes.
+
+```java
+// partition: x < 0; x >= 0
+```
+
+1. subdomains are disjoint ！
+2. subdomains are complete ！
+3. subdomains are correct
+
+> The two proposed subdomains are disjoint, and their union covers the input space of the function, so they form a partition. But x < 0 is not a correct subdomain because it consists entirely of illegal inputs, so it would not be possible to choose a correct test case to cover this subdomain.
+
+```java
+// partition: x is a perfect square; x is an integer > 0 but not a perfect square
+```
+
+1. subdomains are disjoint ！
+
+2. subdomains are complete ！
+
+3. subdomains are correct ！
+
+> The two proposed subdomains are disjoint. Their union covers the input space of the function (including 0, which is a perfect square). They include no illegal inputs, so they form a correct partition.
+>
+> This is also likely to be a *useful* partition, in the sense of separating inputs with different behavior, because the function returns an exact answer on the first subdomain but a rounded answer on the second.
+
+```java
+// partition: x=0, x=1, x=7, x=16
+```
+
+1. subdomains are disjoint !
+2. subdomains are complete
+3. subdomains are correct !
+
+> These four proposed subdomains are singleton sets, which are disjoint but do not completely cover the input space. All of them are correct inputs.
+>
+> This example looks like a set of candidate test cases that have been proposed as a partition, which is a common confusion. Subdomains are not the same as test cases. Subdomains are sets of inputs from which test cases are chosen. Some subdomains may be singletons (like boundary values, discussed below), but most are not.
+
+---
+
+#### The greatest of all common divisors
+
+Now consider this specification:
+
+```java
+/**
+ * @param x an integer
+ * @param y an integer, where x and y are not both 0
+ * @return the greatest common divisor of x and y
+ */
+public static int gcd(int x, int y);
+```
+
+Assess each of the following candidate partitions for `gcd`.
+
+```java
+// partition: x and y are not both 0
+```
+
+1. subdomains are disjoint
+2. subdomains are complete
+3. subdomains are correct
+
+> Observe that this is a *single* subdomain, { (*x*,*y*) | *x* and *y* are not both 0 }.
+>
+> And this is indeed a partition, because it covers the entire domain. It is unlikely to be *useful* for producing a thorough test suite, however.
+
+```java
+// partition: x is divisible by y; y is divisible by x; x and y are relatively prime
+```
+
+1. subdomains are disjoint
+2. subdomains are complete
+3. subdomains are correct
+
+> The three subdomains are not disjoint – for example, any point such that *x* = *y* belongs to both of the first two, and *x* = *y* = 1 belongs to all three.
+>
+> The subdomains are not complete because they don’t cover a point like *x* = 6, *y* = 8, where *x* and *y* are not relatively prime but also neither is a factor of the other.
+>
+> The subdomains are, however, correct, because each one contains at least one legal test case.
+>
+> This partition could be improved into a complete, disjoint, and useful partition for `gcd`.
+
+---
+
 ### Include boundaries in the partition
 
 Bugs often occur at **boundaries** between subdomains. Some examples:
@@ -227,6 +492,30 @@ Our test suite might then be:
 - **a** = 17 to cover the subdomain 0 < **a** < `Integer.MAX_VALUE`
 - **a** = -3 to cover the subdomain `Integer.MIN_VALUE` < **a** < 0
 
+### 阅读练习
+
+#### Boundaries
+
+For this function:
+
+```java
+/**
+ * @param winsAndLosses  a string of length at most 5 consisting of 'W' or 'L' characters
+ * @return the fraction of characters in winsAndLosses that are 'W'
+ */
+double winLossRatio(String winsAndLosses);
+```
+
+Which of the following are appropriate boundary values for testing this function?
+
+1. ""
+2. "LLLLL"
+3. "WLW"
+4. "WWWWW"
+5. "xxxxx"
+
+---
+
 ### Example: `BigInteger.multiply()`
 
 Let’s look at a slightly more complicated example. [`BigInteger`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/math/BigInteger.html) is a class built into the Java library that can represent integers of any size, unlike the primitive types `int` and `long` that have only limited ranges. BigInteger has a method [`multiply`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/math/BigInteger.html#multiply(java.math.BigInteger)) that multiplies two BigInteger values together:
@@ -271,8 +560,6 @@ Finally, because the purpose of `BigInteger` is to represent arbitrarily-large i
 
 Let’s bring all these observations together into a single partition of the whole (**a**,**b**) space. We’ll choose **a** and **b** independently from:
 
-![partitioning multiply()](https://web.mit.edu/6.031/www/sp21/classes/03-testing/figures/multiply-partition.png)
-
 - 0
 - 1
 - small positive integer (≤ `Long.MAX_VALUE` and > 1)
@@ -289,15 +576,17 @@ To produce the test suite from this partition, we would pick an arbitrary pair (
 - (*a*,*b*) = (0, 8392) to cover (0, small positive integer)
 - (*a*,*b*) = (0, -7) to cover (0, small negative integer)
 - …
-- (*a*,*b*) = (-1060, -10810) to cover (large negative, large negative)
+- (*a*,*b*) = (-$10^{60}$, -$10^{810}$) to cover (large negative, large negative)
 
 The figure at the right shows how the two-dimensional (a,b) space is divided by this partition, and the points are test cases that we might choose to completely cover the partition.
+
+![partitioning multiply()](https://web.mit.edu/6.031/www/sp21/classes/03-testing/figures/multiply-partition.png)
+
+---
 
 ### Using multiple partitions
 
 The examples so far used only one partition – one collection of disjoint subdomains – across the entire input space. For functions with multiple parameters, this can become costly. Each parameter may have interesting behavior variation and several boundary values, so forming a single partition of the input space from the **Cartesian product** of the behavior on each parameter leads to a combinatorial explosion in the size of the resulting test suite. We saw this already with `multiply`, in which the Cartesian product partition already had 6 × 6 = 36 subdomains, requiring 36 test cases to cover. For a function with **n** parameters, the Cartesian-product approach produces a test suite of size exponential in *n*, which quickly becomes infeasible for manual test authoring.
-
-![partitioning multiply() with separate a and b partitions](https://web.mit.edu/6.031/www/sp21/classes/03-testing/figures/multiply-a-b-partition.png)
 
 An alternative approach is to treat the features of each input **a** and **b** as two separate partitions of the input space. One partition only considers the value of **a**:
 
@@ -308,6 +597,8 @@ And the other partition only considers the value of **b**:
 - (**a**,**b**) such that **b** = 0, 1, small positive, small negative, large positive, large negative
 
 These two partitions are illustrated at the right. Every input pair (**a**,**b**) belongs to exactly one subdomain from each partition.
+
+![partitioning multiply() with separate a and b partitions](https://web.mit.edu/6.031/www/sp21/classes/03-testing/figures/multiply-a-b-partition.png)
 
 We might write the two partitions compactly as follows:
 
@@ -334,7 +625,7 @@ We still want to cover every subdomain with a test case, but now a single test c
 
 ![partitioning multiply() on the signs of a and b](https://web.mit.edu/6.031/www/sp21/classes/03-testing/figures/multiply-sign-partition.png)
 
-Partitioning *a* and *b* independently raises the risk that you’re no longer testing the interaction between them. For example, sign handling in multiplication is a possible source of bugs, and the sign of the result depends on the signs of both *a* and *b*. But we can add an additional partition that captures this interaction:
+Partitioning **a** and **b** independently raises the risk that you’re no longer testing the interaction between them. For example, sign handling in multiplication is a possible source of bugs, and the sign of the result depends on the signs of both *a* and *b*. But we can add an additional partition that captures this interaction:
 
 ```java
 // partition on signs of a and b:
@@ -349,9 +640,207 @@ Now we have three partitions, with 6, 6, and 5 subdomains each, but we don’t n
 
 We can continue to add partitions this way, as we think more about the spec and observe other behavioral variations that might lead to bugs. With careful test case selection, additional partitions should require few (if any) additional test cases.
 
-Sometimes we may want to use the Cartesian product approach on multiple partitions, to produce a more thorough test suite. But even in those cases, the Cartesian product may be smaller than we expect. When subdomains from different partitions turn out to be mutually exclusive, the Cartesian product won’t include a subdomain for that particular combination of subdomains. We’ll see an example of that in one of the exercises below.
+Sometimes we may want to use the Cartesian product approach on multiple partitions, to produce a more thorough test suite. But even in those cases, the Cartesian product may be smaller than we expect. When subdomains from different partitions turn out to be mutually exclusive, the Cartesian product won’t include a subdomain for that particular combination of subdomains.（当来自不同分区的子域相互排斥时，笛卡尔积将不会包含该特定子域组合的子域。） We’ll see an example of that in one of the exercises below.
 
 As a starting point for test-first programming, however, a small test suite that covers each subdomain of several thoughtfully-chosen partitions strikes a good balance between size and thoroughness. The test suite may then grow further with glass box testing, code coverage measurement, and regression testing, which we’ll see later in this reading.
+
+---
+
+### 阅读练习
+
+#### One partition vs. multiple partitions
+
+Consider this partition on **a** from above:
+
+```java
+// partition on a:
+//   a = 0
+//   a = 1
+//   a is small integer > 1
+//   a is small integer < 0
+//   a is large positive integer
+//   a is large negative integer
+//      (where "small" fits in long, and "large" doesn't)
+```
+
+This partition actually combines several distinct concerns: the sign of *a*, the magnitude of *a* (small or large), and the boundary values 0 and 1.
+
+We can instead think about these concerns as independent partitions. From among the choices below, choose a subset that would be legal partitions and that together would capture the same concerns:
+
+1. partition on a: 0, 1
+2. partition on a: 0
+3. partition on a: 1
+4. partition on a: 0, positive, negative !
+5. partition on a: positive, negative
+6. partition on a: 1, !=1 !
+7. partition on a: small (fits in long), large (doesn't fit in long) !
+
+> None of the incorrect choices are legal partitions, because they do not cover the input space.
+>
+> This is particularly important partitioning around boundary values, like the `1, !=1` partition. This partition ensures that we are not only testing at the special value (`a=1`), but that we also test *elsewhere*, away from the boundary (`a!=1`).
+
+---
+
+#### Covering every subdomain vs. covering Cartesian product
+
+Consider again this partition on `a` from above:
+
+```java
+// partition on a:
+//   a = 0
+//   a = 1
+//   a is small integer > 1
+//   a is small integer < 0
+//   a is large positive integer
+//   a is large negative integer
+//      (where "small" fits in long, and "large" doesn't)
+```
+
+This partition has 6 subdomains, so 6 different values of `a` can cover it, one chosen for each subdomain.
+
+Suppose we used these three partitions of `a` instead:
+
+```java
+// partition on a: 0, positive, negative
+// partition on a: 1, !=1
+// partition on a: small (fits in long), large (doesn't fit in long)
+```
+
+If we just want to cover every subdomain of the three partitions, how many different values of `a` would we need?
+
+3
+
+> Two values is not enough, but a set of 3 values that covers:
+>
+> - `a` = 0 to cover `a = 0`, `a != 1`, `a small`
+> - `a` = 1 to cover `a is positive`, `a = 1` (and `a small`, even though we already covered it)
+> - `a` = -2100 to cover `a negative`, `a large` (and `a != 1`, even though we already covered it)
+
+If we want to cover the Cartesian product of these three partitions, how many different values of `a` would we need?
+
+6
+
+> The number is 6 because it turns out that taking the Cartesian product of these partitions gives us back the [original partition](https://web.mit.edu/6.031/www/sp21/classes/03-testing/#multiply-partition):
+>
+> - `a = 0` is the intersection of `a = 0` from the first partition, `a != 1` from the second, and `a small` from the third.
+> - `a = 1` is the intersection of `a positive`, `a = 1`, `a small`.
+> - `a is small integer > 1` is the intersection of `a positive`, `a != 1`, `a small`.
+> - `a is small integer < 0` is the intersection of `a negative`, `a != 1`, `a small`.
+> - `a is large positive integer` is the intersection of `a positive`, `a != 1`, `a large`.
+> - `a is large negative integer` is the intersection of `a negative`, `a != 1`, `a large`.
+>
+> The remaining intersections of the Cartesian product are empty sets, e.g. `a = 0` intersected with `a = 1`, or `a = 0` and `a large`.
+>
+> This exercise is meant to show that multiple partitions, even on a single input parameter, can be a compact way to describe a testing strategy. But then it’s important to put thought into how to choose test cases from those multiple partitions. Wearing our testing hats, we would probably not consider this function well-tested if we used only three values of *a*. Sometimes we may want to use the Cartesian product approach on multiple partitions, to produce a more thorough test suite.
+
+---
+
+#### Partitions expressed on outputs
+
+It is sometimes convenient to think about and write an input space partition in terms of the *output* of the function, because variations in behavior may be more visible there. For example:
+
+```java
+// partition on a.multiply(b): 0, positive, negative
+```
+
+is shorthand for the three-subdomain partition consisting of:
+
+ { (*a*,*b*) | `a.multiply(b)` = 0 }
+ { (*a*,*b*) | `a.multiply(b)` > 0 }
+ { (*a*,*b*) | `a.multiply(b)` < 0 }
+
+Using this approach, how many test cases are needed to cover the following three partitions?
+
+```java
+// partition on a: 0, positive, negative
+// partition on b: 0, positive, negative
+// partition on a.multiply(b): 0, positive, negative
+```
+
+4
+
+> Three test cases is not enough, but an example of a 4-test suite that covers:
+>
+> - (0,0) to cover a=0, b=0, a.multiply(b)=0
+> - (3,5) to cover a positive, b positive, a.multiply(b) positive
+> - (-9,-13) to cover a negative, b negative (and a.multiply(b) positive, even though we already covered it)
+> - (-39,7) to cover a.multiply(b) negative (and a negative and b positive, even though already covered)
+
+How many are needed to cover the following two partitions?
+
+```java
+// partition on value of abs(x): same as x, different from x
+// partition on sign of abs(x): 0, positive, negative
+```
+
+3
+
+> Here, three is enough:
+>
+> - x=0 to cover abs(x) same as x, and abs(x)=0
+> - x=-15 to cover abs(x) different from x, and abs(x) positive
+> - x=Integer.MIN_VALUE to cover abs(x) negative [as well as abs(x) same as x, which is already covered]
+>
+> … though we may be uncomfortable with this test suite because it never actually tries any postive integer `x`. Adding a partition on the sign of `x` would be more thorough.
+
+Note that the second partition is correct, because [as mentioned above](https://web.mit.edu/6.031/www/sp21/classes/03-testing/#abs-can-be-negative), `Math.abs(x)` can indeed return a negative integer.
+
+---
+
+#### Partitioning
+
+Consider the following specification:
+
+```java
+/**
+ * Reverses the end of a string.
+ *
+ *                          012345                     012345
+ * For example: reverseEnd("Hello, world", 5) returns "Hellodlrow ,"
+ *                               <----->                    <----->
+ *
+ * With start == 0, reverses the entire text.
+ * With start == text.length(), reverses nothing.
+ *
+ * @param text    string that will have its end reversed
+ * @param start   the index at which the remainder of the input is reversed,
+ *                requires 0 <= start <= text.length()
+ * @return input text with the substring from start to the end of the string reversed
+ */
+public static String reverseEnd(String text, int start)
+```
+
+Which of the following are reasonable partitions for the `start` parameter?
+
+1. start = 0; start = 5; start = 100
+2. start < 0; start = 0; start > 0
+3. start = 0; 0 < start < text.length(); start = text.length() ！
+4. start < text.length(); start = text.length(); start > text.length()
+
+> 0, 5, 100 is not a partition. A partition should be a division of the whole space of possible start values, not specific test cases.
+>
+> start < 0 and start > text.length() are not legal inputs for the function, so it isn’t reasonable to use them as subdomains in a partition. A test case must obey the requirements of the function’s specification.
+
+Which of the following are reasonable partitions for the `text` parameter?
+
+1. text contains some letters; text contains no letters, but some numbers; text contains neither letters nor numbers
+2. text.length() = 0; text.length() > 0 ！
+3. text.length() = 0; text.length()-start is odd; text.length()-start is even (> 0) ！
+4. text is every possible string from length 0 to 100
+5. text is "" or "Hello, world"
+6. text should be the empty string in some test case
+
+> Letters and numbers aren’t important to the behavior of this function, so it isn’t useful to partition on that property.
+>
+> Length is a useful partition, however, since it can interact with the `start` parameter.
+>
+> Partitioning on even and odd length is also reasonable, because reversing an odd-length substring has different behavior (since it leaves the middle element in place) than an even-length string (where all elements swap).
+>
+> Partitioning into all possible length 0 to 100 strings will produce far too many test cases. It is also not a partition, because it does not include strings longer than 100 characters.
+>
+> `"Hello, world"` and `""` are particular points that we might choose for `text`. They do not form a partition of the `text` input.
+>
+> Similarly, although it’s important to include the empty string as a boundary value for `text`, it is not a partition on its own.
 
 ---
 
