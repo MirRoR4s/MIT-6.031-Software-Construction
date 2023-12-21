@@ -1,4 +1,4 @@
-# Reading 5: Version Control
+# [Reading 5: Version Control](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/)
 
 **Software in 6.031**
 
@@ -12,9 +12,13 @@
 - Understand how Git stores version history as a graph
 - Practice reading, creating, and using version history
 
+---
+
 ## Introduction
 
 [Version control systems](http://en.wikipedia.org/wiki/Revision_control) are essential tools of the software engineering world. More or less every project — serious or hobby, open source or proprietary — uses version control. Without version control, coordinating a team of programmers all editing the same project’s code will reach pull-out-your-hair levels of aggravation.
+
+---
 
 ### Version control systems you’ve already used
 
@@ -22,9 +26,7 @@
 - [Undo/redo buffer](http://en.wikipedia.org/wiki/Undo)
 - Keeping multiple copies of files with version numbers
 
-| ![img](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/figures/doc.png) | ![img](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/figures/doc.png) | ![img](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/figures/doc.png) | ![img](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/figures/doc.png) | ![img](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/figures/doc.png) | ![img](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/figures/doc.png) |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| My Report                                                    | My Report v2                                                 | My Report v3                                                 | My Report final                                              | My Report final-v2                                           | My Report final-v2- fix-part-5                               |
+![image-20231221170148695](images/image-20231221170148695.png)
 
 ---
 
@@ -32,34 +34,27 @@
 
 Suppose [Alice](http://en.wikipedia.org/wiki/Alice_and_Bob) is working on a problem set by herself.
 
-| Alice | Version 1  Hello.java |
-| ----- | --------------------- |
-|       |                       |
+She starts with（从...开始） one file `Hello.java` in her pset, which she works on for several days.
 
-She starts with one file `Hello.java` in her pset, which she works on for several days.
+![image-20231221170555856](images/image-20231221170555856.png)
 
-At the last minute before she needs to hand in her pset to be graded, she realizes she has made a change that breaks everything. If only she could go back in time and retrieve a past version!
+At the last minute before she needs to hand in her pset to be graded, she realizes she has made a change that breaks everything. 
+
+If only（如果...就好了） she could go back in time and retrieve（找回） a past version!
 
 A simple discipline of saving backup files would get the job done.
 
-| Alice | Version 1  Hello.1.java | Version 2  Hello.2.java | Version 3  Hello.java | HEAD |
-| ----- | ----------------------- | ----------------------- | --------------------- | ---- |
-|       |                         |                         |                       |      |
-
 Alice uses her judgment to decide when she has reached some milestone that justifies saving the code. She saves the versions of `Hello.java` as `Hello.1.java`, `Hello.2.java`, and `Hello.java`. She follows the convention that the most recent version is just `Hello.java` to avoid confusing Eclipse. We will call the most recent version the **head**.
 
-Now when Alice realizes that version 3 is fatally flawed, she can just copy version 2 back into the location for her current code. Disaster averted! But what if version 3 included some changes that were good and some that were bad? Alice can compare the files manually to find the changes, and sort them into good and bad changes. Then she can copy the good changes into version 2.
+![image-20231221170545467](images/image-20231221170545467.png)
+
+Now when Alice realizes that version 3 is fatally（不幸地） flawed, she can just copy version 2 back into the location for her current code. Disaster averted（避免）! But what if version 3 included some changes that were good and some that were bad? Alice can compare the files manually to find the changes, and sort them into good and bad changes. Then she can copy the good changes into version 2.
 
 This is a lot of work, and it’s easy for the human eye to miss changes. Luckily, there are standard software tools for comparing text; in the UNIX world, one such tool is [`diff`](http://en.wikipedia.org/wiki/Diff). A better version control system will make diffs easy to generate.
 
-| Cloud | Version 1  Hello.1.java | Version 2  Hello.2.java | Version 3  Hello.java |
-| ----- | ----------------------- | ----------------------- | --------------------- |
-|       |                         |                         |                       |
-| Alice | Version 1  Hello.1.java | Version 2  Hello.2.java | Version 3  Hello.java |
-
 Alice also wants to be prepared in case her laptop gets run over by a bus, so she saves a backup of her work in the cloud, uploading the contents of her working directory whenever she’s satisfied with its contents.
 
-If her laptop ever gets flattened, Alice can retrieve the backup and resume work on the pset on a fresh machine, retaining the ability to time-travel back to old versions at will.
+If her laptop ever gets flattened, Alice can retrieve the backup and resume work on the pset on a fresh machine, retaining（保留） the ability to time-travel back to old versions at will.
 
 ![image-20231201090513167](images/image-20231201090513167.png)
 
@@ -69,7 +64,7 @@ If Alice isn’t careful, though, she can run into trouble with this approach. I
 
 ![image-20231201091148596](images/image-20231201091148596.png)
 
-When it comes time to upload changes to the cloud, there is an opportunity for a mishap! Alice might copy all her local files into the cloud, causing it to contain version 5D only. Later Alice syncs from the cloud to her laptop, potentially overwriting version 5L, losing the worthwhile changes. What Alice really wants here is a *merge*, to create a new version based on the two version 5’s.
+When it comes time to upload changes to the cloud, there is an opportunity for a mishap（灾祸）! Alice might copy all her local files into the cloud, causing it to contain version 5D only. Later Alice syncs from the cloud to her laptop, potentially overwriting version 5L, losing the worthwhile changes. What Alice really wants here is a *merge*, to create a new version based on the two version 5’s.
 
 At this point, considering just the scenario of one programmer working alone, we already have a list of operations that should be supported by a version control scheme:
 
