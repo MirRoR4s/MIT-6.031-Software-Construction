@@ -103,7 +103,7 @@ Avoid duplication like you’d avoid crossing the street without looking. Copy-a
 
 The `dayOfYear` example is full of identical code. How would you DRY it out?
 
-#### READING EXERCISES
+#### 阅读练习
 
 ##### Don't repeat yourself
 
@@ -178,7 +178,7 @@ double moonDiameterInMeters = moonDistanceInMeters * apparentAngleInRadians;
 
 [The `dayOfYear` code](https://web.mit.edu/6.031/www/sp21/classes/04-code-review/#dayOfYear) needs some comments — where would you put them? For example, where would you document whether `month` runs from 0 to 11 or from 1 to 12?
 
-#### READING EXERCISES
+#### 阅读练习
 
 ##### Comments where needed
 
@@ -214,7 +214,7 @@ public static int dayOfYear(int month, int dayOfMonth, int year) {
 
 The `dayOfYear` function doesn’t fail fast — if you pass it the arguments in the wrong order, it will quietly return the wrong answer. In fact, the way `dayOfYear` is designed, it’s highly likely that a non-American will pass the arguments in the wrong order! It needs more checking — either static checking or dynamic checking.
 
-#### READING EXERCISES
+#### 阅读练习
 
 ****
 
@@ -260,6 +260,65 @@ dayOfYear(2, 9, 2019)
 ```
 
 ---
+
+##### Fail faster
+
+Which of the following design changes (considered separately) would make the code fail faster if it were called with arguments in the wrong order?
+
+```java
+public static int dayOfYear(String month, int dayOfMonth, int year) {
+    ...
+}
+```
+
+doesn’t fail faster,fails faster – static error,fails faster – dynamic error
+
+```java
+public static int dayOfYear(int month, int dayOfMonth, int year) {
+    if (month < 1 || month > 12) {
+        return -1;
+    }
+    ...
+}
+```
+
+doesn’t fail faster,fails faster – static error,fails faster – dynamic error
+
+```java
+public static int dayOfYear(int month, int dayOfMonth, int year) {
+    if (month < 1 || month > 12) {
+        throw new IllegalArgumentException();
+    }
+    ...
+}
+```
+
+doesn’t fail faster,fails faster – static error,fails faster – dynamic error
+
+```java
+public enum Month { JANUARY, FEBRUARY, MARCH, ..., DECEMBER };
+public static int dayOfYear(Month month, int dayOfMonth, int year) {
+    ...
+}
+```
+
+doesn’t fail faster,fails faster – static error,fails faster – dynamic error
+
+```java
+public static int dayOfYear(int month, int dayOfMonth, int year) {
+    if (month == 1) {
+        ...
+    } else if (month == 2) {
+        ...
+    }
+    ...
+    } else if (month == 12) {
+        ...
+    } else {
+        throw new IllegalArgumentException("month out of range");
+    }
+}
+```
 
 ### Avoid magic numbers
 
@@ -354,7 +413,7 @@ public static int dayOfYear(final int month, final int dayOfMonth, final int yea
 
 ### Smelly example #2
 
-There was a latent bug in `dayOfYear`. It didn’t handle leap years at all. As part of fixing that, suppose we write a leap-year method.
+There was a **latent**（隐藏的） bug in `dayOfYear`. It didn’t handle **leap years**（闰年） at all. As part of fixing that, suppose we write a leap-year method.
 
 ```java
 public static boolean leap(int y) {
@@ -375,7 +434,145 @@ public static boolean leap(int y) {
 
 What are the bugs hidden in this code? And what style problems that we’ve already talked about?
 
-#### READING EXERCISES
+#### 阅读练习
+
+##### Mental execution 2016
+
+What happens when you call:
+
+```java
+leap(2016)
+```
+
+1. returns true on line R1
+2. returns false on line R2
+3. returns false on line R3
+4. returns true on line R4
+5. returns false on line R5
+6. error before program starts
+7. error while program is running
+
+---
+
+##### Mental execution 2017
+
+What happens when you call:
+
+```
+leap(2017)
+```
+
+1. returns true on line R1
+2. returns false on line R2
+3. returns false on line R3
+4. returns true on line R4
+5. returns false on line R5
+6. error before program starts
+7. error while program is running
+
+---
+
+##### Mental execution 2050
+
+What happens when you call:
+
+```
+leap(2050)
+```
+
+1. returns true on line R1
+2. returns false on line R2
+3. returns false on line R3
+4. returns true on line R4 !
+5. returns false on line R5
+6. error before program starts
+7. error while program is running
+
+> Note that `leap()` is returning the wrong answer in this case, because 2050 is *not* a leap year.
+>
+> The reason this happens is a subtle bug in the program: the expression `tmp.charAt(2) == 5`, which should be `tmp.charAt(2) == '5'`. Instead of testing the third character in 2050 against `'5'` and finding a match, it tests the character against the *integer* `5`. Since the character’s value is actually equivalent to the integer 53 (the Unicode value of the character `'5'`), the test fails, and the code goes on to a different part that produces the wrong answer.
+>
+> You might ask why Java even allows a character to be compared against an integer – why isn’t it a static type error? Indeed, it should be. If you tried to compare a `String` with an integer, Java would indeed produce a type error. But for historical reasons, coming from its legacy in the C and C++ programming languages, characters in Java are numeric types, just like `int` and `long`, and automatically convert to integers when they need to. Static typing didn’t save us here, because Java’s type system is very weak in places, like this automatic numeric type conversion.
+>
+> We can also attribute this failure to the code’s lack of DRYness. It contains twelve different character comparisons (`charAt(k)=='c'` for some `k` and `c`), and all that repetitive code means that each one is a potential place for a bug. Just because the code works for 2016 doesn’t give us much confidence that it will work for 2050, because there are so many different paths through this function.
+
+---
+
+##### Mental execution 10016
+
+What happens when you call:
+
+```
+leap(10016)
+```
+
+1. returns true on line R1
+2. returns false on line R2
+3. returns false on line R3
+4. returns true on line R4
+5. returns false on line R5
+6. error before program starts
+7. error while program is running
+
+> This code is failing because it only really works on 4-digit years. It treats 10016 like the year 1001. Notice that this code doesn’t fail fast – when given unexpected input, it simply produces the wrong answer.
+
+---
+
+##### Mental execution 916
+
+What happens when you call:
+
+```
+leap(916)
+```
+
+1. returns true on line R1
+2. returns false on line R2
+3. returns false on line R3
+4. returns true on line R4
+5. returns false on line R5
+6. error before program starts
+7. error while program is running
+
+> This code is making the assumption that the year has exactly 4 digits. When it has fewer than 4 digits, then `tmp.charAt(3)`, which tries to look at the fourth digit in the string will fail with a dynamic error, in the same way that indexing beyond the end of a Python string would fail with an error.
+
+---
+
+##### Magic numbers
+
+How many magic numbers are in this code? Count every occurrence if some appear more than once.
+
+24
+
+> Every expression of the form `tmp.charAt(k) == 'n'` has two magic numbers in it, `k` and `n`. There are twelve such expressions, so that makes 24 magic numbers.
+>
+> Some of these numbers actually have type `char` instead of type `int`, but the type of the constant doesn’t particularly matter to the notion of a magic number. Character and string constants can be magical too, for the same reasons that numeric constants are magical: when their origin is obscure, or when their purpose in the computation is obscure, or when they have hidden dependencies on other constants.
+
+---
+
+##### DRYing out
+
+Suppose you wrote the helper function:
+
+```
+public static boolean isDivisibleBy(int number, int factor) { return number % factor == 0; }
+```
+
+If `leap()` were rewritten to use `isDivisibleBy(year, ...)`, and to correctly follow the [**leap year algorithm**](http://en.wikipedia.org/wiki/Leap_year#Algorithm), how many magic numbers would be in the code?
+
+3
+
+> The three remaining magic numbers would be 4, 100, and 400. The rewritten method might look like:
+>
+> ```java
+> public static boolean isLeapYear(int year) {
+>     if (isDivisibleBy(year, 400)) return true;
+>     else if (isDivisibleBy(year, 100)) return false;
+>     else return isDivisibleBy(year, 4);
+> }
+> ```
+>
+> In a sense（从某种意义上说） these numbers truly are **irreducible**（不能削减的） magic. They are arbitrary corrections, originally based on the ratio of the solar year（太阳年） to the solar day（太阳日）, so it’s hard to give meaningful names to the values 4, 100, and 400. The three numbers are not easy to compute from first principles, either, because they were determined by a standards body, not by an algorithm. As long as these three magic numbers are localized within `isLeapYear`, and not repeated anywhere else in the program, a software engineer would probably tolerate them.
 
 ---
 
@@ -395,15 +592,15 @@ as:
 final int secondsPerDay = 86400;
 ```
 
-In general, variable names like `tmp`, `temp`, and `data` are awful, symptoms of extreme programmer laziness. Every local variable is temporary, and every variable is data, so those names are generally meaningless. Better to use a longer, more descriptive name, so that your code reads clearly all by itself.
+In general, variable names like `tmp`, `temp`, and `data` are awful, symptoms（症状） of extreme programmer laziness. Every local variable is temporary, and every variable is data, so those names are generally meaningless（无意义的）. Better to use a longer, more descriptive name, so that your code reads clearly all by itself.
 
-Follow the lexical naming conventions of the language. In both Python and Java, classes typically start with a capital letter, and variable names and method names start with a lowercase letter. But the two languages differ in how multi-word phrases are rendered into a method or variable name. Python uses snake_case (underscores separating the words of the phrase), while Java uses camelCase (capitalizing each word after the first, as in `startsWith` or `getFirstName`).
+Follow the lexical（词汇的） naming conventions of the language. In both Python and Java, classes typically start with a capital letter, and variable names and method names start with a lowercase letter. But the two languages differ in how multi-word phrases（词组） are rendered into a method or variable name. Python uses snake_case (underscores separating the words of the phrase), while Java uses camelCase (capitalizing each word after the first, as in `startsWith` or `getFirstName`).
 
-Java also uses capitalization to distinguish global constants (`public static final`) from variables and local constants. `ALL_CAPS_WITH_UNDERSCORES` is used for `static final` constants. But the local variables declared inside a method, including local constants like `secondsPerDay` above, use camelCaseNames.
+Java also uses **capitalization**（用大写） to distinguish global constants (`public static final`) from variables and local constants. `ALL_CAPS_WITH_UNDERSCORES` is used for `static final` constants. But the local variables declared inside a method, including local constants like `secondsPerDay` above, use camelCaseNames.
 
-In any language, method names are usually verb phrases, like `getDate` or `isUpperCase`, while variable and class names are usually noun phrases. Choose short words, and be concise, but avoid abbreviations. For example, `message` is clearer than `msg`, and `word` is so much better than `wd`. Keep in mind that many of your teammates in class and in the real world will not be native English speakers, and abbreviations can be even harder for non-native speakers.
+In any language, method names are usually **verb phrases**（动词短语）, like `getDate` or `isUpperCase`, while variable and class names are usually noun phrases（名词短语）. Choose short words, and be concise, but avoid abbreviations（缩写）. For example, `message` is clearer than `msg`, and `word` is so much better than `wd`. Keep in mind that many of your teammates in class and in the real world will not be native English speakers, and abbreviations can be even harder for non-native speakers.
 
-Avoid single-character variable names entirely except where they are easily understood by convention. For example, `x` and `y` make sense for Cartesian coordinates, and `i` and `j` as integer variables in `for` loops. But if your code is full of variables like `e`, `f`, `g`, and `h`, because you’re just picking them from the alphabet, then it will be incredibly hard to read.
+Avoid single-character variable names entirely except where they are easily understood by convention. For example, `x` and `y` make sense for Cartesian coordinates, and `i` and `j` as integer variables in `for` loops. But if your code is full of variables like `e`, `f`, `g`, and `h`, because you’re just picking them from the alphabet, then it will be **incredibly**（非常地） hard to read.
 
 [Effectively Naming Software Thingies](https://medium.com/@rabinovichsagi/effectively-naming-software-thingies-fcea9d78a699) has some excellent advice about naming. Robert Martin’s [*Clean Code*](https://lib.mit.edu/record/cat00916a/mit.001511591) (chapter 2) is also highly recommended.
 
@@ -594,6 +791,66 @@ In general, only the highest-level parts of a program should interact with the h
 
 #### READING EXERCISES
 
+##### Returning results
+
+If you were going to change `countLongWords` to return the result that it currently prints to the console, which of the following method signatures would be *capable* of returning that value? Which would be the *best* choice among the given options?
+
+Capable of returning the result:
+
+```
+public static void countLongWords(String text)
+public static int countLongWords(String text)
+public static double countLongWords(String text)
+public static String countLongWords(String text)
+public static List<Integer> countLongWords(String text)
+```
+
+Best choice for returning the result:
+
+```
+public static void countLongWords(String text)
+public static int countLongWords(String text)
+public static double countLongWords(String text)
+public static String countLongWords(String text)
+public static List<Integer> countLongWords(String text)
+```
+
+> The result printed to the console is a nonnegative integer (`n`), which could be returned as `int`, as `double`, as `String`, or as a 1-element integer list.
+>
+> The best choice would be `int`, because it most closely matches the set of values that the method can return. The other types allow for too many illegal possible return values, which is less safe from bugs.
+
+---
+
+##### Returning two results
+
+The `countLongWords` method actually has two results – the `n` currently printed to the console, and `longestWord` currently stored in a global variable. Which of the following method signatures would be capable of returning both results, without printing to the console or using a global variable? Which would be the best choice among the given options?
+
+Capable of returning both results:
+
+```
+public static void countLongWords(String text)
+public static int countLongWords(String text)
+public static String countLongWords(String text)
+public static List<String> countLongWords(String text)
+public static Pair<Integer,String> countLongWords(String text)
+```
+
+Best choice for returning both results:
+
+```
+public static void countLongWords(String text)
+public static int countLongWords(String text)
+public static String countLongWords(String text)
+public static List<String> countLongWords(String text)
+public static Pair<Integer,String> countLongWords(String text)
+```
+
+> A `String` return value could conceivably be used for this, e.g. by returning `n + "," + longestWord`. But this is a bad choice, because it doesn’t benefit from static checking. A caller of the method could accidentally use the return value as if it were just `longestWord` (without first splitting off and removing the `n` value), and the Java compiler wouldn’t tell the caller they were doing something wrong.
+>
+> A two-element `List<String>` is slightly better, with one element as `n` (converted to a `String`) and the other as `longestWord`. But this still has weak static checking, because a caller could confuse which order they are in, with no error from the Java compiler.
+>
+> The `Pair<Integer,String>` idea would be the best choice for static checking. The two parts of the return value are clearly separated and clearly typed, one as an integer and the other as a string. Java unfortunately does not have a built-in `Pair` type, but [some third-party libraries](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/tuple/Pair.html) do, and it’s also very easy to write one when you need it.
+
 ---
 
 ### Avoid special-case code
@@ -617,15 +874,51 @@ Programmers are often tempted to write special code to deal with what seem like 
 
 The starting `if` statement is unnecessary. If it were omitted, and the `words` list is empty, then the `for` loop simply does nothing, and `0` is printed anyway. In fact, handling this special case separately has led to a possible bug – a difference in the way an empty list is handled, compared to a nonempty list that happens to have no long words on it.
 
-**Actively resist the temptation to handle special cases separately.** If you find yourself writing an `if` statement for a special case, stop what you’re doing, and instead think harder about the general-case code, either to confirm that it can actually already handle the special case you’re worrying about (which is often true!), or put in a little more effort to make it handle the special case. If you haven’t even written the general-case code yet, but are just trying to deal with the easy cases first, then you’re doing it in the wrong order. Tackle the general case first.
+**Actively resist the temptation（诱惑） to handle special cases separately.** If you find yourself writing an `if` statement for a special case, stop what you’re doing, and instead think harder about the general-case code, either to confirm that it can actually already handle the special case you’re worrying about (which is often true!), or put in a little more effort to make it handle the special case. If you haven’t even written the general-case code yet, but are just trying to deal with the easy cases first, then you’re doing it in the wrong order. Tackle（解决） the general case first.
 
-Writing broader, general-case code pays off. It results in a shorter method, which is easier to understand and has fewer places for bugs to hide. It is likely to be safer from bugs, because it makes fewer assumptions about the values it is working with. And it is more ready for change, because there are fewer places to update when a change to the method’s behavior is made.
+Writing broader, general-case code pays off（获得回报）. It results in a shorter method, which is easier to understand and has fewer places for bugs to hide. It is likely to be safer from bugs, because it makes fewer assumptions about the values it is working with. And it is more ready for change, because there are fewer places to update when a change to the method’s behavior is made.
 
 Some programmers justify handling special cases separately with a belief that it increases the overall performance of the method, by returning a hard coded answer for a special case right away. For example, when writing a sort algorithm, it can be tempting to check whether the size of the list is 0 or 1 at the very start of the method, since you can then return immediately with no need to sort at all. Or if the size is 2, just do a comparison and a possible swap. These optimizations might indeed make sense — but not until you have evidence that they actually would matter to the speed of the program! If the sort method is almost never called with these special cases, then adding code for them just adds complexity, overhead, and hiding-places for bugs, without any practical improvement in performance. Write a clean, simple, general-case algorithm first, and optimize it later, *only* if it would actually help.
 
 ---
 
 #### READING EXERCISES
+
+##### Bug hiding in a special case
+
+Smelly Example #3 (reproduced below) starts with an `if` statement that handles a special case, prints `0`, and returns immediately. But this makes the behavior of the special case inconsistent with other cases where the code would print `0`, for example when the list is nonempty but has no long words on it. Which line of code from the general-case code did the special case also need to do?
+
+```java
+         if (words.size() == 0) {
+             System.out.println(0);
+             return;
+         }
+/*A*/    int n = 0;
+/*B*/    longestWord = "";
+/*C*/    for (String word: words) {
+/*D*/        if (word.length() > LONG_WORD_LENGTH) ++n;
+/*E*/        if (word.length() > longestWord.length()) longestWord = word;
+         }
+/*F*/    System.out.println(n);
+}
+```
+
+
+A
+
+B !
+
+C
+
+D
+
+E
+
+F
+
+> The special case code failed to clear the global variable `longestWord`, which *does* get cleared in other cases where the result is `0`. This odd variation in behavior is likely to lead to unexpected bugs in code depending on this method.
+>
+> Note that the best way to fix this is *not* to copy `longestWord = ""` into the special-case `if` statement. Instead the special case should be deleted entirely.
 
 ---
 
