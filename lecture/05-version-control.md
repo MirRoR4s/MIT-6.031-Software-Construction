@@ -50,21 +50,45 @@ Alice uses her judgment to decide when she has reached some milestone that justi
 
 Now when Alice realizes that version 3 is fatally（不幸地） flawed, she can just copy version 2 back into the location for her current code. Disaster averted（避免）! But what if version 3 included some changes that were good and some that were bad? Alice can compare the files manually to find the changes, and sort them into good and bad changes. Then she can copy the good changes into version 2.
 
-This is a lot of work, and it’s easy for the human eye to miss changes. Luckily, there are standard software tools for comparing text; in the UNIX world, one such tool is [`diff`](http://en.wikipedia.org/wiki/Diff). A better version control system will make diffs easy to generate.
+This is a lot of work, and it’s easy for the human eye to miss changes. 
+
+Luckily, there are standard software tools for comparing text; 
+
+in the UNIX world, one such tool is [`diff`](http://en.wikipedia.org/wiki/Diff). 
+
+A better version control system will make diffs easy to generate.
 
 Alice also wants to be prepared in case her laptop gets run over by a bus, so she saves a backup of her work in the cloud, uploading the contents of her working directory whenever she’s satisfied with its contents.
 
-If her laptop ever gets flattened, Alice can retrieve the backup and resume work on the pset on a fresh machine, retaining（保留） the ability to time-travel back to old versions at will.
+If her laptop ever gets flattened（被摧毁）, Alice can retrieve the backup and resume work on the pset on a fresh machine, retaining（保留） the ability to time-travel back to old versions **at will**（任意）.
 
 ![image-20231201090513167](images/image-20231201090513167.png)
 
-Furthermore, she can develop her pset on multiple machines, using the cloud provider as a common interchange point. Alice makes some changes on her laptop and uploads them to the cloud. Then she downloads onto her desktop machine at home, does some more work, and uploads the improved code (complete with old file versions) back to the cloud.
+Furthermore, she can develop her pset on multiple machines, using the cloud provider as a common interchange point. 
 
-If Alice isn’t careful, though, she can run into trouble with this approach. Imagine that she starts editing `Hello.java` to create “version 5” on her laptop. Then she gets distracted and forgets about her changes. Later, she starts working on a new “version 5” on her desktop machine, including *different* improvements. We’ll call these versions “5L” and “5D,” for “laptop” and “desktop.”
+Alice makes some changes on her laptop and uploads them to the cloud. 
+
+Then she downloads onto her desktop machine at home, does some more work, and uploads the improved code (complete with old file versions) back to the cloud.
+
+If Alice isn’t careful, though, she can run into trouble with this approach. 
+
+Imagine that she starts editing `Hello.java` to create “version 5” on her laptop. 
+
+Then she gets distracted and forgets about her changes. 
+
+Later, she starts working on a new “version 5” on her desktop machine, including *different* improvements. 
+
+We’ll call these versions “5L” and “5D,” for “laptop” and “desktop.”
 
 ![image-20231201091148596](images/image-20231201091148596.png)
 
-When it comes time to upload changes to the cloud, there is an opportunity for a mishap（灾祸）! Alice might copy all her local files into the cloud, causing it to contain version 5D only. Later Alice syncs from the cloud to her laptop, potentially overwriting version 5L, losing the worthwhile changes. What Alice really wants here is a *merge*, to create a new version based on the two version 5’s.
+When it comes time to upload changes to the cloud, there is an opportunity for a mishap（灾祸）! 
+
+Alice might copy all her local files into the cloud, causing it to contain version 5D only. 
+
+Later Alice syncs from the cloud to her laptop, potentially overwriting version 5L, losing the worthwhile changes. 
+
+What Alice really wants here is a *merge*, to create a new version based on the two version 5’s.
 
 At this point, considering just the scenario of one programmer working alone, we already have a list of operations that should be supported by a version control scheme:
 
@@ -72,7 +96,9 @@ At this point, considering just the scenario of one programmer working alone, we
 - **comparing** two different versions
 - *pushing* full version history to another location
 - *pulling* history back from that location
-- **merging** versions that are offshoots of the same earlier version
+- **merging** versions that are offshoots（分支） of the same earlier version
+
+---
 
 ### Multiple developers
 
@@ -80,47 +106,89 @@ Now let’s add into the picture Bob, another developer. The picture isn’t too
 
 ![image-20231201092232404](images/image-20231201092232404.png)
 
-Alice and Bob here are like the two Alices working on different computers. They no longer share a brain, which makes it even more important to follow a strict discipline in pushing to and pulling from the shared cloud server. The two programmers must coordinate on a scheme for coming up with version numbers. Ideally, the scheme allows us to assign clear names to *whole sets of files*, not just individual files. (Files depend on other files, so thinking about them in isolation allows inconsistencies.)
+Alice and Bob here are like the two Alices working on different computers. 
 
-Merely uploading new source files is not a very good way to communicate to others the high-level idea of a set of changes. So let’s add a log that records for each version *who* wrote it, *when* it was finalized, and *what* the changes were, in the form of a short human-authored message.
+They no longer share a brain, which makes it even more important to follow a strict discipline in pushing to and pulling from the shared cloud server. 
+
+The two programmers must coordinate on a scheme for coming up with version numbers. 
+
+Ideally, the scheme allows us to assign clear names to **whole sets of files**, not just individual files. (Files depend on other files, so thinking about them in isolation allows inconsistencies.)
+
+Merely uploading new source files is not a very good way to communicate to others the high-level idea of a set of changes. 
+
+So let’s add a log that records for each version **who** wrote it, **when** it was finalized, and **what** the changes were, in the form of a short **human-authored**（人类创作的） message.
 
 ![image-20231201093041905](images/image-20231201093041905.png)
 
-Pushing another version now gets a bit more complicated, as we need to merge the logs. This is easier to do than for Java files, since logs have a simpler structure – but without tool support, Alice and Bob will need to do it manually! We also want to enforce consistency between the logs and the actual sets of available files: for each log entry, it should be easy to extract the complete set of files that were current at the time the entry was made.
+Pushing another version now gets a bit more complicated, as we need to merge the logs. 
 
-But with logs, all sorts of useful operations are enabled. We can look at the log for just a particular file: a view of the log restricted to those changes that involved modifying some file. We can also use the log to figure out which change contributed each line of code, or, even better, which person contributed each line, so we know who to complain to when the code doesn’t work. This sort of operation would be tedious to do manually; the automated operation in version control systems is called **annotate** (or, unfortunately, *blame*).
+This is easier to do than for Java files, since logs have a simpler structure – but without tool support, Alice and Bob will need to do it manually! 
+
+We also want to enforce consistency between the logs and the actual sets of available files: for each log entry, it should be easy to extract the complete set of files that were current at the time the entry was made.
+
+But with logs, all sorts of useful operations are enabled. 
+
+We can look at the log for just a particular file: a view of the log restricted to those changes that involved modifying some file. 
+
+We can also use the log to figure out which change contributed each line of code, or, even better, which person contributed each line, so we know who to complain to when the code doesn’t work. 
+
+This sort of operation would be tedious（冗长的） to do manually; 
+
+the automated operation in version control systems is called **annotate** (or, unfortunately, **blame**).
+
+---
 
 ### Multiple branches
 
-It sometimes makes sense for a subset of the developers to go off and work on a *branch*, a parallel code universe for, say, experimenting with a new feature. The other developers don’t want to pull in the new feature until it is done, even if several coordinated versions are created in the meantime. Even a single developer can find it useful to create a branch, for the same reasons that Alice was originally using the cloud server despite working alone.
+It sometimes makes sense for a subset of the developers to go off and work on a *branch*, a parallel code universe for, say, experimenting with a new feature. 
 
-In general, it will be useful to have many shared places for exchanging project state. There may be multiple branch locations at once, each shared by several programmers. With the right set-up, any programmer can pull from or push to any location, creating serious flexibility in cooperation patterns.
+The other developers don’t want to pull in the new feature until it is done, even if several coordinated versions are created in the meantime. 
+
+Even a single developer can find it useful to create a branch, for the same reasons that Alice was originally using the cloud server despite working alone.
+
+In general, it will be useful to have many shared places for exchanging project state. 
+
+There may be multiple branch locations at once, each shared by several programmers. 
+
+With the right set-up, any programmer can pull from or push to any location, creating serious flexibility in cooperation patterns.
+
+---
 
 ### The shocking conclusion
 
 Of course, it turns out we haven’t invented anything here: [Git](http://git-scm.com/) does all these things for you, and so do many other version control systems.
 
+---
+
 ### Distributed vs. centralized
 
-Traditional *centralized* version control systems like [CVS](https://www.nongnu.org/cvs/) and [Subversion](http://subversion.apache.org/) do a subset of the things we’ve imagined above. They support a collaboration graph – who’s sharing what changes with whom – with one primary server, and copies that only communicate with the primary server.
+Traditional *centralized* version control systems like [CVS](https://www.nongnu.org/cvs/) and [Subversion](http://subversion.apache.org/) do a subset of the things we’ve imagined above. 
 
-In a centralized system, everyone must share their work to and from the primary repository. Changes are safely stored *in version control* if they are *in the primary repository*, because that’s the only repository.
+They support a collaboration graph – who’s sharing what changes with whom – with one primary server, and copies that only communicate with the primary server.
+
+In a centralized system, everyone must share their work to and from the primary repository. 
+
+Changes are safely stored **in version control** if they are *in the primary repository*, because that’s the only repository.
 
 ![image-20231201094018338](images/image-20231201094018338.png)
 
-In contrast, *distributed* version control systems like [Git](http://git-scm.com/) and [Mercurial](https://www.mercurial-scm.org/) allow all sorts of different collaboration graphs, where teams and subsets of teams can experiment easily with alternate versions of code and history, merging versions together as they are determined to be good ideas.
+In contrast, **distributed** version control systems like [Git](http://git-scm.com/) and [Mercurial](https://www.mercurial-scm.org/) allow all sorts of different collaboration graphs, where teams and subsets of teams can experiment easily with alternate versions of code and history, merging versions together as they are determined to be good ideas.
 
-In a distributed system, all repositories are created equal, and it’s up to users to assign them different roles. Different users might share their work to and from different repos, and the team must decide what it means for a change to be *in version control*. Does a change in one programmer’s repo need to be shared with a designated collaborator or server before the rest of the team considers it official?
+In a distributed system, all repositories are created equal, and it’s up to users to assign them different roles. 
+
+Different users might share their work to and from different repos, and the team must decide what it means for a change to be *in version control*. 
+
+Does a change in one programmer’s repo need to be shared with a **designated**（指定的） collaborator（合作者） or server before the rest of the team considers it official?
 
 ![image-20231201094042026](images/image-20231201094042026.png)
 
-### READING EXERCISES
+### 阅读练习
 
 #### More equal
 
 In 6.031, which of these problem set repos has a special role?
 
-- [x] The repository in `6031-sp21` on github.mit.edu
+- [ ] The repository in `6031-sp21` on github.mit.edu
 - [ ] The repository on Didit
 - [ ] The repository on your laptop
 - [ ] The repository on your desktop
@@ -140,6 +208,8 @@ In 6.031, which of these problem set repos has a special role?
 - **Change** or **diff**: the difference between two versions
 - **Head**: the current version
 
+---
+
 ### Features of a version control system
 
 - **Reliable**: keep versions around for as long as we need them; allow backups
@@ -155,7 +225,9 @@ It should **allow multiple people to work together**:
 - **Merge**: combine versions that diverged from a common previous version
 - **Track responsibility**: who made that change, who touched that line of code?
 - **Work in parallel**: allow one programmer to work on their own for a while (without giving up version control)
-- **Work-in-progress**: allow multiple programmers to share unfinished work (without disrupting others, without giving up version control)
+- **Work in progress**: allow multiple programmers to share unfinished work (without disrupting others, without giving up version control)
+
+---
 
 ## Git
 
