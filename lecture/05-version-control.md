@@ -231,60 +231,20 @@ It should **allow multiple people to work together**:
 
 ## Git
 
-我们在6.031中使用的版本控制系统是Git。 
-
-The version control system we’ll use in 6.031 is Git. 
-
-它很强大，值得学习。  
-
-It’s powerful and worth learning. 
-
-但是Git的用户界面可能非常令人沮丧。  
+The version control system we’ll use in 6.031 is [Git](http://git-scm.com/). It’s powerful and worth learning. 
 
 But Git’s user interface can be terribly frustrating. 
 
-什么是Git的用户界面?
-
 What is Git’s user interface?
 
-在6.031中，我们将在命令行中使用Git。 In 6.031, we will use Git on the command line.
+- **In 6.031, we will use Git on the command line.** The command line is a fact of life, ubiquitous because it is so powerful.
+- The command line can make it very difficult to see what is going on in your repositories. You may find [SourceTree](http://www.sourcetreeapp.com/) (shown on the right) for Mac & Windows useful. On any platform, [gitk](http://git-scm.com/docs/gitk) can give you a basic Git GUI. Ask Google for other suggestions.
 
-命令行是一种生活，无处不在，因为它非常强大。
+![image-20231222170510915](images/image-20231222170510915.png)
+An important note about tools for Git:
 
-The command line is a fact of life, ubiquitous because it is so powerful.
-
-命令行可能会使查看仓库中发生的事情变得非常困难。 The command line can make it very difficult to see what is going on in your repositories. 
-
-你可能会发现 SourceTree (如右图所示)对Mac和Windows都很有用。  You may find SourceTree (shown on the right) for Mac & Windows useful. 
-
-![image-20231222090029600](images/image-20231222090029600.png)
-
-在任何平台上，gitk都可以为您提供基本的Git GUI。  On any platform, gitk can give you a basic Git GUI. 
-
-向谷歌咨询其他建议。
-
-Ask Google for other suggestions.
-
-关于Git工具的一个重要注意事项:
- An important note about tools for Git:
-
-Eclipse内置了对Git的支持。 Eclipse has built-in support for Git. 
-
-如果您遵循问题集的说明，Eclipse 将知道您的项目是在 Git 中，并向您显示有用的图标。  
-
-If you follow the problem [set instructions](https://web.mit.edu/6.031/www/sp21/psets/ps0/), Eclipse will know your project is in Git and will show you helpful icons. 
-
-但是，我们不建议使用Eclipse Git UI进行更改、提交等，课程工作人员可能无法帮助您解决问题。
-
-However, we do not recommend using the Eclipse Git UI to make changes, commit, etc., and course staff may not be able to help you with problems.
-
-GitHub为Mac和Windows开发桌面应用。 
-
-GitHub makes desktop apps for Mac and Windows. 
-
-因为GitHub应用程序改变了一些Git操作的工作方式，如果你使用GitHub应用程序，课程工作人员将无法帮助你。
-
-Because the GitHub app changes how some Git operations work, if you use the GitHub app, course staff will not be able to help you.
+- Eclipse has built-in support for Git. If you follow the [problem set instructions](https://web.mit.edu/6.031/www/sp21/psets/ps0/), Eclipse will know your project is in Git and will show you helpful icons. However, we do **not** recommend using the Eclipse Git UI to make changes, commit, etc., and course staff may not be able to help you with problems.
+- [GitHub](http://github.com/) makes desktop apps for Mac and Windows. Because the GitHub app changes how some Git operations work, if you use the GitHub app, course staff will not be able to help you.
 
 ---
 
@@ -297,37 +257,29 @@ On the [Git](http://git-scm.com/) website, you can find two particularly useful 
 
 >  You’ve already completed **[PS0](https://web.mit.edu/6.031/www/sp21/psets/ps0/#clone)** and the **[Getting Started intro to Git](https://web.mit.edu/6.031/www/sp21/getting-started/#git)**.
 
+---
+
 ### The Git object graph
 
 Read: [*Pro Git* 1.3: What is Git?](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F)
 
 > 中文版的在[此处](https://git-scm.com/book/zh/v2/%E8%B5%B7%E6%AD%A5-Git-%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F)
 
-That reading introduces the three pieces of a Git repo: `.git` directory, working directory, and staging area.
-
-All of the operations we do with Git — clone, add, commit, push, log, merge, … — are operations on a graph data structure that stores all of the versions of files in our project, and all the log entries describing those changes. The **Git object graph** is stored in the `.git` directory of your local repository. Another copy of the graph, e.g. for PS0, is on github.mit.edu, stored in an IS&T data center somewhere and served up under [`6031-sp21`](https://github.mit.edu/6031-sp21/) in `ps0-«your username»`.
-
-这个读取过程介绍了Git仓库的三个部分: . Git目录、工作目录和暂存区。
-
-That reading introduces the three pieces of a Git repo: .git directory, working directory, and staging area.
-
-我们用 Git 做的所有操作——克隆、添加、提交、推送、记录、合并……——都是对一个图数据结构的操作，这个图数据结构存储了项目中文件的所有版本，以及描述这些更改的所有日志条目。 
+That reading introduces the three pieces of a Git repo: `.git` directory, working directory, and staging area（暂存区域）.
 
 All of the operations we do with Git — clone, add, commit, push, log, merge, … — are operations on a graph data structure that stores all of the versions of files in our project, and all the log entries describing those changes. 
 
-Git对象图存储在本地仓库的 . Git 目录中。  
+The **Git object graph** is stored in the `.git` directory of your local repository. 
 
-The Git object graph is stored in the .git directory of your local repository. 
-
-图形的另一份副本，例如 PS0，在 github.mit.edu 上，存储在 IS&T 数据中心的某处，并以6031-sp21 提供 `PS0 -<<你的用户名>>`。  
-
-Another copy of the graph, e.g. for PS0, is on github.mit.edu, stored in an IS&T data center somewhere and served up under 6031-sp21 in ps0-«your username».
+Another copy of the graph, e.g. for PS0, is on github.mit.edu, stored in an IS&T data center somewhere and served up under [`6031-sp21`](https://github.mit.edu/6031-sp21/) in `ps0-«your username»`.
 
 ---
 
 ## Copy an object graph with `git clone`
 
-How do you get the object graph from github.mit.edu (or any other remote storage) to your local machine in order to start working on the problem set? **`git clone`** copies the graph.
+How do you get the object graph from github.mit.edu (or any other remote storage) to your local machine in order to start working on the problem set? 
+
+**`git clone`** copies the graph.
 
 Suppose your username is `bitdiddle`:
 
@@ -349,67 +301,37 @@ Hover or tap on each step to update the diagram below:
 
 ![image-20231222093841306](images/image-20231222093841306.png)
 
-我们还没有解释对象图中有什么。 
-
 We still haven’t explained what’s in the object graph. 
 
-但在此之前，让我们了解一下 git clone 的第3步:检出主分支的当前版本。
-
-But before we do that, let’s understand step 3 of git clone: check out the current version of the main branch.
-
-对象图以方便高效的结构存储在磁盘上，用于执行 Git 操作，但不是我们可以轻松使用的格式。 
+But before we do that, let’s understand step 3 of `git clone`: check out the current version of the `main` branch.
 
 The object graph is stored on disk in a convenient and efficient structure for performing Git operations, but not in a format we can easily use. 
 
-在 Alice 发明的版本控制方案中，Hello.java 的当前版本被命名为 Hello.java，因为她需要能够正常地编辑它。  
+In [Alice’s invented version control scheme](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/#inventing_version_control), the current version of `Hello.java` was just called `Hello.java` because she needed to be able to edit it normally. 
 
-In Alice’s invented version control scheme, the current version of Hello.java was just called Hello.java because she needed to be able to edit it normally. 
-
-在Git中，我们通过从对象图中检出文件来获取文件的正常副本。  
-
-In Git, we obtain normal copies of our files by checking them out from the object graph. 
-
-这些是我们在 Eclipse 中看到和编辑的文件。
+In Git, we obtain normal copies of our files by **checking them out** from the object graph. 
 
 These are the files we see and edit in Eclipse.
 
-我们还在上面决定，在历史版本中支持多个分支可能是有用的。 
-
-We also decided above that it might be useful to support multiple branches in the version history. 
-
-多个分支对于从事长期项目的大型团队来说是必不可少的。  
+We also decided above that it might be useful to support [multiple *branches* in the version history](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/#multiple_branches). 
 
 Multiple branches are essential for large teams working on long-term projects. 
 
-在6.031中，为了简单起见，我们不会使用分支，也不建议您创建任何分支。  
-
 To keep things simple in 6.031, we will not use branches and we don’t recommend that you create any. 
 
-每个 6.031 Git 仓库都有一个名为 main 的默认分支，我们所有的工作都在 main 分支上。  Every 6.031 Git repo comes with a default branch called main, and all of our work will be on the main branch. 
+Every 6.031 Git repo comes with a default branch called `main`, and all of our work will be on the `main` branch. (The default branch used to be called `master` by convention. If you see that in online Git tutorials or Stack Overflow answers, just replace it with `main` instead.)
 
-(默认分支习惯称为 master。  
-
-The default branch used to be called master by convention. 
-
-如果你在在线 Git 教程或 Stack Overflow 答案中看到，请将其替换为main。
-
-If you see that in online Git tutorials or Stack Overflow answers, just replace it with main instead.)
-
-因此，git clone 的第 2 步会得到一个对象图，第3步会得到一个工作目录，其中包含从项目的当前版本开始可以编辑的文件。
-
-So step 2 of git clone gets us an object graph, and step 3 gets us a working directory full of files we can edit, starting from the current version of the project.
-
-最后让我们深入研究对象图! 
+So step 2 of `git clone` gets us an object graph, and step 3 gets us a **working directory** full of files we can edit, starting from the current version of the project.
 
 Let’s finally dive into that object graph!
 
-> Clone an example repo: **`https://github.com/6031/ex05-hello-git`**
+Clone an example repo: **`https://github.com/6031/ex05-hello-git`**
 
 Using commands from [Getting Started](https://web.mit.edu/6.031/www/sp21/getting-started/#git) or [*Pro Git* 2.3: Viewing the Commit History](http://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History), or by using a tool like [SourceTree](http://www.sourcetreeapp.com/), explain the history of this little project to yourself.
 
 Here’s the output of [`git lol`](https://web.mit.edu/6.031/www/sp21/getting-started/#git-lol) for this example repository:
 
-```bash
+```
 * b0b54b3 (HEAD, origin/main, origin/HEAD, main) Greeting in Java
 *   3e62e60 Merge
 |\  
@@ -420,65 +342,9 @@ Here’s the output of [`git lol`](https://web.mit.edu/6.031/www/sp21/getting-st
 * 41c4b8f Initial commit
 ```
 
-Git 项目的历史是一个有向无环图(DAG)。 
+The history of a Git project is a [**directed acyclic graph**](http://en.wikipedia.org/wiki/Directed_acyclic_graph) (DAG). The history graph is the backbone of the full object graph stored in `.git`, so let’s focus on it for a minute.
 
-The history of a Git project is a directed acyclic graph (DAG). 
-
-历史图是存储在 .git 中的完整对象图的支柱，所以我们先来关注一下历史图。  
-
-The history graph is the backbone of the full object graph stored in .git, so let’s focus on it for a minute.
-
-![img](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/figures/hello-git-history.png)
-
-历史图中的每个节点都是一个提交(commit)，也就是版本(version)，也就是项目的修订版本(revision):项目中所有文件在那个时间点的完整快照。 
-
-Each node in the history graph is a commit a.k.a. version a.k.a. revision of the project: a complete snapshot of all the files in the project at that point in time. 
-
-读者可能还记得，每次提交都有一个唯一的 ID，以十六进制数的形式显示。
-
-You may recall from our earlier reading that each commit is identified by a unique ID, displayed as a hexadecimal number.
-
-除了初始提交，每个提交都有一个指向父提交的指针。 
-
-Except for the initial commit, each commit has a pointer to a parent commit. 
-
-例如，`1255f4e` 有父级 `41c4b8f` :这意味着 `41c4b8f` 先于 `1255f4e` 发生。
-
-For example, commit 1255f4e has parent 41c4b8f: this means 41c4b8f happened first, then 1255f4e.
-
-有些提交具有相同的父级。 
-
-Some commits have the same parent. 
-
-They are versions that diverged from a common previous version, for example because two developers were working independently.
-
-一个 commit 可以有两个 parent。 
-
-And a commit can have two parents. 
-
-这是一个将不同的历史联系在一起的版本，例如，因为这些开发人员然后将他们的工作再次合并在一起。
-
-This is a version that ties divergent histories back together, for example because those developers then merged their work together again.
-
-一个分支——记住 main 是我们现在唯一的分支——只是一个指向 commit 的名称。
-
-A branch — remember main will be our only branch for now — is just a name that points to a commit.
-
-最后，HEAD 指向我们当前的提交——几乎。 
-
-Finally, HEAD points to our current commit — almost. 
-
-我们还需要记住我们在哪个分支上工作。  
-
-We also need to remember which branch we’re working on. 
-
-所以HEAD指向当前分支，而当前分支又指向当前提交。
-
-So HEAD points to the current branch, which points to the current commit.
-
-使用 Getting Started 和 Pro Git 命令或 SourceTree 之类的工具，检查你对示例仓库的理解…… 
-
-Using commands from Getting Started and Pro Git or a tool like SourceTree, check your understanding of the example repo…
+---
 
 #### 阅读练习
 
@@ -524,15 +390,23 @@ And how many times has a file been deleted?
 
 The history graph is the backbone of the full object graph. What else is in there?
 
-![img](https://web.mit.edu/6.031/www/sp21/classes/05-version-control/figures/hello-git-history-trees.png)
+Each commit is a snapshot of our entire project, which Git represents with a **tree** node. 
 
-Each commit is a snapshot of our entire project, which Git represents with a **tree** node. For a project of any reasonable size, most of the files *won’t* change in any given revision. Storing redundant copies of the files would be wasteful, so Git doesn’t do that.
+For a project of any reasonable size, most of the files *won’t* change in any given revision. 
 
-Instead, the Git object graph stores each version of an individual file *once*, and allows multiple commits to *share* that one copy. To the left is a more complete rendering of the Git object graph for our example.
+Storing redundant copies of the files would be wasteful, so Git doesn’t do that.
 
-Keep this picture in the back of your mind, because it’s a wonderful example of the sharing enabled by *immutable data types*, which we’re going to discuss a few classes from now.
+Instead, the Git object graph stores each version of an individual file *once*, and allows multiple commits to *share* that one copy. 
+
+To the down is a more complete rendering of the Git object graph for our example.
+
+![image-20231222165516836](images/image-20231222165516836.png)
+
+Keep this picture in the back of your mind, because it’s a wonderful example of the sharing enabled by **immutable data types**, which we’re going to discuss a few classes from now.
 
 Each commit also has log data — who, when, short log message, etc. — not shown in the diagram.
+
+---
 
 ## Add to the object graph with `git commit`
 
@@ -744,13 +618,3 @@ How does version control relate to the three big ideas of 6.031?
 - Ready for change
 
   all about managing and organizing changes accept and integrate changes from other developers isolate speculative work on branches
-
-## More practice
-
-If you would like to get more practice with the concepts covered in this reading, you can visit the [question bank](<https://qable.mit.edu:8001/practice.html#Version> Control). The questions in this bank were written in previous semesters by students and staff, and are provided for review purposes only – doing them will not affect your classwork grades.
-
-Collaboratively authored with contributions from: Saman Amarasinghe, Adam Chlipala, Srini Devadas, Michael Ernst, Max Goldman, John Guttag, Daniel Jackson, Rob Miller, Martin Rinard, and Armando Solar-Lezama. This work is licensed under [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/).
-
-MIT EECS
-
-  spring 2021 course site archive  |  latest site at [mit.edu/6.031](http://web.mit.edu/6.031/)  |  [accessibility](http://accessibility.mit.edu/)
