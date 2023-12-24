@@ -70,7 +70,6 @@ public class TurtleSoup {
         //throw new RuntimeException("implement me!");
         double internal_angles = TurtleSoup.calculateRegularPolygonAngle(sides);
         for (int i = 0; i < sides; i++) {
-           
                 if (i == 0) {
                     turtle.turn(360.00 - internal_angles + 90.00);
                 }
@@ -104,16 +103,14 @@ public class TurtleSoup {
         // throw new RuntimeException("implement me!");
         double result = 0.0;
         double angleToTarget = Math.toDegrees(Math.atan2(targetY - currentY, targetX - currentX));
-        System.out.println(angleToTarget);
-        double tmp = 90.0 - currentHeading;
-        if (angleToTarget > tmp) {
-            result =  tmp + 270 + (90.0 - angleToTarget);
+        double angle = 90.0 - currentHeading;
+        if (angleToTarget > angle) {
+            result =  angle + 270 + (90.0 - angleToTarget);
         }
-        else if (angleToTarget < tmp) {
-            result = tmp - angleToTarget;
+        else if (angleToTarget < angle) {
+            result = angle - angleToTarget;
         }
         return result;
-        
     }
 
     /**
@@ -133,19 +130,12 @@ public class TurtleSoup {
     public static List<Double> calculateHeadings(List<Integer> xCoords, List<Integer> yCoords) {
         //throw new RuntimeException("implement me!");
         List<Double> result = new ArrayList<>();
+        double currentHeading = 0.0;
         for (int i = 0; i < xCoords.size() - 1; i++) {
-            int cx = xCoords.get(i);
-            int cy = yCoords.get(i);
-            int tx = xCoords.get(i + 1);
-            int ty = xCoords.get(i + 1);
-            double ca = 0;
-            if (tx - ty != 0) {
-                double k = (double)(cx - cy) / (tx - ty);
-                double angle = Math.atan(k); 
-                ca = 90 - angle;
-            }
-
-            result.add(TurtleSoup.calculateHeadingToPoint(ca, cx, cy, tx, ty));
+            currentHeading = calculateHeadingToPoint(
+                currentHeading, xCoords.get(i), yCoords.get(i), xCoords.get(i + 1), yCoords.get(i + 1)
+            );
+            result.add(currentHeading);
         }
         return result;
     }
@@ -172,14 +162,12 @@ public class TurtleSoup {
     public static void main(String args[]) {
         DrawableTurtle turtle = new DrawableTurtle();
 
-//        drawSquare(turtle, 40);
-//
-//        // draw the window
-//        turtle.draw();
-        // drawRegularPolygon(turtle, 80, 10);
-        // turtle.draw();
-        double ans = TurtleSoup.calculateHeadingToPoint(0.0, 0, 0, 1, 1);
-        System.out.println(ans);
+        drawSquare(turtle, 40);
+       // draw the window
+        turtle.draw();
+        drawRegularPolygon(turtle, 80, 10);
+        turtle.draw();
+
     }
 
 }
