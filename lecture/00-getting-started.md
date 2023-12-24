@@ -144,21 +144,41 @@ Once you have resolved all the conflicts (note that there can be several conflic
 
 Avoid merges and merge conflicts:
 
-### *Pull before you start working*
+### Pull before you start working
 
-Before you start working, **always `git pull`**. That way, you’ll be working from the latest version of your code, and you’ll be less likely to have to perform a merge later.
+Before you start working, **always `git pull`**. 
+
+That way, you’ll be working from the latest version of your code, and you’ll be less likely to have to perform a merge later.
+
+---
 
 ### Getting the history of the repository
 
-You can see the list of all the commits in the repository (with their commit messages) using `git log`. You can see the last commit on the repository using `git show`. This will show you the commit message as well as all the modifications.
+You can see the list of all the commits in the repository (with their commit messages) using `git log`. 
 
-**Long output**: if `git log` or `git show` generate more output than fits on one page, you will see a colon (`:`) symbol at the bottom of the screen. You will not be able to type another command! Use the arrow keys to scroll up and down, and quit the output viewer by pressing `q`. (You can also press `h` for see the viewer’s other commands, but scrolling and quitting are the most important to know.)
+You can see the last commit on the repository using `git show`. This will show you the commit message as well as all the modifications.
 
-**Commit IDs**: every Git commit has a unique ID, the hexadecimal numbers you see in `git log` or `git show`. The commit ID is a unique cryptographic hash of the contents of that commit. Every commit, not just within your repository but within the *universe* of all Git repositories, has a unique ID (with extremely high probability).
+**Long output**: if `git log` or `git show` generate more output than fits on one page, you will see a colon (`:`) symbol at the bottom of the screen. 
 
-You can reference a commit by its ID (usually just by the first few characters). This is useful with a command like `git show`, where you can look at a particular commit rather than only the most recent one.
+You will not be able to type another command! 
+
+Use the arrow keys to scroll up and down, and quit the output viewer by pressing `q`. 
+
+(You can also press `h` for see the viewer’s other commands, but scrolling and quitting are the most important to know.)
+
+**Commit IDs**: every Git commit has a unique ID, the hexadecimal numbers you see in `git log` or `git show`. 
+
+The commit ID is a unique cryptographic hash of the contents of that commit. 
+
+Every commit, not just within your repository but within the *universe* of all Git repositories, has a unique ID (with extremely high probability).
+
+You can reference a commit by its ID (usually just by the first few characters). 
+
+This is useful with a command like `git show`, where you can look at a particular commit rather than only the most recent one.
 
 You will also see commits identified by ID in tools like [github.mit.edu](https://github.mit.edu/6031-sp21/) and [Didit](https://didit.mit.edu/6.031/sp21/).
+
+---
 
 ### Reverting to previous versions
 
@@ -168,6 +188,8 @@ If you’d like to practice using the version history to undo a change:
 
 ------
 
-We will revisit Git and learn more about version control in future classes. If you’ve installed the software, set up Eclipse, and completed the GitStream exercises above, you’re ready to move on to [Problem Set 0](https://web.mit.edu/6.031/www/sp21/psets/ps0/).
+We will revisit Git and learn more about version control in future classes. 
+
+If you’ve installed the software, set up Eclipse, and completed the GitStream exercises above, you’re ready to move on to [Problem Set 0](https://web.mit.edu/6.031/www/sp21/psets/ps0/).
 
 ### Have fun in 6.031!

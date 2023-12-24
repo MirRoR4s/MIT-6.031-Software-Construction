@@ -342,7 +342,9 @@ Here’s the output of [`git lol`](https://web.mit.edu/6.031/www/sp21/getting-st
 * 41c4b8f Initial commit
 ```
 
-The history of a Git project is a [**directed acyclic graph**](http://en.wikipedia.org/wiki/Directed_acyclic_graph) (DAG). The history graph is the backbone of the full object graph stored in `.git`, so let’s focus on it for a minute.
+The history of a Git project is a [**directed acyclic graph**](http://en.wikipedia.org/wiki/Directed_acyclic_graph) (DAG). 
+
+The history graph is the backbone of the full object graph stored in `.git`, so let’s focus on it for a minute.
 
 ---
 
@@ -385,6 +387,25 @@ And how many times has a file been deleted?
 ##### Around and around
 
 
+What would be the meaning of a *cycle* in the history graph?
+
+
+
+Diverging changes were made in parallel
+
+More than two diverging histories were merged in a single merge
+
+Some commit is its own ancestor
+
+Some commit is a descendant of itself
+
+A pair of commits contain inverse changes
+
+This is impossible
+
+The history graph is acyclic. If commit A is the parent of commit B, or in general reachable by traversing directed *parent* edges from commit B, it means commit A existed before commit B. If at the same time commit B is reachable by traversing directed parent edges from commit A, then commit B existed before commit A. Both of these conditions cannot be satisfied simultaneously.
+
+---
 
 ## What else is in the object graph?
 
@@ -410,13 +431,21 @@ Each commit also has log data — who, when, short log message, etc. — not sho
 
 ## Add to the object graph with `git commit`
 
-How do we add new commits to the history graph? **`git commit`** creates a new commit.
+How do we add new commits to the history graph? 
 
-In some alternate universe, `git commit` might create a new commit based on the current contents of your working directory. So if you edited `Hello.java` and then did `git commit`, the snapshot would include your changes.
+**`git commit`** creates a new commit.
 
-We’re not in that universe; in our universe, Git uses that third and final piece of the repository: the **staging area** (a.k.a. the **index**, which is only a useful name to know because sometimes it shows up in documentation).
+In some alternate universe, `git commit` might create a new commit based on the current contents of your working directory. 
 
-The staging area is like a proto-commit, a commit-in-progress. Here’s how we use the staging area and **`git add`** to build up a new snapshot, which we then cast in stone using **`git commit`**:
+So if you edited `Hello.java` and then did `git commit`, the snapshot would include your changes.
+
+We’re not in that universe; 
+
+in our universe, Git uses that third and final piece of the repository: the **staging area** (a.k.a. the **index**, which is only a useful name to know because sometimes it shows up in documentation).
+
+The staging area is like a proto-commit, a commit-in-progress. 
+
+Here’s how we use the staging area and **`git add`** to build up a new snapshot, which we then cast in stone using **`git commit`**:
 
 Modify `hello.txt`, `git add hello.txt`, `git commit`
 
