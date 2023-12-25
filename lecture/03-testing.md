@@ -20,6 +20,72 @@ After today’s class, you should:
 
 ##  Validation
 
+测试是更通用的验证过程的一个例子。
+
+Testing is an example of a more general process called validation. 
+
+验证的目的是发现程序中的问题，从而提高你对程序正确性的信心。 
+
+The purpose of validation is to uncover problems in a program and thereby increase your confidence in the program’s correctness. 
+
+验证包括:
+
+Validation includes:
+
+- 程序的形式推理，通常称为验证。Formal reasoning about a program, usually called verification. 
+
+  验证构造一种形式证明以说明程序是正确的。 
+
+  Verification constructs a formal proof that a program is correct. 
+
+  手工验证是乏味的，自动化工具验证仍然是一个活跃的研究领域。 
+
+  Verification is tedious to do by hand, and automated tool support for verification is still an active area of research. 
+
+  尽管如此，程序中重要的小片段还是可以被正式验证的，例如操作系统中的调度器、虚拟机中的字节码解释器，或者操作系统中的文件系统。
+  Nevertheless, small, crucial pieces of a program may be formally verified, such as the scheduler in an operating system, or the bytecode interpreter in a virtual machine, or the filesystem in an operating system.
+
+- 代码评审。
+  
+     Code review. 
+     
+     让其他人仔细阅读你的代码，并非正式地进行推理，这可能是发现bug的好方法。 Having somebody else carefully read your code, and reason informally about it, can be a good way to uncover bugs. 
+     
+     这很像让别人校对你写的文章。 
+     
+     It’s much like having somebody else proofread an essay you have written. 
+     
+     我们会在另一篇文章中讨论代码审查。
+     We discuss code review in another reading.
+     
+- 测试。Testing. 
+  
+    仔细选择输入，运行程序并检查结果。
+    Running the program on carefully selected inputs and checking the results.
+    即使有最好的验证，也很难在软件中达到完美的质量。
+    
+
+Even with the best validation, it’s very hard to achieve perfect quality in software. 
+
+下是一些典型的残差率(软件发布后遗留的 bug )每 kloc (1000行源代码):
+
+Here are some typical residual defect rates (bugs left over after the software has shipped) per kloc (one thousand lines of source code):
+
+- 1 - 10个缺陷/kloc:典型的工业软件。
+  1 - 10 defects/kloc: Typical industry software.
+
+- 0.1 - 1个缺陷/kloc:高质量的验证。
+
+  0.1 - 1 defects/kloc: High-quality validation. Java 库可能达到这个级别的正确性。
+
+  The Java libraries might achieve this level of correctness.
+
+- 0.01 - 0.1缺陷/kloc:最好的，安全关键验证。
+
+  0.01 - 0.1 defects/kloc: The very best, safety-critical validation. NASA和像Praxis这样的公司可以达到这一水平。
+   NASA and companies like Praxis can achieve this level.
+  对于大型系统来说，这可能会令人沮丧。This can be discouraging for large systems. 例如，如果您发布了100万行典型的行业源代码(1个缺陷/kloc)，这意味着您错过了1000个bug ! For example, if you have shipped a million lines of typical industry source code (1 defect/kloc), it means you missed 1000 bugs!
+
 
 Testing is an example of a more general process called **validation**. The purpose of validation is to uncover problems in a program and thereby increase your confidence in the program’s correctness. Validation includes:
 
