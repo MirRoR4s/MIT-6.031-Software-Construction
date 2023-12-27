@@ -12,7 +12,7 @@
 - 静态类型
 
 <!-- - the big three properties of good software -->
-- 好的软件应具有的三大属性
+- 好的软件应具有的三大性质
 
 ---
 
@@ -94,14 +94,14 @@ print(n)
 
 <!-- The most important semantic difference between the Python and Java code above is the declaration of the variable `n`, which specifies its type: `int`. -->
 
-上述 Java 和 Python 代码之间最重要的语义上的差别在于变量 `n` 的声明。Java 在声明变量 `n` 时指定了其类型：`int`。
+上述 Python和 Java 代码之间最重要的语义差别在于变量 `n` 的声明。Java 在声明变量 `n` 时指定了其类型：`int`。
 
 <!-- A **type** is a set of values, along with operations that can be performed on those values. -->
 
-类型是一些值以及可对这些值执行的**操作**组成的集合。
+**类型**是一些值以及可对这些值执行的操作组成的集合。
 
 <!-- Java has several **primitive types**, among them: -->
-Java 的原始数据类型如下：
+Java 有一些原始数据类型，包括：
 
 <!-- - `int` (for integers like 5 and -200, but limited to the range about ± 231, or roughly ± 2 billion) -->
 
@@ -124,16 +124,16 @@ Java 的原始数据类型如下：
 - `char`：表示 `'A'` 或 `'$'` 这样的单个字符
 
 <!-- Java also has **object types**, for example: -->
-Java 也有对象类型，比如：
+Java 也有**对象类型**，比如：
 
 <!-- - `String` represents a sequence of characters, like a Python string. -->
-`string` 表示的是一个字符序列，类似于 python 的字符串。
+`string` 表示一个字符序列，类似于 python 的字符串。
 
 <!-- - `BigInteger` represents an integer of arbitrary size, so it acts like a Python integer. -->
-`BigInteger` 表示的是一个任意大小的整数，类似于 python 的整数。
+`BigInteger` 表示一个任意大小的整数，类似于 python 的整数。
 
 <!-- By Java convention, primitive types are lowercase, while object types start with a capital letter. -->
-根据 Java 的惯例，原始数据类型小写，对象类型首字母大写。
+根据 Java 惯例，原始类型小写，但对象类型首字母大写。
 
 <!-- **Operations** are functions that take inputs and produce outputs (and sometimes change the values themselves). The syntax for operations varies, but we still think of them as functions no matter how they’re written. Here are three different syntaxes for an operation in Python or Java: -->
 
@@ -160,14 +160,14 @@ Java 也有对象类型，比如：
 ## 静态类型
 
 <!-- Java is a **statically-typed language**. The types of all variables are known at compile time (before the program runs), and the compiler can therefore deduce the types of all expressions as well. If `a` and `b` are declared as `int`, then the compiler concludes that `a+b` is also an `int`. The Eclipse environment does this while you’re writing the code, in fact, so you find out about many errors while you’re still typing. -->
-Java 是一种静态类型的语言，所有变量的类型在编译时（在程序运行之前）就已知晓，所以编译器可以推断出所有表达式的类型。如果 `a`、`b` 都被声明为 `int`，那么编译器就可以推断出 `a+b` 也是 `int。`
+Java 是一种**静态类型**的语言，所有变量的类型在编译时（在程序运行之前）就已知晓，所以编译器可以推断出所有表达式的类型。如果 `a`、`b` 都被声明为 `int`，那么编译器就可以推断出 `a+b` 也是 `int。`
 
 <!-- In **dynamically-typed languages** like Python, this kind of checking is deferred until runtime (while the program is running). -->
 在像 python 这样的**动态类型语言**中，这种检查被推迟到运行时进行。（即程序运行的时候）
 
 <!-- Static typing is a particular kind of **static checking**, which means checking for bugs at compile time. Bugs are the bane of programming. Many of the ideas in this course are aimed at eliminating bugs from your code, and static checking is the first idea that we’ve seen for this. Static typing prevents a large class of bugs from infecting your program: to be precise, bugs caused by applying an operation to the wrong types of arguments. If you write a broken line of code like: -->
 
-静态类型是一类特殊的**静态检查**，会在编译时就检查 bug 的存在。静态类型可以预防一类 bug 干扰你的程序：更准确地说，是预防在执行某种操作时由于参数类型错误而产生的 bug。如果你编写了一个如下的代码：
+静态类型是一种特殊的**静态检查**，会在编译时就检查 bug 的存在。静态类型可以预防一类 bug 干扰你的程序：更准确地说，是预防在执行某种操作时由于参数类型错误而产生的 bug。如果你编写了一个如下的代码：
 
 ```java
 "5" * "6"

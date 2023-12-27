@@ -210,13 +210,28 @@ What ideas does this story demonstrate?
 
 ---
 
-## Test-first programming
+##  Test-first programming
 
-Before we dive in, we need to define some terms:
+在继续阅读之前，我们需要定义一些术语：
 
-- A **module** is a part of a software system that can be designed, implemented, tested, and reasoned about separately from the rest of the system. In this reading, we’ll focus on modules that are functions, represented by Java methods. In future readings we’ll broaden our view to think about larger modules, like a class with multiple interacting methods.
-- A **specification** (or spec) describes the behavior of a module. For a function, the specification gives the types of the parameters and any additional constraints on them (e.g. `sqrt`’s parameter must be nonnegative). It also gives the type of the return value and how the return value relates to the inputs. In Java code, the specification consists of the method signature and the comment above it that describes what it does.
-- A module has an **implementation** that provides its behavior, and *clients* that use the module. For a function, the implementation is the body of the method, and the clients are other code that calls the method. The specification of the module constrains both the client and the implementation. We’ll have much more to say about specifications, implementations, and clients a few classes from now.
+- **模块**是软件系统的一部分，可以和系统的其余部分分开设计、实现、测试和推理。本文将重点关注由 Java 方法表示的函数模块。
+- **规范**（spec）描述了模块的行为。对一个函数来说，规范给出了函数的参数类型以及对参数的额外约束（比如 `sqrt` 函数的参数必须是非负的）。规范也给出了返回值的类型以及返回值和输入间的联系。在 Java 代码中，规范由方法签名以及在方法之上描述了方法做了什么的注释构成。
+- **实现**提供了模块的行为。每个模块都有一个对应的**实现**（implementation）。模块的使用者称为客户端（client）。对一个函数（ Java 方法）来说，方法体就是其实现，调用该方法的其它代码就是客户端。模块规范既约束了客户端，也约束了实现。
+- 测试用例是输入的特定选择，沿着规范要求的预期输出行为。
+- 测试套件是模块的测试用例集。
+
+在问题集 0 中你已经见过并使用过这些概念——根据给出的 Java 方法规范，编写其对应的实现。同时，为每个方法分配一个测试套件，通过运行这些测试套件来查看编写的实现是否遵守了规范。
+
+事实证明，当从零开始设计程序时，上述操作是一种好的设计模式。在测试优先编程中，我们要在编写代码前先编写规范和测试。根据这种思想，一个函数的开发流程如下：
+
+1. **规范**：编写函数的规范。
+2. **测试**：编写测试检验规范。
+3. **实现**：编写函数实现。
+
+一旦实现通过了我们编写的所有测试，那么就完成了该函数的开发。
+
+测试优先编程的最大好处在于 safety from bugs。不要等到开发结束后再来测试，因为那时会有大量未经验证的代码。开发结束后再测试只会使得调试的时间更长、让我们更加痛苦，因为此时 bug 可能出现在代码的任何地方。综上所述，更好的做法是一边开发代码一边对其进行测试。
+
 - A **test case** is a particular choice of inputs, along with the expected output behavior required by the specification.
 - A **test suite** is a set of test cases for a module.
 
@@ -276,6 +291,18 @@ In which stage of test-first programming for a method would you…
 
 ## Systematic testing
 
+不同于穷举测试、随意测试和随机测试，我们希望进行系统的测试。系统的测试意味着我们要以一种符合某种原则的方式来选择测试用例。同时，我们希望设计一种满足下列三个性质的测试套件：
+
+- **正确的**：正确的测试套件是规范的合法客户端，能够不抱怨地接受规范的所有合法实现，这给予了我们修改模块内部实现而无需修改对应的测试套件的自由。
+- **全面的**：一个全面的测试套件能够发现可能由程序员的错误而造成的 bug。
+- **小规模的：**小规模的测试套件（仅含有一些测试用例）在首次实现时会更加快速，并且在规范发生变更时也更加容易更新。同时小的测试套件还具有更快的运行速度，如果测试套件又小又快，那么我们就可以更加频繁地进行测试。
+
+根据上述准则，穷举测试全面但过于巨大；随意测试足够小却不够全面；随机测试仅在输入巨大的情况下才可以实现全面性。
+
+设计一个既全面又小的测试套件要求我们具有正确的态度。通常来说，当我们在编程时，我们的目标是使得程序工作。但作为一个测试套件设计者，我们却想要程序失效。这是一个细微但却重要的差别。一个好的测试者会故意探查程序中可能存在漏洞的地方，只有这样才有可能消除掉这些漏洞。
+
+采用测试态度的需求是测试优先编程的另一个理由。将已经编写的代码视为一件珍贵的东西、一个脆弱的蛋壳，并且非常轻松地测试它，只是为了看看它是否工作，这太诱人了。不过，为了进行彻底的测试，你必须要残忍。测试优先编程允许您在编写任何代码之前就戴上测试的帽子，并采用这种残酷的观点。
+
 Rather than exhaustive, haphazard, or randomized testing, we want to test *systematically*. Systematic testing means that we are choosing test cases in a principled way, with the goal of designing a test suite with three desirable properties:
 
 - **Correct**. A correct test suite is a legal client of the specification, and it accepts all legal implementations of the spec without complaint. This gives us the freedom to change how the module is implemented internally without necessarily having to change the test suite.
@@ -330,6 +357,8 @@ An empty test suite contains no test cases. Assuming a nontrivial specification,
 ---
 
 ## Choosing test cases by partitioning
+
+
 
 Creating a good test suite is a challenging and interesting design problem. We want to pick a set of test cases that is small enough to be easy to write and maintain and quick to run, yet thorough enough to find bugs in the program.
 
