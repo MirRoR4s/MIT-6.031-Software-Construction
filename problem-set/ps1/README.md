@@ -81,26 +81,29 @@ In this problem, you will test and implement the methods in `Extract.java `.
 在此问题中，您将测试和实现 `Extract.java `中的方法。
 
 You’ll find `Extract.java `in the `src `folder, and a JUnit test class `ExtractTest.java `in the `test `folder. Separating implementation code from test code is a common practice in development projects. It makes the implementation code easier to understand, uncluttered by tests, and easier to package up for release.
-您可以在 `src `文件夹中找到 `Extract.java `，以及 `test `文件夹中的 JUnit 测试类 `ExtractTest.java `。将实现代码与测试代码分开是开发项目中的常见做法。这使得实现代码更容易理解，不会被测试弄得杂乱无章，并且更容易打包以供发布。
+您可以在 `src` 文件夹中找到 `Extract.java`，以及 `test`文件夹中的 JUnit 测试类 `ExtractTest.java`。将实现代码与测试代码分开是开发项目中的常见做法。这使得实现代码更容易理解，不会被测试弄得杂乱无章，并且更容易打包以供发布。
 
-1. Devise, document, and implement test cases for `getTimespan() `and `getMentionedUsers() `, and put them in `ExtractTest.java `.
-   为 `getTimespan() `和 `getMentionedUsers() `设计、记录和实现测试用例，并将它们放入 `ExtractTest.java `中。
-2. Implement `getTimespan() `and `getMentionedUsers() `, and make sure your tests pass.
-   实现 `getTimespan() `和 `getMentionedUsers() `，并确保您的测试通过。
+1. Devise, document, and implement test cases for `getTimespan()`and `getMentionedUsers()`, and put them in `ExtractTest.java`.
+2. 为 `getTimespan()`和 `getMentionedUsers()`设计、记录和实现测试用例，并将它们放入 `ExtractTest.java `中。
+
+3. Implement `getTimespan()`and `getMentionedUsers()`, and make sure your tests pass.
+4. 实现 `getTimespan()`和 `getMentionedUsers()`，并确保您的测试通过。
 
 If you want to see your code work on a live sample of tweets, you can run `Main.java `. ( `Main.java `will not be used in grading, and you are free to edit it as you wish.)
-如果你想在一个实时的推文样本上查看你的代码运行情况，你可以运行 `Main.java `。（ `Main.java `不会用于评分，你可以随意编辑它。）
+如果你想在一个实时的推文样本上查看你的代码运行情况，你可以运行 `Main.java`。（ `Main.java`不会用于评分，你可以随意编辑它。）
 
 Hints: 提示：
 
 - Note that we use the class [`Instant `](https://docs.oracle.com/javase/8/docs/api/?java/time/Instant.html)to represent the date and time of tweets. You can check [this article on Java 8 dates and times ](https://java.dzone.com/articles/deeper-look-java-8-date-and)to learn how to use `Instant `.
-  请注意，我们使用 `Instant `类来表示推文的日期和时间。您可以查看这篇关于 Java 8 日期和时间的文章以了解如何使用 `Instant `类。
+- 请注意，我们使用 `Instant`类来表示推文的日期和时间。您可以查看这篇关于 Java 8 日期和时间的文章以了解如何使用 `Instant`类。
+
 - You may wonder what to do about lowercase and uppercase in the return value of `getMentionedUsers() `. This spec has an underdetermined postcondition, so read the spec carefully and think about what that means for your implementation and your test cases.
-  您可能想知道如何处理 `getMentionedUsers() `的返回值中的小写和大写。此规范具有不确定的后置条件，因此请仔细阅读规范并考虑这对您的实现和测试用例意味着什么。
+- 您可能想知道如何处理 `getMentionedUsers()`的返回值中的小写和大写。此规范具有不确定的后置条件，因此请仔细阅读规范并考虑这对您的实现和测试用例意味着什么。
+
 - `getTimespan() `*also* has an underdetermined postcondition in some circumstances, which gives the implementor (you) more freedom and the client (also you, when you’re writing tests) less certainty about what it will return.
   `getTimespan() `在某些情况下也具有不确定的后置条件，这为实现者（您）提供了更多的自由，而为客户端（也是您，当您编写测试时）提供了较少的关于它将返回什么的确定性。
-- Read the spec for the `Timespan `class carefully, because it may answer many of the questions you have about `getTimespan() `.
-  仔细阅读 `Timespan `类的规范，因为它可能会回答您对 `getTimespan() `的许多疑问。
+- Read the spec for the `Timespan`class carefully, because it may answer many of the questions you have about `getTimespan() `.
+- 仔细阅读 `Timespan`类的规范，因为它可能会回答您对 `getTimespan() `的许多疑问。
 
 **Commit to Git.** Once you’re happy with your solution to this problem, commit to your repo! Committing frequently – whenever you’ve fixed a bug or added a working and tested feature – is a good way to use version control, and will be a good habit to have for your team projects.
 提交到 Git。一旦您对解决此问题感到满意，请提交到您的存储库！频繁提交 - 无论何时修复错误或添加正在工作且经过测试的功能 - 都是使用版本控制的好方法，并且对您的团队项目来说是一个好习惯。

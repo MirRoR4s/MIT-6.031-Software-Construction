@@ -25,6 +25,10 @@ public class Extract {
      */
     public static Timespan getTimespan(List<Tweet> tweets) {
         throw new RuntimeException("not implemented");
+        /*
+         * 
+         */
+
     }
 
     /**

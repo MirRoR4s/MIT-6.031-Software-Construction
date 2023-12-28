@@ -35,8 +35,11 @@
 
 1. 周一到周二看完 06: Specifications 以及 07: Designing Specifications。
 2. 周三编写 ps1。
-3. 周四到周五阅读 08: Mutability & Immutability 和 09: Avoiding Debugging。
-4. 周六日对问题集进行查漏补缺、代码审查。
+
+～～3. 周四到周五阅读 08: Mutability & Immutability 和 09: Avoiding Debugging。～～
+
+～～4. 周六日对问题集进行查漏补缺、代码审查。～～
+高估了自己，还是得慢慢来。
 
 ## 问题
 

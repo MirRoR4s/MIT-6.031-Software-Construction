@@ -37,6 +37,7 @@ public class Timespan {
      * @return the starting point of the interval
      */
     public Instant getStart() {
+        // ISO 8601 format, e.g. 2014-02-15T01:02:03Z (Java Instant format)
         return start;
     }
 
