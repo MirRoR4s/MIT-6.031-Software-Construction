@@ -122,11 +122,15 @@ Once your implementation passes the tests you wrote, you're done.
 一旦您的实现通过了您编写的测试，您就完成了。
 
 The biggest benefit of test-first programming is safety from bugs. Don't leave testing until the end of development, when you have a big pile of unvalidated code. Leaving testing until the end only makes debugging longer and more painful, because bugs may be anywhere in your code. It's far more pleasant to test your code as you develop it.
-测试优先编程的最大好处是避免了错误。不要等到开发结束时才进行测试，那时您将有一大堆未经验证的代码。将测试留到最后只会使调试变得更长且更痛苦，因为错误可能存在于代码的任何位置。在开发代码时对其进行测试要愉快得多。
+测试优先编程的最大好处是 safety from bugs。不要等到开发结束时才进行测试，那时您将有一大堆未经验证的代码。将测试留到最后只会使调试变得更长且更痛苦，因为错误可能存在于代码的任何位置。在开发代码时对其进行测试要愉快得多。
+
+---
 
 #### READING EXERCISES 阅读练习
 
 Test-first programming 测试优先编程
+
+---
 
 Systematic testing 系统测试
 -----------------------
@@ -134,23 +138,37 @@ Systematic testing 系统测试
 Rather than exhaustive, haphazard, or randomized testing, we want to test *systematically*. Systematic testing means that we are choosing test cases in a principled way, with the goal of designing a test suite with three desirable properties:
 我们希望进行系统测试，而不是穷举测试、随意测试或随机测试。系统测试意味着我们以一种原则性的方式选择测试用例，目的是设计一个具有三个理想特性的测试套件：
 
+---
+
 -   **Correct**. A correct test suite is a legal client of the specification, and it accepts all legal implementations of the spec without complaint. This gives us the freedom to change how the module is implemented internally without necessarily having to change the test suite.
     正确。正确的测试套件是规范的合法客户端，它接受规范的所有合法实现，而不会抱怨。这让我们可以自由地更改模块的内部实现方式，而无需更改测试套件。
 
+    ---
+    
 -   **Thorough**. A thorough test suite finds actual bugs in the implementation, caused by mistakes that programmers are likely to make.
-    全面。全面的测试套件会发现实现中的实际错误，这些错误是由程序员可能犯的错误引起的。
+    全面。全面的测试套件能够发现实现中存在的 bugs，这些错误是由程序员可能犯的错误引起的。
 
+    ---
+    
 -   **Small**. A small test suite, with few test cases, is faster to write in the first place, and easier to update if the specification evolves. Small test suites are also faster to run. You will be able to run your tests more frequently if your test suites are small and fast.
     小。小的测试套件，测试用例少，一开始就更容易编写，如果规范发生变化，也更容易更新。小的测试套件运行起来也更快。如果您的测试套件小而快，您将能够更频繁地运行测试。
+    
+    ---
 
 By these criteria, exhaustive testing is thorough but infeasibly large. Haphazard testing tends to be small but not thorough. Randomized testing can achieve thoroughness only at the cost of large size.
-根据这些标准，穷举测试很全面，但不可行。随机测试往往很小，但不全面。随机测试只能以规模大的代价来实现全面性。
+根据这些标准，穷举测试很全面，但不可行。随意测试往往很小，但不全面。随机测试只能以规模大的代价来实现全面性。
+
+---
 
 Designing a test suite for both thoroughness and small size requires having the right attitude. Normally when you're coding, your goal is to make the program work. But as a test suite designer, you want to *make it fail*. That's a subtle but important difference. A good tester intentionally pokes at all the places the program might be vulnerable, so that those vulnerabilities can be eliminated.
 设计一个既全面又小巧的测试套件需要正确的态度。通常，在您进行编码时，您的目标是使程序正常工作。但作为测试套件设计者，您希望它失败。这是一个微妙但重要的区别。一个好的测试人员会故意攻击程序可能存在漏洞的所有地方，以便消除这些漏洞。
 
+---
+
 The need to adopt a testing attitude is another argument for test-first programming. It is all too tempting to treat code you've already written as a precious thing, a fragile eggshell, and test it very lightly just to see it work. For *thorough* testing, though, you have to be brutal. Test-first programming allows you to put on your testing hat, and adopt that brutal perspective, before you've even written any code.
-采用测试态度的必要性是测试优先编程的另一个论据。将您已经编写的代码视为珍贵的东西、易碎的蛋壳，并且只是为了看到它起作用而对其进行非常轻微的测试，这是非常诱人的。然而，对于彻底的测试，您必须残忍。测试优先编程允许您戴上测试帽，并在编写任何代码之前采用这种残忍的视角。
+采用测试态度的必要性是测试优先编程的另一个论据。将您已经编写的代码视为珍贵的东西、易碎的蛋壳，并且只是为了看到它起作用而对其进行非常轻微的测试，这是非常诱人的。然而，对于彻底的测试，您必须残忍。测试优先编程允许您戴上测试之帽，并在编写任何代码之前采用这种残忍的视角。
+
+---
 
 #### READING EXERCISES 阅读练习
 
@@ -529,8 +547,9 @@ Partitions expressed on outputs
 
 Partitioning 分区
 
-Automated unit testing with JUnit
-使用 JUnit 进行自动单元测试
+---
+
+Automated unit testing with JUnit 使用 JUnit 进行自动单元测试
 ---------------------------------------------------
 
 A well-tested program will have tests for every individual module that it contains. A test that tests an individual module, in isolation if possible, is called a **unit test**.
@@ -539,10 +558,12 @@ A well-tested program will have tests for every individual module that it contai
 [JUnit](http://junit.org/junit5/) is a widely-adopted Java unit testing library, and we will use it heavily in 6.031. A JUnit unit test is written as a method preceded by the annotation `@Test`. A unit test method typically contains one or more calls to the module being tested, and then checks the results using assertion methods like `assertEquals`, `assertTrue`, and `assertFalse`.
 JUnit 是一个广泛采用的 Java 单元测试库，我们将在 6.031 中大量使用它。JUnit 单元测试被写成一个方法，该方法之前带有注释 `@Test` 。单元测试方法通常包含一个或多个对正在测试的模块的调用，然后使用断言方法（如 `assertEquals` 、 `assertTrue` 和 `assertFalse` ）检查结果。
 
-For example, the tests we chose for `max` above might look like this when implemented for JUnit:
-例如，我们为上面的 `max` 选择的测试在针对 JUnit 实现时可能如下所示：
+---
 
-```
+For example, the tests we chose for `max` above might look like this when implemented for JUnit:
+例如，我们为上面的 `max` 选择的测试在利用 JUnit 实现时可能如下所示：
+
+```java
 `public class MaxTest {
   ...
 
@@ -564,10 +585,14 @@ For example, the tests we chose for `max` above might look like this when impl
 ```
 
 Note that the order of the parameters to `assertEquals` is important. The first parameter should be the *expected* result, usually a constant, that the test wants to see. The second parameter is the *actual* result, what the code actually does. If you switch them around, then JUnit will produce a confusing error message when the test fails. [All JUnit assertions that compare values](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html#method.summary) follow this order consistently: expected first, actual second. An assertion can also take an optional message string as the last argument, which you can use to make the test failure clearer.
-请注意， `assertEquals` 参数的顺序很重要。第一个参数应该是预期的结果，通常是测试想要看到的常量。第二个参数是实际结果，即代码实际执行的操作。如果您将它们互换，那么当测试失败时，JUnit 将生成一个令人困惑的错误消息。所有比较值的 JUnit 断言都始终遵循此顺序：预期值在前，实际值在后。断言还可以将可选的消息字符串作为最后一个参数，您可以使用它使测试失败更加清晰。
+请注意， `assertEquals` 参数的顺序很重要。第一个参数应该是预期的结果，通常是测试想要看到的常量。第二个参数是实际结果，即代码实际执行的操作。如果您将它们互换，那么当测试失败时，JUnit 将生成一个令人困惑的错误消息。所有比较值的 JUnit 断言始终都遵循此顺序：预期值在前，实际值在后。断言还可以将可选的消息字符串作为最后一个参数，您可以用它使测试失败更加清晰。
+
+---
 
 If an assertion in a test method fails, then that test method returns immediately, and JUnit records a failure for that test. A test class can contain any number of `@Test` methods, which are run independently when you run the test class with JUnit. Even if one test method fails, the others will still be run.
-如果测试方法中的断言失败，那么该测试方法会立即返回，JUnit 会记录该测试的失败。一个测试类可以包含任意数量的 `@Test` 方法，当使用 JUnit 运行测试类时，这些方法会独立运行。即使一个测试方法失败，其他方法仍会运行。
+如果测试方法中的断言失败，那么该测试方法会立即返回，JUnit 会记录该测试的失败。一个测试类可以包含任意数量的 `@Test` 方法，当使用 JUnit 运行测试类时，这些方法会独立运行。即使有一个测试方法失败了，其他的方法仍然会运行。
+
+---
 
 #### READING EXERCISES 阅读练习
 
@@ -576,12 +601,15 @@ assertEquals
 assertTrue
 
 Documenting your testing strategy
+
+---
+
 记录您的测试策略
 ------------------------------------------
 
 It's a good idea to write down the testing strategy you used to create a test suite: the partitions, their subdomains, and which subdomains each test case was chosen to cover. Writing down the strategy makes the thoroughness of your test suite much more visible to the reader.
 
-写下您用来创建测试套件的测试策略是一种好的想法：分区、分区的子域以及每个被选择的测试用例涵盖了那个子域。写下该策略会让读者更清楚地看到您的测试套件的全面性。
+写下用于创建测试套件的测试策略是一种好的想法：分区、分区的子域以及每个被选择的测试用例涵盖了哪个子域。写下该策略会让读者更清楚地看到您测试套件的全面性。
 
 ---
 
@@ -609,7 +637,7 @@ Each test case should have a comment above it saying which subdomain(s) it cover
 
 ---
 
-```
+```java
 `  // covers a < b
   @Test
   public void testALessThanB() {
@@ -618,9 +646,11 @@ Each test case should have a comment above it saying which subdomain(s) it cover
 ```
 
 Most test suites will have more than one partition, and most test cases will cover multiple subdomains. For example, here's a strategy for `multiply`, using seven partitions:
-大多数测试套件将有多个分区，并且大多数测试用例将涵盖多个子域。例如，以下是对 `multiply` 的策略，使用七个分区：
+大多数测试套件将有多个分区，并且大多数测试用例将涵盖多个子域。例如，以下是 `multiply` 的测试策略，使用七个分区：
 
-```
+---
+
+```java
 `public class Multiply {
   /*
    * Testing strategy
@@ -643,9 +673,11 @@ Most test suites will have more than one partition, and most test cases will cov
 ```
 
 Then every test case has a comment identifying the subdomains that it was chosen to cover, e.g.:
-然后每个测试用例都有一个注释，标识它被选来涵盖的子域，例如：
+然后每个测试用例都有一个注释，标识它涵盖的子域，例如：
 
-```
+---
+
+```java
 `  // covers a is positive, b is negative,
   //        a fits in long value, b fits in long value,
   //        a and b have different signs
@@ -666,6 +698,9 @@ Then every test case has a comment identifying the subdomains that it was chosen
 Put that there 把它放在那里
 
 Black box and glass box testing
+
+---
+
 黑盒测试和白盒测试
 -----------------------------------------
 
@@ -823,43 +858,68 @@ Regression testing 回归测试
 
 Running automated tests 运行自动化测试
 
-Iterative test-first programming
-迭代式测试优先编程
+---
+
+Iterative test-first programming 迭代式测试优先编程
 ------------------------------------------
 
 Let's revisit the test-first programming idea that we introduced at the start of this reading, and refine it. Effective software engineering does not follow a linear process. Practice **iterative** test-first programming, in which you are prepared to go back and revise your work in previous steps:
 让我们重新审视我们在本文开头介绍的测试优先编程思想，并对其进行改进。有效的软件工程并不遵循线性过程。实践迭代式测试优先编程，您需要做好准备，以便回过头来修改您在先前步骤中的工作：
 
-1.  Write a specification for the function.
+---
+
+1. Write a specification for the function.
     为函数编写规范。
-2.  Write tests that exercise the spec. As you find problems, **iterate** on the spec and the tests.
-    编写测试来演练规范。在您发现问题时，迭代规范和测试。
-3.  Write an implementation. As you find problems, **iterate** on the spec, the tests, and the implementation.
+
+    ---
+
+2. Write tests that exercise the spec. As you find problems, **iterate** on the spec and the tests.
+    编写测试来演练规范。在发现问题时，迭代规范和测试。
+
+    ---
+
+3. Write an implementation. As you find problems, **iterate** on the spec, the tests, and the implementation.
     编写实现。在您发现问题时，迭代规范、测试和实现。
 
+    ---
+
 Each step helps to validate the previous steps. Writing tests is a good way to understand the specification. The specification can be incorrect, incomplete, ambiguous, or missing corner cases. Trying to write tests can uncover these problems early, before you've wasted time working on an implementation of a buggy spec. Similarly, writing the implementation may help you discover missing or incorrect tests, or prompt you to revisit and revise the specification.
-每一步都有助于验证前几步。编写测试是理解规范的好方法。规范可能不正确、不完整、模棱两可或缺少边界情况。尝试编写测试可以尽早发现这些问题，以免在实现错误的规范上浪费时间。同样，编写实现可能有助于您发现缺失或不正确的测试，或提示您重新审视和修改规范。
+每个步骤都有助于验证之前的步骤。编写测试是理解规范的好方法。规范可能不正确、不完整、模棱两可或缺少边界情况。尝试编写测试可以尽早发现这些问题，以免将时间浪费在实现一个有 bug 的规范上。同样，编写实现可能有助于您发现缺失或不正确的测试，或提示您重新审视和修改规范。
+
+---
 
 Since it may be necessary to iterate on previous steps, it doesn't make sense to devote enormous amounts of time making one step perfect before moving on to the next step. **Plan for iteration:**
-由于可能需要迭代前面的步骤，因此在继续执行下一步之前，没有必要花费大量时间使某一步变得完美。计划迭代：
+由于可能需要迭代前面的步骤，因此在继续执行下一步之前，没有必要花费大量时间使某一步变得完美。**计划迭代：**
+
+---
 
 -   For a large specification, start by writing only one part of the spec, proceed to test and implement that part, then iterate with a more complete spec.
     对于大型规范，首先只编写规范的一部分，然后测试并实现该部分，然后使用更完整的规范进行迭代。
 
+    ---
+    
 -   For a complex test suite, start by choosing a few important partitions, and create a small test suite for them. Proceed with a simple implementation that passes those tests, and then iterate on the test suite with more partitions.
-    对于复杂的测试套件，首先选择几个重要的分区，并为它们创建一个小的测试套件。继续进行通过这些测试的简单实现，然后使用更多分区迭代测试套件。
+    对于复杂的测试套件，首先选择几个重要的分区，并为它们创建一个小的测试套件，紧接着编写能够通过这些测试的简单实现，然后使用更多分区迭代测试套件。
 
+    ---
+    
 -   For a tricky implementation, first write a simple brute-force implementation that tests your spec and validates your test suite. Then move on to the harder implementation with confidence that your spec is good and your tests are correct.
-    对于一个棘手的实现，首先编写一个简单的暴力实现来测试你的规范并验证你的测试套件。然后，确信你的规范很好且你的测试是正确的，再继续进行更难的实现。
+    对于一个棘手的实现，首先编写一个简单的暴力实现来测试你的规范并验证你的测试套件。然后，当你确信规范很好且测试是正确的，再继续进行更难的实现。
+
+---
 
 Iteration is a feature of every modern software engineering process (such as [Agile](https://en.wikipedia.org/wiki/Agile_software_development) and [Scrum](https://en.wikipedia.org/wiki/Scrum_(software_development))), with good empirical support for its effectiveness. Iteration requires a different mindset than you may be used to as a student solving homework and exam problems. Instead of trying to solve a problem perfectly from start to finish, iteration means reaching a rough solution as soon as possible, and then steadily refining and improving it, so that you have time to discard and rework if necessary. Iteration makes the best use of your time when a problem is difficult and the solution space is unknown.
 迭代是每个现代软件工程过程（例如敏捷和 Scrum）的一个特性，有良好的经验支持其有效性。迭代需要一种不同的思维方式，这可能与你作为一名学生解决家庭作业和考试问题时所习惯的不同。迭代不是试图从头到尾完美地解决一个问题，而是尽快找到一个粗略的解决方案，然后稳步地对其进行优化和改进，以便在必要时有时间放弃并返工。当问题很困难且解决方案空间未知时，迭代可以最好地利用你的时间。
+
+---
 
 #### READING EXERCISES 阅读练习
 
 Testing techniques 测试技术
 
 Iterating 迭代
+
+---
 
 Summary 总结
 ----------

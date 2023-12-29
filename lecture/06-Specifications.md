@@ -1,4 +1,4 @@
-# [Reading 6: Specifications]([Reading 6: Specifications (mit.edu)](https://web.mit.edu/6.031/www/sp21/classes/06-specifications/))
+# [Reading 6: Specifications](https://web.mit.edu/6.031/www/sp21/classes/06-specifications/)
 
 **Software in 6.031**
 
@@ -9,17 +9,48 @@
 **Objectives**
 
 - Understand preconditions and postconditions in method specifications, and be able to write correct specifications
+
+  了解方法规范中的前置条件和后置条件，并能够编写正确的规范
+
+  ---
+
 - Be able to write tests against a specification
+
+  能够根据规范编写测试
+
+  ---
+
 - Know the difference between checked and unchecked exceptions in Java
+
+  了解 Java 中已检查异常和未检查异常的区别
+
+  ---
+
 - Understand how to use exceptions for special results
+
+  了解如何将异常用于特殊结果
+
+  ---
 
 ## Introduction
 
 Specifications are the **linchpin** of teamwork. It’s impossible to delegate responsibility for implementing a method without a specification. The specification acts as a contract: the implementer is responsible for meeting the contract, and a client that uses the method can rely on the contract. In fact, we’ll see that like real legal contracts, specifications place demands on both parties: when the specification has a precondition, the client has responsibilities too.
 
+规范是团队合作的纽带。在没有规范的情况下，不可能委派实现一个方法的责任。规范的作用类似于“合同”：实现者负责履行合同，使用方法的客户可以依赖该合同。实际上，我们会看到，就像真正的法律合同一样，规范对双方都提出了约束：当规范具有前置条件时，客户也有责任。
+
+---
+
 In this reading we’ll look at the role played by specifications of methods. We’ll discuss what preconditions and postconditions are, and what they mean for the implementer and the client of a method. We’ll also talk about how to use exceptions, an important language feature found in Java, Python, and many other modern languages, which allows us to make a method’s interface safer from bugs and easier to understand.
 
+在本文中，我们将了解方法规范所扮演的角色。我们将讨论方法的前置条件和后置条件是什么，以及它们对方法的实现者和调用者的含义。我们还将讨论如何使用异常，这是 Java、Python 等许多现代编程语言的一项重要的语言特性，它使方法的接口更加不易出错并更易于理解。
+
+---
+
 Before we dive into the structure and meaning of specifications…
+
+在我们深入研究规范的结构和含义之前，需要先了解相关的 Java 知识...
+
+---
 
 ## Java needed for this reading
 
@@ -34,11 +65,15 @@ Read these pages in the Java Tutorials.
 - [Unchecked Exceptions – the Controversy](https://docs.oracle.com/javase/tutorial/essential/exceptions/runtime.html)
 - [Advantages of Exceptions](https://docs.oracle.com/javase/tutorial/essential/exceptions/advantages.html)
 
-<!-- And keep making progress on Java by completing these categories in the Java Tutor:  -->
+---
 
 ## Behavioral equivalence（[行为等效性](https://chat.openai.com/c/4597739f-6c0d-4588-bee1-16a274453a97)）
 
 Suppose you are working on a program containing this method, which finds the index of an integer in an array:
+
+假设我们正在开发一个名为 `find` 的方法，该方法用于查找一个整数在数组中的索引： 
+
+---
 
 ```java
 Explainstatic int find(int[] arr, int val) {
@@ -50,6 +85,10 @@ Explainstatic int find(int[] arr, int val) {
 ```
 
 This `find` method has many *clients* in the program (places where the method is called). Now you’ve realized that frequently in this program, when `find` is called with a large array, the value it finds is likely to be either close to the start of the array (which is very fast to find), or close to the end (which is very slow, because it requires checking almost the entire array). So you have the clever idea to speed things up by searching from both ends of the array at the same time:
+
+此方法有许多客户端（指调用该方法的地方）。当数组很大时，找到的索引很有可能接近数组的开头，这意味着查找速度非常快；也可能接近数组的末尾，这意味着查找速度会很慢，因为需要遍历几乎整个数组。所以一个聪明的做法是同时从数组的两端开始查找：
+
+---
 
 ```java
 Explainstatic int find(int[] arr, int val) {
@@ -63,13 +102,31 @@ Explainstatic int find(int[] arr, int val) {
 
 Is it safe to replace `find` with this new implementation? Can we make this change without introducing bugs? To determine *behavioral equivalence*, our question is whether we could substitute one implementation for the other.
 
+问题在于用这个新的 `find` 方法替换老的 `find` 方法安全吗？能否在不引入 bug 的情况下进行替换呢？换句话说，这两个方法的行为是否等价——即我们能否用一个实现安全地替换另一个实现？
+
+---
+
 Not only do these implementations have different performance characteristics, they actually have different behavior. If `val` happens to appear *more than once* in the array, the original `find` always returns the lowest index at which it occurs. But the new `find` might return the lowest index or the highest index, whichever it finds first.
+
+实际上，这两个方法实现不仅具有不同的性能，而且还具有不同的行为。具体地说，如果 `val` 在数组中出现了多次，那么旧的 `find` 方法总是返回最低处的索引值；但新的 `find` 方法既可能返回最低处的索引值，也可能返回最高处的索引值，这取决于哪个索引值先被找到。
+
+---
 
 But when `val` occurs at exactly one index of the array, the two implementations behave the same: they both return that index. It may be that the clients never rely on the behavior outside of that case. Whenever they call the method, they will be passing in an array with exactly one element matching `val`. For such clients, these two versions of `find` are the same, and we could switch from one implementation to the other without issue.
 
+但是当 `val` 仅在数组中出现一次时，这两个方法实现的行为是等价的：它们都返回被找到的那个唯一索引。客户端可能永远不会依赖于该情况之外的行为。每当他们调用 `find` 方法（无论新旧）时，他们将传入一个数组，其中恰好有一个元素与 val 匹配。对于此类客户端，这两个 `find` 方法的实现是相同的，可以安全地用新的实现替换旧的实现。
+
+---
+
 The notion of behavioral equivalence is in the eye of the beholder — that is, the client. In order to make it possible to substitute one implementation for another, and to know when this is acceptable, we need a specification that states exactly what the client depends on.
 
+行为等价的概念是从观察者（即客户端）的角度来看的。为了能够用一种实现替换另一种实现，并知晓何时能够进行替换，我们需要一个规范来明确地说明客户端依赖的东西。
+
+---
+
 In this case, a specification that would allow these two implementations to be behaviorally equivalent might be:
+
+在这样的情况下，能够让两 `find` 方法实现行为等价的规范可能是这样的：
 
 ```java
 static int find(int[] arr, int val)
@@ -77,122 +134,35 @@ static int find(int[] arr, int val)
 
 - requires: `val` occurs exactly once in `arr`
 
+  要求：`val` 仅在 `arr` 中出现一次
+
 - effects: returns index `i` such that `arr[i]` = `val`
 
-READING EXERCISES
+  作用：返回使得 `arr[i] = val` 的索引 `i`
 
 ---
 
-Something’s missing
-
-There’s a strange difference between the implementations and specification of `find` above. Both implementations end with `return -1`, but the spec never mentions `-1` at all! Why?
-
-the spec is still incomplete, and we will need to finish it
-
-- [x] the `return -1` statements are never reached when `find` is called legally
-
-the phrase “returns index `i`…” in the spec covers this case: just make `i == -1`
-
-- [x] the spec only needs to describe its behavior when it is called legally
-
-> The key thing to observe is the `requires` statement, which says that this method should only legally be called when the value occurs exactly once in the array. This guarantees that an index will be found, so the `return -1` statements are never reached. The spec doesn’t need to describe what it does if the requirement is not satisfied.
-
-Order matters
-
-The `find` spec we just showed will let you make this implementation change safely – but only if that spec existed at the right time! Which ordering of the steps below is safest from bugs?
-
-C: other people write clients using `find`
-
-I1: you write the original forward-search `find` implementation
-
-I2: you write the new forward-and-back `find` implementation
-
-S: you write the spec for `find` shown above
-
-T: you write a test suite for `find`
-
-C, I1, I2, S, T
-
-I1, C, S, I2
-
-I1, C, I2
-
-- [x] S, T, I1, C, I2
-
-I1, T, C, I2, S
-
-> The correct choice here matches [test-first programming](https://web.mit.edu/6.031/www/sp21/classes/03-testing/#test-first_programming).
->
-> Some of these orderings are difficult to do anyway – C before I1, for example, means that the other people writing the clients aren’t even able to run and test their own code until the first implementation exists.
->
-> Writing I1 and/or C before writing down the full spec S is possible but risky. It requires only that the implementer and clients use the same method signature for `find`, so that Java can compile the code together. But it doesn’t mean that all the programmers agreed on the other parts of S, which were described in the *requires* and *effects* lines. We can’t get the benefit of S if we just write it down at the very end, when we decide to make this clever change to I2.
->
-> The most important point to take away is that any ordering in which C precedes S, i.e. the clients are written before the spec has been written down, is risky. In the absence of a spec that tells the client what they can expect from `find` in the future, clients could be depending on behavior that the I1 implementation just happened to exhibit, but that you actually need to change for I2. Specs should be written *first*.
-
-Behave nicely
-
-Consider these two implementations of `find`, which differ not only in the direction they search through the array, but also in what they return if the search fails:
-
-```java
-static int find(int[] a, int val) {
-    for (int i = 0; i < a.length; i++) {
-        if (a[i] == val) return i;
-    }
-    return a.length;
-}
-```
-
-```java
-static int find(int[] a, int val) {
-    for (int i = a.length - 1 ; i >= 0; i--) {
-        if (a[i] == val) return i;
-    }
-    return -1;
-}
-```
-
-As we said above, suppose clients only care about calling the `find` method when they know `val` occurs exactly once in `a`.
-
-In this case, are these two `find` implementations behaviorally equivalent?
-
-- [x] Yes
-
-   No
-
-> If `val` occurs exactly once in `a`, then it doesn’t matter whether we search from start to end or end to start; and it doesn’t matter what we do when we don’t find `val`.
->
-> Once we define how specifications are structured, we’ll see that they are equivalent in this case because a strong precondition hides their potential differences in behavior.
-
-Best behavior
-
-Now let’s change the spec.
-
-Suppose clients now care that the `find` method should:
-
-- (if `val` is in `a`) return some index `i` such that `a[i] == val`
-- (otherwise) return some integer `j` such that `j` is not a valid array index.
-
-In this case, are the two `find` implementations from the previous exercise behaviorally equivalent?
-
-- [x] Yes
-
-No
-
-> Both implementations satisfy these very minimal requirements on the return value. Remember that `a.length` is always an invalid index for `a`, because the valid array indices are 0 through `a.length-1`.
->
-> Once we define how specifications are structured, we’ll see that they are equivalent in this case because a weak postcondition permits their differences in behavior.
-
----
-
-## Why specifications?
+## Why specifications? 为什么需要规范？
 
 Our `find` example showed how a specification can help make a program both ready for change and safe from bugs. Many of the nastiest bugs in programs arise because of misunderstandings about behavior at the interface between two pieces of code. Although every programmer has specifications in mind, not all programmers write them down. As a result, different programmers on a team have *different* specifications in mind. When the program fails, it’s hard to determine where the error is. Precise specifications in the code let you apportion blame (to code fragments, not people!), and can spare you the agony of puzzling over where a bug fix should go.
 
+上述关于 `find` 方法的例子展示了规范如何使得程序既 ready for change 又 safe from bugs。程序中很多的 bug 都是由于人们误解了两个代码段间的接口的行为而引起的。虽然每位程序员心中都有规范，但并非所有程序员都会将它们写下来。由于每个人心中的规范是不同的，所以如果不写下规范，那么当错误发生时将很难确定错误发生在何处。良好的规范能够帮助我们定位到有 bug 的代码，从而免除我们苦苦思索 bug 在何处的痛苦。
+
+---
+
 Specifications are good for the client of a module because they help make the module easier to understand. Having a specification lets you understand what the module does without having to read the module’s code. If you’re not convinced that reading a spec is easier than reading code, compare our spec for `find` on the left, with its tricky implementation on the right:
+
+规范对模块的客户端来说是有益的，因为规范可以使模块更易于理解。有了规范，就可以在不阅读源码的情况下了解到模块的作用。如果你不相信阅读规范比阅读源码更容易，请比较下列关于 `find` 方法的规范和实现：
 
 ![Alt text](images/image.png)                                                      |
 
+---
+
 Specifications are good for the implementer of a method because they give the implementer freedom to change the implementation without telling clients. Specifications can make code faster, too. We’ll see that a specification can rule out certain states in which a method might be called. This restriction on the inputs might allow the implementer to skip an expensive check that is no longer necessary and use a more efficient implementation.
+
+
+
+---
 
 ![Alt text](images/image-1.png)
 
