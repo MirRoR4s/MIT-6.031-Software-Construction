@@ -168,34 +168,91 @@ Specifications are good for the implementer of a method because they give the im
 
 The contract acts as a *firewall* between client and implementer. It shields the client from the details of the *workings* of the module: as a client, you don’t need to read the source code of the module if you have its specification. And it shields the implementer from the details of the *usage* of the module: as an implementer, you don’t have to ask every client how they plan to use the module. This firewall results in *decoupling*, allowing the code of the module and the code of a client to be changed independently, so long as the changes respect the specification — each obeying its obligation.
 
-## Specification structure
+## Specification structure 规范的结构
 
 Abstractly speaking, a *specification* of a method has several parts:
 
+抽象地说，方法的规范由以下几个部分组成：
+
+---
+
 - a method signature, giving the name, parameter types, return type, and exceptions thrown
+
+  方法签名：给出参数的名称、类型、返回类型以及可能抛出的异常
+
+  ---
+
 - a *requires* clause, describing additional restrictions on the parameters
+
+  requires 子句：描述对参数的额外约束
+
+  ---
+
 - an *effects* clause, describing the return value, exceptions, and other effects of the method
+
+  effects 子句：描述返回值、异常以及方法的其它作用效果
+
+  ---
 
 Taken together, these parts form the *precondition* and the *postcondition* of the method.
 
+以上部分结合起来就构成了方法的前置条件和后置条件。
+
+---
+
 The precondition is an obligation on the client (the caller of the method). It is a condition over the state in which the method is invoked. **One aspect of the precondition is the number and types of the parameters in the method signature. Additional conditions are written down in the *requires* clause, for example:**
 
+前置条件是对客户端（方法的调用者）的约束，要求客户端以一定的条件来调用方法。前置条件的一部分是方法签名中的参数个数和类型，另一部分则写在 require 子句中，例如：
+
+---
+
 - narrowing a parameter type (e.g. `x >= 0` to say that an `int` parameter x must actually be a nonnegative `int`)
+
+  缩小参数类型，比如 `x >= 0` 表示 `int` 参数实际上必须是一个非负的 `int`
+
 - interactions between parameters (e.g., `val` occurs exactly once in `arr`)
+
+  参数间的交互，比如 `val` 仅在 `arr` 中出现一次
+
+  ---
 
 ![Alt text](images/image-2.png)
 
 The postcondition is an obligation on the implementer of the method. It includes the parts that Java can statically check: the return type and declared checked exceptions. Additional conditions are written down in the *effects* clause, including:
 
+后置条件是对方法实现者的约束。后置条件同样也由两部分组成，一是 Java 能够进行静态检查的部分，包括返回类型和声明的已检查异常。二是写在 effect 子句中的额外条件，具体包括：
+
+---
+
 - how the return value relates to the inputs
+
+  返回值和输入的关联
+
 - which exceptions are thrown, and when
+
+  抛出哪些异常？何时抛出它们？
+
 - whether and how objects are mutated
+
+  是否要突变对象以及怎样突变它们
 
 In general, the postcondition is a condition on the state of the program *after* the method is invoked, assuming the precondition was true *before*.
 
+通常来说，后置条件是说在调用方法之后，程序的状态必须满足一定的条件。（假设前置条件为真）
+
+---
+
 The overall structure is a logical implication: *if* the precondition holds when the method is called, *then* the postcondition must hold when the method completes.
 
+前、后置条件整体上来看是一个逻辑蕴含的关系：如果调用方法时前置条件成立，那么调用方法后后置条件也必须成立。
+
+---
+
 If the precondition does *not* hold when the method is called, the implementation is *not* bound by the postcondition. It is free to do anything, including never returning, throwing an exception, returning arbitrary results, making arbitrary mutations, etc.
+
+如果在调用方法时前置条件不成立，那么实现不受后置条件的约束。在这种情况下，实现可以做任何事情，比如不返回值、抛出异常、返回任意结果、任意突变输入等等。
+
+---
 
 READING EXERCISES
 
