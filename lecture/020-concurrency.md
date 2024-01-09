@@ -1,100 +1,108 @@
 # Reading 20: Concurrency（并发性）
 
-**Software in 6.031**
+## 学习目标
 
-| Safe from bugs                                   | Easy to understand                                                   | Ready for change                                  |
-| ------------------------------------------------ | -------------------------------------------------------------------- | ------------------------------------------------- |
-| Correct today and correct in the unknown future. | Communicating clearly with future programmers, including future you. | Designed to accommodate change without rewriting. |
+* 理解消息传递和共享内存这两种并发模型
+* 理解进程、线程和时间分片
+* 理解条件竞争的危险性
 
-**Objectives**
-
-* The message passing（消息传递） and shared memory models of concurrency（并发性的共享内存模型）
-* Concurrent processes and threads, and time slicing（时间分片）
-* The danger of race conditions
+---
 
 ## 并发
 
 **并发**指的是多个计算同时发生，其在现代程序设计中几乎无处不在，具体表现在：
 
-* 网络中的多计算机
-* 运行在一台计算机上的多个应用程序
-* 一台计算机上的多个处理器（如今多个处理器通常位于一块芯片上）
+* 多计算机网络
+* 多应用程序计算机
+* 多处理器计算机（如今多个处理器通常位于一块芯片上）
 
-并发对于现代程序设计来说是很重要的，比如网站需要处理同时到来的多个用户、移动app需要在服务器上进行多个处理、
+并发对于现代程序设计来说很重要，具体的应用场景有：
 
-In fact, concurrency is essential in modern programming:
-
-* Web sites must handle multiple simultaneous users.
+* 网站必须要处理同时到达的多个用户
 * Mobile apps need to do some of their processing on servers ("in the cloud").
 * Graphical user interfaces almost always require background work that does not interrupt the user. For example, Eclipse compiles your Java code while you're still editing it.
 
-Being able to program with concurrency will still be important in the future. Processor clock speeds are no longer increasing. Instead, we're getting more cores with each new generation of chips. So in the future, in order to get a computation to run faster, we'll have to split up a computation into concurrent pieces.
+---
 
-***
+在未来并发编程依旧会很重要，因为如今单个处理器的时钟速度已经不再增加，每代新芯片增加的是内核的数量。为了得到更快的运行速度，必须将一个计算分成并发的几个部分。
 
-## Two models for concurrent programming（并发编程）
+---
 
-There are two common models for concurrent programming: **shared memory** and **message passing**.
+## 并发编程的两种模型
 
-**Shared memory.** In the shared memory model of concurrency, concurrent modules interact by reading and writing shared objects in memory. In the figure at right, A and B are concurrent modules, with access to the same shared memory space. The blue objects are private to A or B (only one module can access it), but the orange object is shared by both A and B (both modules have a reference to it).
+并发编程有两种常见的模型：**共享内存**和**消息传递**。
 
-Examples of the shared-memory model:
+---
 
-* A and B might be two processors (or processor cores) in the same computer, sharing the same physical memory.
-* A and B might be two programs running on the same computer, sharing a common filesystem with files they can read and write.
-* A and B might be two threads in the same Java program (we'll explain what a thread is below), sharing the same Java objects.
+**共享内存并发模型**指并发模块之间通过读写内存中的共享对象来进行交互。下图A、B是两个并发模块，它们共享橙色的内存空间（这两个模块都有一个到该空间的引用），而蓝色的内存空间是A和B各自私有的。
 
 ![shared memory](images/shared-memory.png)
 
-**Message passing.** In the message-passing model, concurrent modules interact by sending messages to each other through a communication channel. Modules send off messages, and incoming messages to each module are queued up for handling. Examples include:
+---
 
-* A and B might be two computers in a network, communicating by network connections.
-* A and B might be a web browser and a web server -- A opens a connection to B and asks for a web page, and B sends the web page data back to A.
-* A and B might be an instant messaging client and server.
-* A and B might be two programs running on the same computer whose input and output have been connected by a [pipe](https://en.wikipedia.org/wiki/Anonymous\_pipe), like `ls | grep` typed into a command prompt.
+共享内存模型的例子包括：
+
+* A和B也许是同一计算机上的两个处理器，它们共享相同的物理内存。
+* A和B也许是同一计算机上的两个程序，它们共享相同的文件系统，可对其中的文件进行读写。
+* A和B也许是同一Java程序中的两个线程，它们共享相同的Java对象。
+
+---
+
+**消息传递。** 在消息传递模型中，并发模块之间是通过在某种信道上互相发送消息来交互的，到达模块的消息排成队列以待处理。该模型的例子包括：
 
 ![message passing](images/message-passing.png)
 
-***
+---
 
-## Processes, threads, time-slicing
+* A、B可能是网络中的两台计算机，通过网络连接进行通信。
+* A、B可能是web浏览器和web服务器。A打开一个到B的连接并向B请求一个页面，然后B将页面的数据返回给A。
+* A、B可能是即时消息的客户端和服务端
+* A、B可能是同一计算机上的两个程序，其中A的输出通过管道连接着B的输入，比如 `ls | grep`。
 
-The message-passing and shared-memory models are about how concurrent modules communicate. The concurrent modules themselves come in two different kinds: processes and threads.
+---
 
-**Process.** A process is an instance of a running program that is **isolated** from other processes on the same machine. In particular, it has its own private section of the machine's memory.
+思考与总结：无论是共享内存还是消息传递，本质上都是在描述并发模块之间的通信方式。采用共享内存模型，并发模块之间并不直接通信，所以这种模型的速度会比消息传递要慢吗？
 
-The process abstraction（进程抽象） is a **virtual computer**. It makes the program feel like it has the entire machine to itself -- like a fresh computer has been created, with fresh memory, just to run that program.
+---
 
-Just like computers connected across a network, processes normally share no memory between them. A process can't access another process's memory or objects at all. Sharing memory between processes is **possible** on most operating systems, but it needs special effort. By contrast, a new process is automatically ready for message passing, because it is created with standard input & output streams, which are the `System.out` and `System.in` streams you've used in Java.
+## 进程、线程、时间分片
 
-Whenever you start a Java program -- indeed, whenever you start any program on your computer -- it starts a fresh process to contain the running program.
+消息传递和共享内存模型都是关乎并发模块之间如何进行通信的。但是并发模块本身可以分为两类：进程和线程。
 
-**Thread.** A thread is a locus of control（控制中心） inside a running program. Think of it as a place in the program that is being run, plus the stack of method calls that led to that place (so the thread can go back up the stack when it reaches `return` statements).
+---
 
-Just as a process represents a virtual computer, the thread abstraction（线程抽象） represents a _virtual processor_. Making a new thread simulates making a fresh processor inside the virtual computer represented by the process. This new virtual processor runs the same program and shares the same memory as other threads in the process.
+**进程。** 进程是运行着的程序的一个实例，其和同一台机器上的其它进程是**独立**的。特别地，进程拥有自己私有的机器内存区域。
 
-Threads are automatically ready for shared memory, because threads share all the memory in the process. It takes special effort to get "thread-local" memory that's private to a single thread. It's also necessary to set up message-passing explicitly, by creating and using queue data structures. We'll talk about how to do that in a future reading.
+---
 
-Whenever you run a Java program, the program starts with one thread, which calls `main()` as its first step. This thread is referred to as the **main thread**.
+进程抽象是一台虚拟的计算机，其使得进程感觉自身好像拥有整台机器，就像创建了一台全新的计算机一样，利用全新的内存来运行程序。
 
-**Time slicing.** How can you have many concurrent threads with only one or two processors in your computer? When there are more threads than processors, concurrency is simulated by **time slicing**, which means that the processor switches between threads. The figure on the right shows how three threads T1, T2, and T3 might be time-sliced on a machine that has only two actual processors. In the figure, time proceeds downward, so at first one processor is running thread T1 and the other is running thread T2, and then the second processor switches to run thread T3. Thread T2 simply pauses, until its next time slice on the same processor or another processor.
+进程作为一种并发模块，采用的是什么并发模型呢？由于进程一般是用标准输入和输出创建的（比如 Java 中所用的 `System.out` 和 `System.in`），所以其天生就准备好了采用消息传递模型。尽管在大部分操作系统的进程之间采用共享内存模型是有可能的，但是这需要付出额外的开销。
 
-![image-20231214215110895](images/image-20231214215110895.png)
+每当我们启动一个 Java 程序甚至是启动任意程序，程序都会启动一个全新的进程来容纳运行着的程序。
 
-The far right part of the figure shows how this looks from each thread's point of view. Sometimes a thread is actively running on a processor, and sometimes it is suspended waiting for its next chance to run on some processor.
+---
 
-![image-20231214215125501](images/image-20231214215125501.png)
+**线程。** 线程是运行着的程序内部的一个控制中心。线程抽象表示的是一个虚拟的处理器，这个新的虚拟处理器和进程中的其它线程运行同一个程序并共享相同的内存空间，所以线程天然地准备好采用共享内存模型，因为线程之间共享进程的所有内存。在线程之间采用消息传递模型同样也需要付出额外的开销。
 
-On most systems, time slicing happens unpredictably and nondeterministically, meaning that a thread may be paused or resumed at any time.
+每当运行一个 Java 程序，它首先都会启动一个线程并调用 main() 方法，故这个线程称为 **main** 线程。
 
-***
+**时间分片。** 如果计算机上只有1个或2个处理器，怎样才能拥有多个并发的线程呢？当线程的数量超过处理器的数量时，可以通过**时间分片**来模拟线程并发。时间分片意味着处理器会在线程间切换，所以一个线程在执行的时候可能会暂停，直到其下一个时间分片的时候再由相同的或是另一个处理器来执行。
 
-## Starting a thread in Java
+时间分片在大部分系统上是不可预测的、不确定的，所以线程可能会在任意时间继续或暂停。
 
-You can start new threads by making an instance of [`Thread`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/Thread.html) and telling it to `start()`. You provide code for the new thread to run by creating a class implementing `Runnable`. The first thing the new thread will do is call the `run()` method in this class. For example:
+## 在 Java 中启动一个线程
+
+在 Java 中启动一个新线程的步骤如下：
+
+1. 编写一个 `Runnable` 接口的实现类，在其中实现 `run()` 方法
+2. 以该实现类的实例为参数调用 `Thread` 类的构造函数得到一个 Thread 类对象
+3. 调用该对象的 `start()` 方法
+
+新建的线程会自动调用实现的 `run()` 方法。
 
 ```java
-`// ... in the main method:
+// ... in the main method:
 new Thread(new HelloRunnable()).start();
 
 // elsewhere in the code
@@ -102,10 +110,10 @@ public class HelloRunnable implements Runnable {
     public void run() {
         System.out.println("Hello from a thread!");
     }
-}`
+}
 ```
 
-But a very common idiom is starting a thread with an [anonymous](https://docs.oracle.com/javase/tutorial/java/javaOO/anonymousclasses.html) `Runnable`, which eliminates the need to name the `HelloRunnable` class at all:
+更简便地写法是用一个匿名的 `Runnable` 类：
 
 ```java
 new Thread(new Runnable() {
@@ -114,10 +122,6 @@ new Thread(new Runnable() {
     }
 }).start();
 ```
-
-The next two sections discuss the idea of anonymous classes, because they're widely used in Java beyond just threads.
-
-***
 
 ## Anonymous classes
 
