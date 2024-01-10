@@ -5,7 +5,7 @@
   * [Step 7: Learn the Git workflow](lecture/00-getting-started.md)
   * [静态检查](lecture/01-static-checking.md)
   * [Reading 2: Basic Java](lecture/02-basic-java.md)
-  * [Reading 20: Concurrency（并发性）](lecture/020-concurrency.md)
+  * [Reading 20: 并发](lecture/020-concurrency.md)
   * [Reading 3: Testing](lecture/03-testing.md)
   * [Reading 4: Code Review](lecture/04-code-review.md)
   * [Reading 5: Version Control](lecture/05-version-control.md)
