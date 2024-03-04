@@ -11,7 +11,7 @@ int n = 1;
 double x = 3.5;
 ```
 
-![alt text](image-6.png)
+![alt text](assets/02-basic-java/image.png)
 
 若变量值是对象类型，则用一个圆形方框围住它：
 
@@ -19,7 +19,7 @@ double x = 3.5;
 BigInteger val = new BigInteger("1234567890");
 ```
 
-![alt text](image-7.png)
+![alt text](assets/02-basic-java/image-1.png)
 
 快照图的语法很灵活，不必总是画出所有的细节。可简化快照图，专注于想讨论的程序状态的特定方面：
 
@@ -27,7 +27,7 @@ BigInteger val = new BigInteger("1234567890");
 String s = "hello";
 ```
 
-![alt text](image-8.png)
+![alt text](assets/02-basic-java/image-2.png)
 
 这三个快照图都是演示一个 String 变量的合法方式。若关心 s 的值，可用第一个快照图。若想强调 s 是一个 String 对象值，可用第二和第三个。
 
@@ -37,7 +37,7 @@ String s = "hello";
 Point pt = new Point(5, -3);
 ```
 
-![alt text](image-9.png)
+![alt text](assets/02-basic-java/image-3.png)
 
 如果想更加具体，则可以给出变量的类型，如 `x:int` 或者 `int x`。
 
