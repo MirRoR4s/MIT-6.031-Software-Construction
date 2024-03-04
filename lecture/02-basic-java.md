@@ -1,158 +1,92 @@
-# [Reading 2: Basic Java](https://web.mit.edu/6.031/www/sp21/classes/02-basic-java/)
+# [Java 基础](https://web.mit.edu/6.031/www/sp21/classes/02-basic-java/)
 
-**Objectives**
+## 快照图（Snapshot diagrams）
 
-- Learn basic Java syntax and semantics
-- Transition from writing Python to writing Java
+快照图用于表示程序内部的状态——程序的堆（当前存在的对象）和栈（进程（progress ）中的方法和局部变量）等。
 
-**Software in 6.031**
-
-| Safe from bugs                                   | Easy to understand                                           | Ready for change                                  |
-| :----------------------------------------------- | :----------------------------------------------------------- | :------------------------------------------------ |
-| Correct today and correct in the unknown future. | Communicating clearly with future programmers, including future you. | Designed to accommodate change without rewriting. |
-
-## Getting started with Java
-
-Read the first six sections of **[From Python to Java](http://kennethalambert.com/pythontojava/)** (27 short pages):
-
-- Program Structure and Execution
-- Data Types and Expressions
-- Simple Statements
-- Terminal Input and Output
-- Control Statements
-- Objects and Interfaces
-
-Then check your understanding by answering some questions about how the basics of Java compare to the basics of Python:
-
----
-
-
-
-## Snapshot diagrams
-
-It will be useful for us to draw pictures of what’s happening at runtime, in order to understand subtle questions. **Snapshot diagrams** represent the internal state of a program at runtime – its stack (methods in progress and their local variables) and its heap (objects that currently exist).
-
-Here’s why we use snapshot diagrams in 6.031:
-
-- To talk to each other through pictures (in class and in team meetings)
-- To illustrate concepts like primitive types vs. object types, immutable values vs. unreassignable references, pointer aliasing, stack vs. heap, abstractions vs. concrete representations.
-- To pave the way for richer design notations in subsequent courses. For example, snapshot diagrams generalize into object models in 6.170.
-
-Although the diagrams in this course use examples from Java, the notation can be applied to any modern programming language, e.g., Python, JavaScript, C++, Ruby.
-
-The simplest kind of snapshot diagram shows a variable name with an arrow pointing to the variable’s value:
+最简单的快照图——变量名和指向变量值的箭头以及变量值 ：
 
 ```java
 int n = 1;
 double x = 3.5;
 ```
 
-![image-20231128201516308](images/image-20231128201516308.png)
+![alt text](image-6.png)
 
-When the value is an object value (as opposed to a primitive value), it is denoted by a circle labeled by its type:
+若变量值是对象类型，则用一个圆形方框围住它：
 
 ```java
 BigInteger val = new BigInteger("1234567890");
 ```
 
-![image-20231128201553049](images/image-20231128201553049.png)
+![alt text](image-7.png)
 
-Snapshot diagram syntax is intended to be flexible, not necessarily showing all the details all the time, so that we can draw simple diagrams that focus on particular aspects of the program state that we want to discuss.
-
-For example, the diagrams at the right are all reasonable ways to display a string variable in a snapshot diagram.
+快照图的语法很灵活，不必总是画出所有的细节。可简化快照图，专注于想讨论的程序状态的特定方面：
 
 ```java
 String s = "hello";
 ```
 
-![image-20231128203934512](images/image-20231128203934512.png)
+![alt text](image-8.png)
 
-We may use different diagrams in different contexts. Sometimes we care about the particular value of `s`, and sometimes we don’t. Sometimes we want to emphasize that a `String` is an object value (as opposed to a primitive), and sometimes that isn’t relevant.
+这三个快照图都是演示一个 String 变量的合法方式。若关心 s 的值，可用第一个快照图。若想强调 s 是一个 String 对象值，可用第二和第三个。
 
-When we want to show more detail about an object value, we will write field names inside the object circle, with arrows pointing out to their values.
+当想给出对象值的更多信息时，可在圆框内写下字段的名称，并画出指向字段值的箭头和字段值：
 
 ```java
 Point pt = new Point(5, -3);
 ```
 
-![image-20231128204022597](images/image-20231128204022597.png)
+![alt text](image-9.png)
 
-For still more detail, variables can include their declared types. Some people prefer to write `x:int` instead of `int x`, but both are fine.
+如果想更加具体，则可以给出变量的类型，如 `x:int` 或者 `int x`。
 
 ---
 
-## Mutating values vs. reassigning variables
+## 可变值（Mutating values） vs 可重赋值变量（reassigning variables）
 
-Snapshot diagrams give us a way to visualize the distinction between changing a variable and changing a value:
+### 重新赋值（Reassignment）和不可变值
 
-- When you assign to a variable or a field, you’re changing where the variable’s arrow points. You can point it to a different value.
-- When you change the contents of a mutable object – such as an array or list – you’re changing references inside that value.
+快照图提供了一种可视化的方法来区分修改值和修改变量间的差异：
 
-#### Reassignment and immutable values
+- 当对变量或字段赋值时，修改的是变量箭头所指向的位置。
+- 当修改可变对象的内容时，比如说是数组或列表对象，修改的是值中的引用。
 
-For example, if we have a [`String`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/String.html) variable `s`, we can reassign it from a value of `"a"` to `"ab"`.
+比如将一个 String 变量 s 的值从 a 重新赋值成 ab：
 
 ```java
 String s = "a";
 s = s + "b";
 ```
 
-![image-20231128204229576](images/image-20231128204229576.png)
+![alt text](image-4.png)
 
-`String` is an example of an *immutable* type, a type whose values can never change once they have been created. Immutability is a major design principle in this course, and we’ll talk much more about it in future readings.
+String 是不可变类型的一个例子，其值创建后就再也不可更改。
 
-In a snapshot diagram, when we want to emphasize the immutability of an object like `String`, we draw it with a double border, as shown in the diagram here.
-
-#### Mutable values
-
-By contrast, [`StringBuilder`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/lang/StringBuilder.html) (another built-in Java class) is a *mutable* object that represents a string of characters, and it has methods that change the value of the object:
-
-```java
-StringBuilder sb = new StringBuilder("a");
-sb.append("b");
-```
-
-These two snapshot diagrams look very different, which is good: the difference between mutability and immutability will play an important role in making our code *safe from bugs*.
-
-![image-20231128204426866](images/image-20231128204426866.png)
-
-#### Unreassignable references
-
-Java also gives us immutability for references: variables that are assigned once and never reassigned. To make a reference *unreassignable*, declare it with the keyword `final`:
-
-```java
-final int n = 5;
-```
-
-![image-20231128204602211](images/image-20231128204602211.png)
-
-In this code, `n` can never be reassigned; it will refer to the value 5 for its entire lifetime. If the Java compiler isn’t convinced that your `final` variable will only be assigned once at runtime, then it will produce a compiler error. So `final` gives you static checking for unreassignable references.
-
-In a snapshot diagram, when we want to focus on reassignability, we will use a double-arrow for unreassignable (`final`) references. The diagram at the below shows an object whose `id` never changes (it can’t be reassigned to a different number), but whose `age` can change.
-
-![image-20231128204658764](images/image-20231128204658764.png)
-
-Note that we can have an *unreassignable reference* to a *mutable value* whose value can change even though we’re pointing to the same object:
-
-```java
-final StringBuilder sb = new StringBuilder("a");
-sb.append("b");
-```
-
-![image-20231128204808105](images/image-20231128204808105.png)
-
-We can also have a *reassignable reference* to an **immutable value** where the value of the variable can change because it can be re-pointed to a different object:
-
-```java
-String s = "a";
-s = "ab";
-```
-
-![image-20231128204849076](images/image-20231128204849076.png)
-
-Double lines help to emphasize the unchangeability of parts of a snapshot diagram. But when reassignability or mutability is obvious, or not relevant to the discussion, we will keep the diagram simple, and just use single-line arrows and object borders.
+> 在快照图中，当想要强调一个对象的不可变性时，我们用一个双重圆框将它包围起来：
 
 ---
+
+### 可变值
+
+StringBuilder 是一个表示字符串的可变对象，其有修改值的方法：
+
+```java
+StirngBuilder sb = new StringBuilder("a");
+sb.append("b");
+```
+
+![alt text](image-5.png)
+
+可变性和不可变性之间的差异在使得我们的代码更加 Safe from bugs 时将会发挥重要的作用。
+
+### 不可重赋值引用（Unreassignable references）
+
+Java 也有不可变引用：只能够被赋值一次的变量。用 final 关键字来声明变量即可得到一个不可重赋值的引用：```final int n = 5;```
+
+如果 Java 编译器不相信 final 变量运行时只会被赋值一次，就会产生一个静态错误，所以 final 关键字能够提供对不可重赋值引用的静态检查。
+
+在快照图中，若想要强调可重赋值性，
 
 ## == vs. equals()
 
@@ -590,11 +524,3 @@ Reading, writing, understanding, and analyzing specifications will be one of our
  
 
 ## More practice
-
-If you would like to get more practice with the concepts covered in this reading, you can visit the [question bank](https://qable.mit.edu:8001/practice.html#Basic Java). The questions in this bank were written in previous semesters by students and staff, and are provided for review purposes only – doing them will not affect your classwork grades.
-
-Collaboratively authored with contributions from: Saman Amarasinghe, Adam Chlipala, Srini Devadas, Michael Ernst, Max Goldman, John Guttag, Daniel Jackson, Rob Miller, Martin Rinard, and Armando Solar-Lezama. This work is licensed under [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/).
-
-MIT EECS
-
-  spring 2021 course site archive  |  latest site at [mit.edu/6.031](http://web.mit.edu/6.031/)  |  [accessibility](http://accessibility.mit.edu/)
