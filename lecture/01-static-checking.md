@@ -125,74 +125,8 @@ function hello(name:string):string {
 在 Java 和其他许多编程语言中都有这样一个问题：原始数值类型的边界情况与我们日常使用的整数和实数具有不同的行为，这导致的后果是一些本应被动态检查到的错误没有被检查到。如下是一些具体示例：
 
 - **整数除法**。`5/2` 不返回一个分数，而是返回一个截断了小数部分的整数。这是一个我们期望产生动态错误的例子（因为分数不可以被表示成整数-非法转换），而非产生一个错误的结果。
-- **整数溢出**（Integer overflow）。`int` 和 `long` 这两种类型实际上是一个有限的整数集合，其有最大值和最小值。所以当我们进行某种计算，并且结果的大小超出了集合的范围，那么在这种情况下计算就会静默地溢出，然后从集合的有效范围中返回一个整数值，注意这通常不是正确的结果。
-- **浮点类型中的特殊值**。像 `double` 这样的浮点类型有一些不为实数的特殊值：`NaN`（表示 "Not a Number"），`POSITIVE_INFINITY`，`NEGATIVE_INFINITY`。当对一个 double 变量执行了某种操作，但该操作的除数为零或是求取了负数的平方根，那么你就会得到上述的特殊值。（这就是问题所在，本应产生动态错误却产生了上述的特殊值）如果说你继续用得到的结果进行后续的计算，那么你最终会得到一个错误的答案。
-
----
-
-### 阅读练习
-
-阅读以下存在 bug 的代码并查看它们在 Java 中的行为。这些 bug 可以被静态、动态地捕获到吗？还是说完全无法被捕获。
-
-#### 1
-
-```java
-int n = -5;
-if (n) {
-    System.out.println("n is a positive integer");
-}
-```
-
-- [x] static error
-- [ ] dynamic error
-- [ ] no error, wrong answer
-
-if 条件语句要求一个布尔类型的表达式，但代码中的 n 是一个 int 类型，所以编译器会报出一个静态类型错误。将表达式改为 n > 0 即可修复该错误。
-
-#### 2
-
-```java
-int big = 200000; // 200,000
-big = big * big; // big should be 40 billion now
-```
-
-- [ ] static error
-- [ ] dynamic error
-- [x] no error, wrong answer
-
-注意到 big 是一个 int 类型的变量，40 亿已然超出了 int 可表示的范围，不过由于 Java 语言的设计缺陷，这并不会报出错误，而是返回一个错误的值。
-
-一些更新的的编程语言，比如说 Swift，重新思考了相关设计决定，并针对这种情况选择产生一个动态错误。不过像 [Python](https://rosettacode.org/wiki/Integer_overflow#Python) 和 Ruby 这样的语言通过在必要时使用无精度限制的整数避免了该问题。
-
-#### 3
-
-```java
-double probability = 1/5;
-```
-
-如果程序员的期望结果是 0.2，那么上述代码就使用了错误的操作。`/` 在整数除法和浮点数除法中进行了重载。因为代码使用了 1 和 5 来调用 `/`，所以此处 Java 会使用整数的除法，所以 Java 会静默地截断小数部分并产生一个错误答案 0。
-
-#### 4
-
-```java
-int sum = 0;
-int n = 0;
-int average = sum/n;
-```
-
-除数为零，很明显的动态错误。
-
-#### 5
-
-```java
-double sum = 7;
-double n = 0;
-double average = sum/n;
-```
-
-<!-- Division by zero can’t produce a real number either – but unlike real numbers, double has a special value for POSITIVE_INFINITY, so that’s what it returns when you divide a positive integer by zero. If the code is trying to compute an average value, infinity is unlikely to be a correct or useful answer. -->
-
-Java 浮点数除法当除数为零时会得到特殊值，而非产生动态错误，所以上代码会给出一个错误的结果 POSITIVE_INFINITY。
+- **整数溢出**（Integer overflow）。`int` 和 `long` 这两种类型实际上是一个有限的整数集合，其有最大值和最小值。当用这两种类型进行计算，并且结果的大小超出了集合的范围，就会发生溢出，然后从集合的有效范围中返回一个整数值，注意这通常不是正确的结果。
+- **浮点类型中的特殊值**。像 `double` 这样的浮点类型有一些不为实数的特殊值：`NaN`（表示 "Not a Number"），`POSITIVE_INFINITY`，`NEGATIVE_INFINITY`。当对一个 double 变量执行了某种操作，但该操作的除数为零或是求取了负数的平方根，那么就会得到上述的特殊值。（这就是问题所在，本应产生动态错误却产生了上述的特殊值）如果继续用得到的结果进行后续的计算，那么最终就会得到一个错误的答案。
 
 ---
 
@@ -330,9 +264,9 @@ public class Hailstone {
 
 改变是必要之恶，但是好的程序员尝试避免变化的事物，因为事物的变化是不可预料的。不可变性——人为地禁止特定事物在运行时改变（本门课程主要设计原则）。
 
-不可变类型（immutable type）是指那些一旦被创建后值就再也不能改变的类型。`string` 类型在 Python 和 Java 中都是不可变的。
+不可变类型（immutable type）：一旦创建后值就再也不能改变的类型。`string` 类型在 Python 和 Java 中都是不可变的。
 
-Java 也为我们提供了不可变引用：一旦被赋值后就再也不可以被重新赋值的变量。为了创建一个不可重新赋值的引用，可以用 `final` 关键字来声明它，如下代码所示：
+不可变引用：一旦赋值后就再也不可以重新赋值的变量。为了创建一个不可重新赋值的引用，可以用 `final` 关键字来声明它，如下代码所示：
 
 ```java
 final int n = 5;
@@ -363,20 +297,20 @@ final int n = 5;
 
 ## 6.031 的目标
 
-学习如何开发出具备以下三种性质的软件：
+学习如何开发出具备以下三种属性的软件：
 
 - 不易受到 bug 的侵扰（Safe from bugs）。软件必须具备正确性（当前具有正确的行为）和防御性（未来也具有正确的行为）
 - 易于理解（Easy to understand）。
-- 适应变化（Ready for change）。软件总在变化，好的设计可以使得变化更容易，然而糟糕的设计却需要摒弃之前的实现并重写大量代码。
+- 适应变化（Ready for change）。软件总在变化，好的设计可以使变化更容易，然而糟糕的设计却需要摒弃之前的实现并重写大量代码。
 
-好的软件还有许多其它重要的性质，如性能、可用性、安全性等。但 6.031 主要关注上述三种，这也是大多数开发者构建软件时首先考虑的。
+好的软件还有许多其它重要的属性，如性能、可用性、安全性等。但 6.031 主要关注上述三种，这也是大多数开发者构建软件时首先考虑的。
 
-要思考在本门课程中学习到的语言特性、编程实践、设计模式，并理解它们和上述三大性质的联系。
+要思考在本门课程中学习到的语言特性、编程实践、设计模式，并理解它们和上述三大属性的联系。
 
 ## 总结
 
-学习了静态检查的思想，该思想和课程目标关联的点是什么呢？
+静态检查和三大属性的关联点：
 
-- 静态检查通过在代码执行前捕获类型错误或其它 bug 来使得代码更加 Safe from bugs。
+- 静态检查通过在代码执行前捕获类型错误或其它 bug 来使代码更加 Safe from bugs。
 - 静态检查通过显式地声明变量的类型从而使得代码更加易于理解（Easy to understand）
 - 静态检查通过标出那些需要修改的地方从而使得代码更加 Ready for change。比如当修改了一个变量的类型或名字，编辑器立马就会在所有使用了该变量的地方显示错误，提醒你修复它们。
