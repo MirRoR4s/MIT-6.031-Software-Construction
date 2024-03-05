@@ -39,18 +39,18 @@ Point pt = new Point(5, -3);
 
 ![alt text](assets/02-basic-java/image-3.png)
 
-如果想更加具体，则可以给出变量的类型，如 `x:int` 或者 `int x`。
+若想更加具体，则可给出变量的类型，如 `x:int` 或者 `int x`。
 
 ---
 
 ## 可变值（Mutating values） vs 可重赋值变量（reassigning variables）
 
-### 重新赋值（Reassignment）和不可变值
+快照图提供了一种可视化的方法来区分修改值和修改变量之间的差异：
 
-快照图提供了一种可视化的方法来区分修改值和修改变量间的差异：
-
-- 当对变量或字段赋值时，修改的是变量箭头所指向的位置。
+- 当对变量或字段赋值时，修改的是变量的箭头指向。
 - 当修改可变对象的内容时，比如说是数组或列表对象，修改的是值中的引用。
+
+### 重新赋值（Reassignment）和不可变值（immutable values）
 
 比如将一个 String 变量 s 的值从 a 重新赋值成 ab：
 
@@ -59,77 +59,89 @@ String s = "a";
 s = s + "b";
 ```
 
-![alt text](image-4.png)
+![alt text](assets/02-basic-java/image-5.png)
 
 String 是不可变类型的一个例子，其值创建后就再也不可更改。
 
-> 在快照图中，当想要强调一个对象的不可变性时，我们用一个双重圆框将它包围起来：
+> 在快照图中，当想要强调一个对象（比如说 String）的不可变性时，我们用一个双重圆框将它包围起来：
 
 ---
 
-### 可变值
+### 可变值（Mutable values）
 
-StringBuilder 是一个表示字符串的可变对象，其有修改值的方法：
+与 `String` 不同，`StringBuilder` 是一个表示字符串的可变对象，其有修改值的方法：
 
 ```java
 StirngBuilder sb = new StringBuilder("a");
 sb.append("b");
 ```
 
-![alt text](image-5.png)
+![alt text](assets/02-basic-java/image-4.png)
 
-可变性和不可变性之间的差异在使得我们的代码更加 Safe from bugs 时将会发挥重要的作用。
+> 可变性和不可变性之间的差异在让代码更加 Safe from bugs 时将会发挥重要的作用。
+
+---
 
 ### 不可重赋值引用（Unreassignable references）
 
-Java 也有不可变引用：只能够被赋值一次的变量。用 final 关键字来声明变量即可得到一个不可重赋值的引用：```final int n = 5;```
+Java 也有不可变引用：只能够被赋值一次的变量。用 `final` 关键字来声明变量即可得到一个不可重新赋值的引用：`final int n = 5;`
 
 如果 Java 编译器不相信 final 变量运行时只会被赋值一次，就会产生一个静态错误，所以 final 关键字能够提供对不可重赋值引用的静态检查。
 
-在快照图中，若想要强调可重赋值性，
+在快照图中，若想强调可重赋值性（reassignability），可用双重箭头表示不可重新赋值引用（unreassignable references）
+
+![alt text](assets/02-basic-java/image-6.png)
+
+该快照图表明该对象的 id 永远不会改变，而 age 则可能会改变。
+
+注意到可让不可变引用指向一个可变值。也就是说，值是可变的，即使指向的是同一对象。
+
+```java
+final StringBuilder sb = new StringBuilder("a");
+sb.append("b");
+```
+
+![alt text](assets/02-basic-java/image-7.png)
+
+也可以让一个可重新赋值的引用指向一个不可变值，此处变量的值是可以改变的，因为可将变量重新指向一个不同的对象：
+
+```java
+String s = "a";
+s = "ab";
+```
+
+![alt text](assets/02-basic-java/image-8.png)
+
+双重箭头用于强调快照图的不可变部分。当可变性或者可重赋值性是明显的，或者与讨论无关，为了保持快照图的简洁，可以仅使用单重箭头和对象方框。
+
+---
 
 ## == vs. equals()
 
-Java has two different ways to test equality of values, depending on whether the values are primitives or objects:
+Java 有两种方法来比较值的相等性，具体用哪种方法取决于值是原始类型还是对象类型：
 
-- The `==` operator compares the values of primitives. For example, `5 == 5` returns true, as does `'a' == 'a'`.
-- The `.equals()` method compares the values of objects. For example, `"abc".equals("abc")` returns true.
+- `==` 运算符比较原始类型值的相等性。例如 `5 == 5` 返回真，`'a' == 'a'` 同理。
+- `.equals()` 比较对象值的相等性。例如 `"abc".equals("abc")` 返回真。
 
-In Python, which lacks a distinction between primitive and object values, you use `==` for *both* of these purposes. This can lead to confusion and mistakes in Java – using the wrong kind of equality for the type you’re trying to compare.
+注意比较时不要混淆这两种方法。很容易发现到用 `equals()` 比较原始类型值的错误，因为这会产生一个静态错误，Java 并不允许在原始类型上调用任何方法。但却不那么容易发现用 `==` 比较对象类型值的错误，因为 Java 中重载了 `==`，当 `==` 应用于对象类型时，其会测试两个表达式是否引用了内存中的同一对象。用快照图的话语来说， 两个引用是 `==` 的，如果它们的箭头指向了同一对象方框。
 
-Using `equals()` on primitive types is fortunately easy to catch. `5.equals(5)` produces a static error because Java doesn’t allow calling any method on a primitive type.
+所以若程序的状态如下图所示：
 
-But the other mistake, using `==` to compare object values for equality, is much more painful, because `==` is overloaded in Java. When used on object types, `==` tests whether the two expressions refer to the same object in memory. In terms of the snapshot diagrams we’ve been drawing, two references are `==` if their arrows point to the same object bubble. In Python, this operator is called `is`.
+![alt text](assets/02-basic-java/image-9.png)
 
-So if the state of the program looks like the figure on the right, then:
+- `x.equals(y)`：返回 true，因为 x 和 y 指向的对象有相同的值。
 
-![image-20231128205330860](images/image-20231128205330860.png)
+- `x == y`：返回 true，因为 x 和 y 指向同一对象
 
-- `x.equals(y)`
+- `x.equals(z)`：返回 true，因为 x 和 y 指向的对象有相同的值
+- `x == z`：返回 false，因为 x 和 z 指向不同对象
 
-  returns true because x and y have the same characters
+总结：
 
-- `x == y`
+- 用 `==` 比较原始值，如 int、char、double。
+- 用 `equals()` 比较对象值，如 list、array、string 及其它对象
 
-  returns true because x and y point to the same object
-
-- `x.equals(z)`
-
-  returns true because x and z have the same characters
-
-- `x == z`
-
-  returns **false** because x and z point to different objects
-
-As a general rule:
-
-- Use `==` for comparing primitive values, like ints, chars, and doubles.
-- Use `equals()` for comparing object values, like lists, arrays, strings, and other objects.
-
-And remember that, in Java:
-
-- `char` values are primitives, representing exactly one character. A `char` literal is always single-quoted, like `'a'`.
-- `String` values are objects, represent a string of zero or more characters. A `String` literal is double-quoted, like `"abc"` and `""`.
+> 记住：在 Java 中，`char` 是原始类型，表示一个字符，用单引号包围；`String` 是对象值，表示一系列字符，用双引号包围。
 
 ---
 
@@ -138,6 +150,78 @@ And remember that, in Java:
 Read the Collections section of **[From Python to Java](http://kennethalambert.com/pythontojava//)** (6 short pages).
 
 ### Lists, Sets, and Maps
+
+`List` 是包含零个或多个对象的有序集，同一对象可能会出现多次。可从 List 中增加或删除元素，List 会扩大或缩小以容纳它的内容。
+
+List 的一些操作：
+
+- `int count = lst.size()`：计算元素数量
+- `lst.add(e)`：末尾追加元素
+- `if (lst.isEmpty())` ：测试 list 是否为空
+- `lst.contains(e)`：测试某元素是否在 list 中
+
+快照图如何表示 list？
+
+![list 快照图](assets/02-basic-java/image-10.png)
+
+
+Map 支持的操作：
+
+- `map.put(key, val)`：添加映射 `key -> val`
+- `map.get(key)`：获取 key 对应的 value
+- `map.containsKey(key)`：测试 map 是否存在 key
+- `map.remove(key)`：删除映射
+
+在快照图中，用一个包含键值对的对象来表示 Map：
+
+![alt text](assets/02-basic-java/image-11.png)
+
+
+Set 是一个包含零个或多个唯一对象的无序集。对象不能在 Set 中出现多次。
+
+Set 的一些操作：
+
+- `s1.contains(e)`：测试 set 是否包含一个元素
+- `s1.containsAll(s2)`：测试 s2 是否是 s1 的子集
+- `s2.removeAll(s2)`：从 s1 中移除 s2
+
+在快照图中，用一个含有匿名字段的对象来表示 `Set`：
+
+![alt text](assets/02-basic-java/image-12.png)
+
+用 List.of 从参数中创建一个 List：
+
+```java
+List.of("a", "b", "c");
+```
+
+用 List.of 创建的 list 是不可变的，创建后不能增加、删除、替换元素。
+
+还可用 Set.of、Map.of 创建不可变的 Set 和 Map。
+
+```java
+Set.of("a", "b", "c");
+Map.of("apple", 5, "banana", 7);
+```
+
+### 泛型（Generics）：声明 List、Set 和 Map 变量
+
+可对 Java 集合（Collection）容纳的元素类型进行限制。当添加元素时，编译器可对其进行静态检查以确保所添加元素具有正确的类型。之后弹出元素时，就可保证元素的类型是我们预期的。
+
+```java
+List<String> cities;        // a List of Strings
+Set<Integer> numbers;       // a Set of Integers
+Map<String,Turtle> turtles; // a Map with String keys and Turtle values
+```
+
+由于泛型的工作方式，无法创建一个原始类型元素的集合。例如 `Set<int>` 是无效的，要使用 int 对应的包装器 `Integer`，即 `Set<Integer>`。
+
+Java 会在原始类型及其包装器类型之间进行一些自动转换，所以如下代码是有效的：
+
+```java
+sequence.add(5);              // wrap 5 as an Integer object, and append it to the sequence
+int second = sequence.get(1); // get the second Integer element, and unwrap it into an int
+```
 
 **A [Java `List`](http://docs.oracle.com/en/java/javase/15/docs/api/java.base/java/util/List.html) is similar to a [Python list](https://docs.python.org/3/library/stdtypes.html#sequence-types-list-tuple-range).** A `List` contains an ordered collection of zero or more objects, where the same object might appear multiple times. We can add and remove items to and from the `List`, which will grow and shrink to accomodate its contents.
 
