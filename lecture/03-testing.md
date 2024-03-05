@@ -1,139 +1,140 @@
+# Reading 3: Testing
 
+## Software in 6.031
 
-Reading 3: Testing
-=============================
-
-#### Software in 6.031
-
-| Safe from bugs 没有错误 | Easy to understand 易于理解 | Ready for change 可随时更改 |
+| Safe from bugs 免受 bug 侵扰 | Easy to understand 易于理解 | Ready for change 适应变化 |
 | --- |  --- |  --- |
-| Correct today and correct in the unknown future.今天正确，在未知的未来也正确。 | Communicating clearly with future programmers, including future you.与未来的程序员（包括未来的你）进行清晰的沟通。 | Designed to accommodate change without rewriting.旨在适应变化，而无需重写。 |
+| Correct today and correct in the unknown future.今天正确，在未知的未来也正确。 | Communicating clearly with future programmers, including future you.能与未来的程序员（包括未来的你）清晰地沟通。 | Designed to accommodate change without rewriting.适应变化，无需重写之前代码。 |
 
-#### Objectives 目标
+## Objectives 目标
 
 After today's class, you should:
+
 在今天的课程之后，你应该：
 
--   understand the value of testing, and know the process of test-first programming;
-    理解测试的价值，并了解测试优先编程的流程；
--   be able to judge a test suite for correctness, thoroughness, and size;
-    能够判断测试套件的正确性、全面性和大小；
--   be able to design a test suite for a method by partitioning its input space and choosing good test cases;
-    能够通过划分输入空间并从中选择好的测试用例来为一个方法设计测试套件；
--   be able to judge a test suite by measuring its code coverage; and
-    能够通过测量测试套件的代码覆盖率来判断其好坏；以及
--   understand and know when to use black box vs. glass box testing, unit tests vs. integration tests, and automated regression testing.
-    理解并知道何时使用黑盒测试与白盒测试、单元测试与集成测试以及自动回归测试。
+- understand the value of testing, and know the process of test-first programming;
+- 理解测试的价值，了解测试优先编程的流程；
+
+- be able to judge a test suite for correctness, thoroughness, and size;
+- 能够判断测试套件的正确性、全面性和大小；
+
+- be able to design a test suite for a method by partitioning its input space and choosing good test cases;
+- 能够通过划分输入空间并从中选择好的测试用例来为一个方法设计测试套件；
+
+- be able to judge a test suite by measuring its code coverage; and
+- 能够通过测量测试套件的代码覆盖率来判断其好坏
+
+- understand and know when to use black box vs. glass box testing, unit tests vs. integration tests, and automated regression testing.
+- 理解并知晓何时使用黑盒测试、白盒测试、单元测试、集成测试以及自动回归测试。
 
 ---
 
-Validation 验证
--------------
+## Validation 验证
 
 Testing is an example of a more general process called **validation**. The purpose of validation is to uncover problems in a program and thereby increase your confidence in the program's correctness. Validation includes:
-测试是**验证**这个更加通用的过程的一个示例。验证的目的是发现程序中的问题，从而增加您对程序正确性的信心。验证包括：
 
--   **Formal reasoning** about a program, usually called *verification*. Verification constructs a formal proof that a program is correct. Verification is tedious to do by hand, and automated tool support for verification is still an active area of research. Nevertheless, small, crucial pieces of a program may be formally verified, such as the scheduler in an operating system, or the bytecode interpreter in a virtual machine, or [the filesystem in an operating system](http://www.csail.mit.edu/crash_tolerant_data_storage).
-    对程序进行形式化推理，通常称为验证。验证构建了程序是正确的形式化的证明。手动进行验证很繁琐，而支持自动验证的工具仍然是一个活跃的研究领域。尽管如此，程序中一些小的、关键的部分可能会得到形式化验证，例如操作系统中的调度程序，或者虚拟机中的字节码解释器，或者操作系统中的文件系统。
--   **Code review.** Having somebody else carefully read your code, and reason informally about it, can be a good way to uncover bugs. It's much like having somebody else proofread an essay you have written. We discuss [code review in another reading](https://web.mit.edu/6.031/www/sp21/classes/04-code-review/).
-    代码审查。让其他人仔细阅读您的代码，并对其进行非正式推理，这可能是发现错误的好方法。这很像让其他人校对您撰写的一篇论文。
--   **Testing**. Running the program on carefully selected inputs and checking the results.
-    测试。在精心挑选的输入上运行程序并检查结果。
+测试是验证的一个例子，但验证是一个更加通用的流程。验证的目的是发现程序中的问题，从而增加对程序正确性的信心。验证包括：
+
+- **Formal reasoning** about a program, usually called *verification*. Verification constructs a formal proof that a program is correct. Verification is tedious to do by hand, and automated tool support for verification is still an active area of research. Nevertheless, small, crucial pieces of a program may be formally verified, such as the scheduler in an operating system, or the bytecode interpreter in a virtual machine, or [the filesystem in an operating system](http://www.csail.mit.edu/crash_tolerant_data_storage).
+- 对程序进行形式推理，这通常称为确认。确认构建了一个形式证明以说明程序是正确的。手工确认会很繁琐，而支持自动确认的工具仍是一个活跃的研究领域。所以，可能需要对程序中一些小的、关键的部分进行形式证明，例如操作系统的调度程序或虚拟机中的字节码解释器，亦或者是操作系统的文件系统。
+
+- **Code review.** Having somebody else carefully read your code, and reason informally about it, can be a good way to uncover bugs. It's much like having somebody else proofread an essay you have written. We discuss [code review in another reading](https://web.mit.edu/6.031/www/sp21/classes/04-code-review/).
+- 代码审查。让他人仔细阅读您的代码，并对其进行非正式地推理，可能是发现 bug 的好方法。这很像让其他人校对您撰写的论文。
+
+- **Testing**. Running the program on carefully selected inputs and checking the results.
+- 测试。在精心挑选的输入上运行程序并检查结果。
 
 Even with the best validation, it's very hard to achieve perfect quality in software. Here are some typical *residual defect rates* (bugs left over after the software has shipped) per kloc (one thousand lines of source code):
-即使经过最佳的验证，也很难在软件中实现完美的质量。以下是每千行源代码 (kloc) 的一些典型残余缺陷率（软件发布后遗留的错误）：
 
--   1 - 10 defects/kloc: Typical industry software.
-    1 - 10 个缺陷/kloc：典型的行业软件。
--   0.1 - 1 defects/kloc: High-quality validation. The Java libraries might achieve this level of correctness.
-    0.1 - 1 个缺陷/kloc：高质量验证。Java 库也许能够到达这种级别的正确性。
--   0.01 - 0.1 defects/kloc: The very best, safety-critical validation. NASA and companies like Praxis can achieve this level.
-    0.01 - 0.1 个缺陷/kloc：最好的安全关键型验证。NASA 和 Praxis 等公司可以达到此级别。
+即使经过最佳的验证，也很难在软件中实现完美的质量。以下是每千行源代码 (英文缩写为 kloc) 中的一些典型的残余缺陷率（软件发布后遗留的 bug）：
+
+- 1 - 10 defects/kloc: Typical industry software.
+- 1 - 10 个缺陷/kloc：典型的行业软件。
+
+- 0.1 - 1 defects/kloc: High-quality validation. The Java libraries might achieve this level of correctness.
+- 0.1 - 1 个缺陷/kloc：经过了高质量验证的软件。Java 库也许能够到达这种级别的正确性。
+
+- 0.01 - 0.1 defects/kloc: The very best, safety-critical validation. NASA and companies like Praxis can achieve this level.
+- 0.01 - 0.1 个缺陷/kloc：经过了最好的安全关键型验证后的软件。NASA 和 Praxis 等公司可以达到此级别。
 
 This can be discouraging for large systems. For example, if you have shipped a million lines of typical industry source code (1 defect/kloc), it means you missed 1000 bugs!
-对于大型系统而言，这可能会令人沮丧。例如，如果您发布了百万行典型的行业源代码（1 个缺陷/kloc），这意味着您错过了 1000 个错误！
+
+对于大型系统而言，这可能会令人沮丧。例如，如果您发布了一个拥有一百万行源代码的典型行业软件（假设 每 kloc 有 1 个缺陷/kloc），这意味着您遗漏了 1000 个 bug！
 
 ---
 
-Why software testing is hard 为什么软件测试很难
---------------------------------------
-
-有些在现实世界中很有效的测试方法却不幸在软件世界中行不通，具体包括：
-
-1. 穷举测试：穷举测试在软件世界中是行不通的，这通常是因为可能的测试用例空间过大导致的；比如 32 位的浮点数乘法就有 $2^{64}$ 个测试用例。
-2. 随意测试（随便输入一个测试用例查看结果是否有效）：随意测试同样也行不通，这不太可能发现程序中的错误，除非程序中到处都是 bug；并且随意测试也不会增加我们对程序正确性的信心。
-3. 随机/统计测试：该测试方法在软件世界中也行不通。其它工程学科可以通过测试随机样本的缺陷率来推断整个生产批次的缺陷率。此外，物理系统还可以使用许多技巧来加快测试时间，例如为了模拟 10 年 内打开冰箱的次数，可以在 24 小时内连续打开冰箱 1000 次。这些技巧能够给出已知的缺陷率，但它们假设缺陷空间是连续的或均匀的，这对于物理系统来说是成立的，但对于软件系统来说是不成立的。
-
-
+## Why software testing is hard 为什么软件测试是困难的
 
 Here are some approaches that unfortunately don't work well in the world of software.
 
-**Exhaustive testing** is infeasible. The space of possible test cases is generally too big to cover exhaustively. Imagine exhaustively testing a 32-bit floating-point multiply operation, `a*b`. There are 2^64^ test cases!
+有些在现实世界中有效的测试方法却不幸在软件世界中行不通，具体包括：
 
-**Haphazard testing** ("just try it and see if it works") is less likely to find bugs, unless the program is so buggy that an arbitrarily-chosen input is more likely to fail than to succeed. It also doesn't increase our confidence in program correctness.
+1. **Exhaustive testing** is infeasible. The space of possible test cases is generally too big to cover exhaustively. Imagine exhaustively testing a 32-bit floating-point multiply operation, `a*b`. There are 2^64^ test cases!
+1. 穷举测试：穷举测试在软件世界中是行不通的，这通常是因为可能的测试用例空间过大导致的；比如 32 位的浮点数乘法就有 $2^{64}$ 个测试用例。
 
-**Random or statistical testing** doesn't work well for software. Other engineering disciplines can test small random samples (e.g. 1% of hard drives manufactured) and infer the defect rate for the whole production lot. Physical systems can use many tricks to speed up time, like opening a refrigerator 1000 times in 24 hours instead of 10 years. These tricks give known failure rates (e.g. mean lifetime of a hard drive), but they assume continuity or uniformity across the space of defects. This is true for physical artifacts.
+- **Haphazard testing** ("just try it and see if it works") is less likely to find bugs, unless the program is so buggy that an arbitrarily-chosen input is more likely to fail than to succeed. It also doesn't increase our confidence in program correctness.
+- 随意测试（随便输入一个测试用例查看结果是否有效）：随意测试同样也行不通，这不太可能发现程序中的错误，除非程序中到处都是 bug；并且随意测试也无法增加我们对程序正确性的信心。
+
+- **Random or statistical testing** doesn't work well for software. Other engineering disciplines can test small random samples (e.g. 1% of hard drives manufactured) and infer the defect rate for the whole production lot. Physical systems can use many tricks to speed up time, like opening a refrigerator 1000 times in 24 hours instead of 10 years. These tricks give known failure rates (e.g. mean lifetime of a hard drive), but they assume continuity or uniformity across the space of defects. This is true for physical artifacts.
+- 随机/统计测试：该测试方法在软件世界中也行不通。其它工程学科可以通过测试随机样本的缺陷率来推断总体的缺陷率。此外，物理系统还可用许多技巧来加快测试时间，例如为了模拟 10 年 内打开冰箱的次数，可在 24 小时内连续打开冰箱 1000 次。这些技巧能够给出已知的缺陷率，但它们假设缺陷空间是连续的或均匀的，这对于物理系统来说是成立的，但对于软件系统来说则不成立。
 
 But it's not true for software. Software behavior varies discontinuously and discretely across the space of possible inputs. The system may seem to work fine across a broad range of inputs, and then abruptly fail at a single boundary point. The [famous Pentium division bug](http://www.willamette.edu/~mjaneba/pentprob.html) affected approximately 1 in 9 billion divisions. Stack overflows, out of memory errors, and numeric overflow bugs tend to happen abruptly, and always in the same way, not with probabilistic variation. That's different from physical systems, where there is often visible evidence that the system is approaching a failure point (cracks in a bridge) or failures are distributed probabilistically near the failure point (so that statistical testing will observe some failures even before the point is reached).
-但对于软件来说并非如此。软件行为在可能的输入空间中不连续且离散地变化。系统可能在广泛的输入范围内看起来运行良好，然后在单个边界点突然失败。著名的奔腾除法错误影响了大约 90 亿次除法中的 1 次。堆栈溢出、内存溢出错误和数字溢出错误往往会突然发生，并且总是以相同的方式发生，而不是以概率变化。这不同于物理系统，在物理系统中，通常有明显的证据表明系统正在接近故障点（桥梁中的裂缝）或故障以概率分布在故障点附近（因此统计测试甚至在达到该点之前就会观察到一些故障）。
+
+但对于软件来说并非如此。软件的行为在可能的输入空间中是不连续的、离散的。系统可能在广泛的输入范围内看起来运行良好，但在单个边界点突然失效。著名的奔腾除法 bug 大约 90 亿次除法会发生 1 次。栈溢出、内存溢出错误和数字溢出错误往往会突然发生，并总以相同的方式发生，不随概率变化。这和物理系统不同，在物理系统中，通常有明显的证据表明系统正在接近故障点（桥梁中的裂缝）或故障以概率分布在故障点附近（因此统计测试甚至在达到该点之前就会观察到一些故障）。
 
 Instead, test cases must be chosen carefully and systematically. Techniques for systematic testing are the primary focus of this reading.
-相反，必须仔细且系统地选择测试用例。系统测试技术是本次阅读的主要重点。
 
-#### READING EXERCISES 阅读练习
+相反，必须仔细地、系统地选择测试用例。系统性地测试技术是本篇文章的重点。
 
 ---
 
-Test-first programming 测试优先编程
------------------------------
+## Test-first programming 测试优先编程
 
 Before we dive in, we need to define some terms:
-在深入探讨之前，我们需要定义一些术语：
 
--   A *module* is a part of a software system that can be designed, implemented, tested, and reasoned about separately from the rest of the system. In this reading, we'll focus on modules that are functions, represented by Java methods. In future readings we'll broaden our view to think about larger modules, like a class with multiple interacting methods.
-    模块是软件系统的一部分，可以独立于系统其余部分进行设计、实现、测试和推理。在本课中，我们将重点关注作为函数的模块，这些函数由 Java 方法表示。在未来的课程中，我们将拓宽视野，考虑更大的模块，例如具有多个交互方法的类。
+在继续学习之前，需要定义一些术语：
 
--   A *specification* (or spec) describes the behavior of a module. For a function, the specification gives the types of the parameters and any additional constraints on them (e.g. `sqrt`'s parameter must be nonnegative). It also gives the type of the return value and how the return value relates to the inputs. In Java code, the specification consists of the method signature and the comment above it that describes what it does.
-    规范（或规格）描述模块的行为。对于函数，规范给出参数的类型以及对它们的任何附加约束（例如， `sqrt` 的参数必须是非负的）。它还给出返回值的类型以及返回值与输入的关系。在 Java 代码中，规范由方法签名和描述其作用的注释组成。
+- A **module** is a part of a software system that can be designed, implemented, tested, and reasoned about separately from the rest of the system. In this reading, we'll focus on modules that are functions, represented by Java methods. In future readings we'll broaden our view to think about larger modules, like a class with multiple interacting methods.
 
--   A module has an *implementation* that provides its behavior, and *clients* that use the module. For a function, the implementation is the body of the method, and the clients are other code that calls the method. The specification of the module constrains both the client and the implementation. We'll have much more to say about specifications, implementations, and clients a few classes from now.
-    模块具有提供其行为的实现，以及使用该模块的客户端。对于函数，实现是方法的主体，客户端是调用该方法的其他代码。模块的规范约束了客户端和实现。我们将在几节课后详细讨论规范、实现和客户端。
+- 模块是软件系统的一部分，可以独立于系统其余部分设计、实现、测试和推理。本篇阅读将重点关注函数模块，这通常由 Java 方法表示。在后续阅读中，将拓宽视野以考虑更大的模块，例如具有多个交互方法的类。
 
--   A *test case* is a particular choice of inputs, along with the expected output behavior required by the specification.
-    测试用例是输入的特定选择，以及规范要求的预期输出行为。
+- A **specification** (or spec) describes the behavior of a module. For a function, the specification gives the types of the parameters and any additional constraints on them (e.g. `sqrt`'s parameter must be nonnegative). It also gives the type of the return value and how the return value relates to the inputs. In Java code, the specification consists of the method signature and the comment above it that describes what it does.
 
--   A *test suite* is a set of test cases for a module.
-    测试套件是模块的一组测试用例。
+- 规范（或规格）描述了模块的行为。对于函数，规范给出了参数的类型以及对它们的额外约束（例如， `sqrt` 的参数必须是非负的）。规范还给出了返回值的类型以及返回值与输入的联系。在 Java 代码中，规范由方法签名以及签名之上描述了方法所做之事的注释组成。
+
+- A module has an **implementation** that provides its behavior, and *clients* that use the module. For a function, the implementation is the body of the method, and the clients are other code that calls the method. The specification of the module constrains both the client and the implementation. We'll have much more to say about specifications, implementations, and clients a few classes from now.
+
+- 模块有一个提供了其行为的实现，以及使用该模块的客户端。对于函数来说，方法体就是其实现；客户端则是调用该方法的其他代码。模块的规范既约束了客户端，也约束了实现。在后续几节课中将详细讨论规范、实现和客户端。
+
+- A **test case** is a particular choice of inputs, along with the expected output behavior required by the specification.
+- 测试用例是特定的输入选择以及规范要求的预期输出行为。
+
+- A **test suite** is a set of test cases for a module.
+- 测试套件是模块的一个测试用例集。
 
 You've already seen and used these concepts on problem set 0. You were given some specifications for Java methods and asked to write an implementation for each one. You were also given a test suite for each method that you could run to see if your implementation obeyed the spec.
-您已经在问题集 0 中看到并使用了这些概念。您获得了一些 Java 方法的规范，并被要求为每个方法编写一个实现。您还获得了每个方法的测试套件，您可以运行该套件以查看您的实现是否遵守规范。
 
-It turns out that this is a good pattern to follow when designing a program from scratch. In *test-first programming*, you write the spec and the tests before you even write any code. The development of a single function proceeds in this order:
-事实证明，在从头开始设计程序时，这是一个很好的模式。在测试优先编程中，您在编写任何代码之前就编写了规范和测试。单个函数的开发按以下顺序进行：
+您已经在问题集 0 中看到并使用了这些概念。在 ps0 中，您被给定一些 Java 方法规范，并被要求为每个方法编写一个实现。对每个方法，您还被给定了一个测试套件；您可以运行它们以查看您的实现是否遵守了规范。
 
-1.  **Spec**: Write a specification for the function.
-    规范：为函数编写规范。
-2.  **Test**: Write tests that exercise the specification.
-    测试：编写测试以演练规范。
-3.  **Implement**: Write the implementation.
-    实现：编写实现。
+It turns out that this is a good pattern to follow when designing a program from scratch. In **test-first programming**, you write the spec and the tests before you even write any code. The development of a single function proceeds in this order:
+
+事实证明，在从头开始设计程序时，这是一个很好的模式。在测试优先编程中，在编写代码之前先编写规范和测试。一个函数的开发按以下步骤进行：
+
+1. **Spec**: Write a specification for the function. 规范：为函数编写规范。
+2. **Test**: Write tests that exercise the specification. 测试：；利用规范编写测试。
+3. **Implement**: Write the implementation. 实现：编写实现。
 
 Once your implementation passes the tests you wrote, you're done.
-一旦您的实现通过了您编写的测试，您就完成了。
+
+一旦实现通过了编写的测试，就完成了函数的开发。
 
 The biggest benefit of test-first programming is safety from bugs. Don't leave testing until the end of development, when you have a big pile of unvalidated code. Leaving testing until the end only makes debugging longer and more painful, because bugs may be anywhere in your code. It's far more pleasant to test your code as you develop it.
-测试优先编程的最大好处是 safety from bugs。不要等到开发结束时才进行测试，那时您将有一大堆未经验证的代码。将测试留到最后只会使调试变得更长且更痛苦，因为错误可能存在于代码的任何位置。在开发代码时对其进行测试要愉快得多。
+
+测试优先编程的最大好处是能代码不易受到 bug 的侵扰。（safety from bugs）不要等到开发结束时才进行测试，因为那时您将有一大堆未经验证的代码。将测试留到最后只会使调试过程变得更长，并让我们更加的痛苦，因为 bug 可能会在代码的任何地方出现。所以边开发边测试是更令人愉快的做法。
 
 ---
 
-#### READING EXERCISES 阅读练习
-
-Test-first programming 测试优先编程
-
----
-
-Systematic testing 系统测试
------------------------
+## Systematic testing 系统性测试
 
 Rather than exhaustive, haphazard, or randomized testing, we want to test *systematically*. Systematic testing means that we are choosing test cases in a principled way, with the goal of designing a test suite with three desirable properties:
 我们希望进行系统测试，而不是穷举测试、随意测试或随机测试。系统测试意味着我们以一种原则性的方式选择测试用例，目的是设计一个具有三个理想特性的测试套件：
