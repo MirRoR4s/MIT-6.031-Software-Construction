@@ -167,6 +167,7 @@ Designing a test suite for both thoroughness and small size requires having the 
 ---
 
 The need to adopt a testing attitude is another argument for test-first programming. It is all too tempting to treat code you've already written as a precious thing, a fragile eggshell, and test it very lightly just to see it work. For *thorough* testing, though, you have to be brutal. Test-first programming allows you to put on your testing hat, and adopt that brutal perspective, before you've even written any code.
+
 采用测试态度的必要性是测试优先编程的另一个论据。将您已经编写的代码视为珍贵的东西、易碎的蛋壳，并且只是为了看到它起作用而对其进行非常轻微的测试，这是非常诱人的。然而，对于彻底的测试，您必须残忍。测试优先编程允许您戴上测试之帽，并在编写任何代码之前采用这种残忍的视角。
 
 ---
@@ -601,12 +602,7 @@ assertEquals
 
 assertTrue
 
-Documenting your testing strategy
-
----
-
-记录您的测试策略
-------------------------------------------
+## Documenting your testing strategy
 
 It's a good idea to write down the testing strategy you used to create a test suite: the partitions, their subdomains, and which subdomains each test case was chosen to cover. Writing down the strategy makes the thoroughness of your test suite much more visible to the reader.
 
@@ -702,75 +698,69 @@ Black box and glass box testing
 
 ---
 
-黑盒测试和白盒测试
------------------------------------------
+## Black box and glass box testing
 
-Recall from above that the *specification* is the description of the function's behavior --- the types of parameters, type of return value, and constraints and relationships between them.
+Recall from above that the **specification** is the description of the function's behavior --- the types of parameters, type of return value, and constraints and relationships between them.
+
 回想一下上面提到的内容，规范是函数行为的描述------参数类型、返回值类型以及它们之间的约束和关系。
 
-**Black box testing** means choosing test cases only from the specification, not the implementation of the function. That's what we've been doing in our examples so far. We partitioned and looked for boundaries in `abs`, `max`, and `multiply` without looking at the actual code for these functions. In fact, following the test-first programming approach, we hadn't even *written* the code for these functions yet.
+**Black box testing** means choosing test cases only from the specification, not the implementation of the function. That's what we've been doing in our examples so far. We partitioned and looked for boundaries in `abs`, `max`, and `multiply` without looking at the actual code for these functions. In fact, following the test-first programming approach, we hadn't even **written** the code for these functions yet.
+
 黑盒测试意味着仅从规范中选择测试用例，而不是从函数的实现中选择。到目前为止，这就是我们在示例中所做的。我们对 `abs` 、 `max` 和 `multiply` 进行了划分并寻找边界，而没有查看这些函数的实际代码。事实上，按照测试优先的编程方法，我们甚至还没有编写这些函数的代码。
 
 **Glass box testing** means choosing test cases with knowledge of how the function is actually implemented. For example, if the implementation selects different algorithms depending on the input, then you should partition around the points where different algorithms are chosen. If the implementation keeps an internal cache that remembers the answers to previous inputs, then you should test repeated inputs.
+
 玻璃盒测试意味着在了解函数实际实现方式的情况下选择测试用例。例如，如果实现根据输入选择不同的算法，那么您应该围绕选择不同算法的点进行划分。如果实现保留一个记住先前输入答案的内部缓存，那么您应该测试重复的输入。
 
 For the case of `BigInteger.multiply`, when we finally implemented it, we may have decided to represent small integers with `int` values and large integers with a list of decimal digits. This decision introduces new boundary values, presumably at `Integer.MAX_VALUE` and `Integer.MIN_VALUE`, and a new partition around them.
-对于 `BigInteger.multiply` 的情况，当我们最终实现它时，我们可能决定用 `int` 值表示小整数，用十进制数字列表表示大整数。此决定引入了新的边界值，大概在 `Integer.MAX_VALUE` 和 `Integer.MIN_VALUE` 处，以及它们周围的新分区。
 
-When doing glass box testing, you must take care that your test cases don't *require* specific implementation behavior that isn't specifically called for by the spec. For example, if the spec says "throws an exception if the input is poorly formatted," then your test shouldn't check *specifically* for a `NullPointerException` just because that's what the current implementation does. The specification in this case allows *any* exception to be thrown, so your test case should likewise be general in order to be correct, and preserve the implementor's freedom. We'll have much more to say about this in the class on specs.
-在进行玻璃盒测试时，您必须注意，您的测试用例不要求规范中未明确要求的特定实现行为。例如，如果规范中写道"如果输入格式不正确，则抛出异常"，那么您的测试不应专门检查 `NullPointerException` ，仅仅因为这是当前实现所做的。在这种情况下，规范允许抛出任何异常，因此您的测试用例也应该是一般的，以便正确无误，并保留实现者的自由。我们将在规范课程中对此进行更多讨论。
+When doing glass box testing, you must take care that your test cases don't **require** specific implementation behavior that isn't specifically called for by the spec. For example, if the spec says "throws an exception if the input is poorly formatted," then your test shouldn't check **specifically** for a `NullPointerException` just because that's what the current implementation does. The specification in this case allows **any** exception to be thrown, so your test case should likewise be general in order to be correct, and preserve the implementor's freedom. We'll have much more to say about this in the class on specs.
+
+---
 
 #### READING EXERCISES 阅读练习
 
-Black box and glass box testing
-黑盒和玻璃盒测试
 
-Coverage 覆盖率
-------------
+---
 
-One way to judge a test suite is to ask how thoroughly it exercises the program. This notion is called *coverage*. Here are three common kinds of coverage:
-判断测试套件的一种方法是询问它对程序的执行程度。这个概念称为覆盖率。以下是三种常见的覆盖率类型：
+## Coverage
 
--   **Statement coverage**: is every statement run by some test case?
-    语句覆盖率：每个语句是否由某个测试用例运行？
--   **Branch coverage**: for every `if` or `while` statement in the program, are both the true and the false direction taken by some test case?
-    分支覆盖率：对于程序中的每个 `if` 或 `while` 语句，某个测试用例是否采用了真和假两个方向？
--   **Path coverage**: is every possible combination of branches --- every path through the program --- taken by some test case?
-    路径覆盖率：某个测试用例是否采用了所有可能的分支组合（程序中的每条路径）？
+One way to judge a test suite is to ask how thoroughly it exercises the program. This notion is called **coverage**. Here are three common kinds of coverage:
+
+- **Statement coverage**: is every statement run by some test case?
+
+- **Branch coverage**: for every `if` or `while` statement in the program, are both the true and the false direction taken by some test case?
+
+- **Path coverage**: is every possible combination of branches --- every path through the program --- taken by some test case?
+
+Branch coverage is stronger (requires more tests to achieve) than statement coverage, and path coverage is stronger than branch coverage. In industry, 100% statement coverage is a common goal, but even that is rarely achieved due to unreachable defensive code (like "should never get here" assertions). 100% branch coverage is highly desirable, and safety critical industry code has even more **arduous**（艰巨的） **criteria**（判断标准） (e.g., [MC/DC](https://en.wikipedia.org/wiki/Modified_condition/decision_coverage), modified condition/decision coverage). Unfortunately 100% path coverage is infeasible, requiring exponential-size test suites to achieve.
+
+A standard approach to testing is to add tests until the test suite achieves adequate statement coverage: i.e., so that every reachable statement in the program is executed by at least one test case. In practice, statement coverage is usually measured by a code coverage tool, which counts the number of times each statement is run by your test suite. With such a tool, glass box testing is easy; you just measure the coverage of your black box tests, and add more test cases until all important statements are logged as executed.
+
+A good code coverage tool for Eclipse is [EclEmma](http://www.eclemma.org/), shown on the below. In EclEmma, a line that has been executed by the test suite is colored green, and a line not yet covered is red. A line containing a branch that has been executed in only one direction -- always true but never false, or vice versa -- is colored yellow. If you saw the result on the right from your coverage tool, your next step would be to come up with a test case that causes the `if` test to be true at least once, and add it to your test suite so that the yellow and red lines become green.
 
 [![EclEmma code coverage tool for Eclipse](https://web.mit.edu/6.031/www/sp21/classes/03-testing/figures/eclemma.png)](https://web.mit.edu/6.031/www/sp21/classes/03-testing/figures/eclemma.png)
 
-Branch coverage is stronger (requires more tests to achieve) than statement coverage, and path coverage is stronger than branch coverage. In industry, 100% statement coverage is a common goal, but even that is rarely achieved due to unreachable defensive code (like "should never get here" assertions). 100% branch coverage is highly desirable, and safety critical industry code has even more arduous criteria (e.g., [MC/DC](https://en.wikipedia.org/wiki/Modified_condition/decision_coverage), modified condition/decision coverage). Unfortunately 100% path coverage is infeasible, requiring exponential-size test suites to achieve.
-分支覆盖率比语句覆盖率更强（需要更多测试才能实现），路径覆盖率比分支覆盖率更强。在业界，100% 语句覆盖率是一个常见目标，但由于无法到达的防御性代码（例如"永远不应该到达这里"的断言），即使这样也很少实现。100% 分支覆盖率是非常理想的，而安全关键型行业代码具有更加严格的标准（例如，MC/DC，修改条件/决策覆盖率）。不幸的是，100% 路径覆盖率是不可行的，需要指数级大小的测试套件才能实现。
-
-A standard approach to testing is to add tests until the test suite achieves adequate statement coverage: i.e., so that every reachable statement in the program is executed by at least one test case. In practice, statement coverage is usually measured by a code coverage tool, which counts the number of times each statement is run by your test suite. With such a tool, glass box testing is easy; you just measure the coverage of your black box tests, and add more test cases until all important statements are logged as executed.
-一种标准的测试方法是添加测试，直到测试套件达到足够的语句覆盖率：即程序中每个可达到的语句至少由一个测试用例执行。在实践中，语句覆盖率通常由代码覆盖率工具测量，该工具计算测试套件运行每个语句的次数。使用此类工具，玻璃盒测试很容易；您只需测量黑盒测试的覆盖率，并添加更多测试用例，直到所有重要语句都记录为已执行。
-
-A good code coverage tool for Eclipse is [EclEmma](http://www.eclemma.org/), shown on the right. In EclEmma, a line that has been executed by the test suite is colored green, and a line not yet covered is red. A line containing a branch that has been executed in only one direction -- always true but never false, or vice versa -- is colored yellow. If you saw the result on the right from your coverage tool, your next step would be to come up with a test case that causes the `if` test to be true at least once, and add it to your test suite so that the yellow and red lines become green.
-Eclipse 的一个好的代码覆盖率工具是 EclEmma，如图所示。在 EclEmma 中，测试套件执行过的行以绿色显示，尚未覆盖的行以红色显示。包含仅在一个方向执行的分支的行（始终为真，但从不为假，反之亦然）以黄色显示。如果您从覆盖率工具中看到了右侧的结果，您的下一步将是提出一个测试用例，使 `if` 测试至少一次为真，并将其添加到您的测试套件中，以便黄色和红色行变为绿色。
-
 When EclEmma is installed (as it is in the 6.031 Eclipse installation), you can get code coverage highlighting using Run → Coverage As.
-当安装了 EclEmma（如 6.031 Eclipse 安装中所示），您可以使用"运行 → 覆盖率"获取代码覆盖率突出显示。
+
+---
 
 #### READING EXERCISES 阅读练习
 
 Using a coverage tool 使用覆盖率工具
 
-Unit and integration testing
-单元和集成测试
-------------------------------------
+---
+
+## Unit and integration testing
 
 We've so far been talking about **unit tests** that test a single module in isolation. Testing modules in isolation leads to much easier debugging. When a unit test for a module fails, you can be more confident that the bug is found in that module, rather than anywhere in the program.
-到目前为止，我们一直在讨论测试单个模块的单元测试。隔离测试模块可以更轻松地进行调试。当模块的单元测试失败时，您可以更确信错误就在该模块中，而不是程序中的任何地方。
 
 In contrast to a unit test, an **integration test** tests a combination of modules, or even the entire program. If all you have are integration tests, then when a test fails, you have to hunt for the bug. It might be anywhere in the program. Integration tests are still important, because a program can fail at the connections between modules. For example, one module may be expecting different inputs than it's actually getting from another module. But if you have a thorough set of unit tests that give you confidence in the correctness of individual modules, then you'll have much less searching to do to find the bug.
-与单元测试相反，集成测试测试模块的组合，甚至整个程序。如果您只有集成测试，那么当测试失败时，您必须查找错误。它可能在程序的任何地方。集成测试仍然很重要，因为程序可能会在模块之间的连接处失败。例如，一个模块可能期望获得与从另一个模块实际获得的不同的输入。但是，如果您有一组全面的单元测试，让您对各个模块的正确性充满信心，那么您将只需很少的搜索即可找到错误。
 
 Suppose you're building a document search engine. Two of your modules might be `load()`, which loads a file, and `extract()`, which splits a document into its component words:
-假设您正在构建文档搜索引擎。您的两个模块可能是 `load()` ，它加载文件，以及 `extract()` ，它将文档拆分为其组成单词：
 
-```
-`/**
+```java
+/**
  * @return the contents of the file
  */
 public static String load(File file) { ... }
@@ -784,10 +774,9 @@ public static List<String> extract(String s) { ... }`
 ```
 
 These methods might be used by another module `index()` to make the search engine's index:
-这些方法可能被另一个模块 `index()` 用于构建搜索引擎的索引：
 
-```
-`/**
+```java
+/**
  * @return an index mapping a word to the set of files
  *         containing that word, for all files in the input set
  */
@@ -803,66 +792,52 @@ public static Map<String, Set<File>> index(Set<File> files) {
 ```
 
 In our test suite, we would want:
-在我们的测试套件中，我们希望：
 
--   unit tests just for `load` that test it on various files
-    仅针对 `load` 的单元测试，用于在各种文件中对其进行测试
--   unit tests just for `extract` that test it on various strings
-    仅针对 `extract` 的单元测试，用于在各种字符串上对其进行测试
--   unit tests for `index` that test it on various sets of files
-    针对 `index` 的单元测试，用于在各种文件集中对其进行测试
+- unit tests just for `load` that test it on various files
 
-One mistake that programmers sometimes make is writing test cases for `extract` in such a way that the test cases depend on `load` to be correct. For example, a test case might use `load` to load a file, and then pass its result as input to `extract`. But this is *not* a unit test of `extract`. If the test case fails, then we don't know if the failure is due to a bug in `load` or `extract`.
-程序员有时会犯的一个错误是，以依赖于 `load` 正确性的方式编写 `extract` 的测试用例。例如，测试用例可能会使用 `load` 加载文件，然后将其结果作为输入传递给 `extract` 。但这并不是 `extract` 的单元测试。如果测试用例失败，那么我们不知道是 `load` 还是 `extract` 中的错误导致了失败。
+- unit tests just for `extract` that test it on various strings
+
+- unit tests for `index` that test it on various sets of files
+
+One mistake that programmers sometimes make is writing test cases for `extract` in such a way that the test cases depend on `load` to be correct. For example, a test case might use `load` to load a file, and then pass its result as input to `extract`. But this is **not** a unit test of `extract`. If the test case fails, then we don't know if the failure is due to a bug in `load` or `extract`.
 
 It's better to think about and test `extract` in isolation. Using test partitions that involve realistic file content might be reasonable, because that's how `extract` is actually used in the program. But don't actually call `load` from the test case, because `load` may be buggy! Instead, store file content as a literal string, and pass it directly to `extract`. That way you're writing an isolated unit test, and if it fails, you can be more confident that the bug is in the module it's actually testing.
-最好单独考虑和测试 `extract` 。使用涉及真实文件内容的测试分区可能是合理的，因为这就是程序中实际使用 `extract` 的方式。但不要实际从测试用例中调用 `load` ，因为 `load` 可能存在错误！相反，将文件内容存储为一个字符串常量，并直接将其传递给 `extract` 。这样，您就可以编写一个独立的单元测试，如果它失败，您可以更确信错误在于它实际正在测试的模块中。
 
 Note that the unit tests for `index` can't easily be isolated in this way. When a test case calls `index`, it is testing the correctness of not only the code inside `index`, but also all the methods called by `index`. If the test fails, the bug might be in any of those methods. That's why we want separate tests for `load` and `extract`, to increase our confidence in those modules individually and localize the problem to the `index` code that connects them together.
-请注意， `index` 的单元测试无法以这种方式轻松地隔离。当测试用例调用 `index` 时，它不仅测试 `index` 内部的代码的正确性，还测试 `index` 调用的所有方法的正确性。如果测试失败，错误可能出现在任何这些方法中。这就是我们希望对 `load` 和 `extract` 进行单独测试的原因，以分别提高我们对这些模块的信心，并将问题定位到将它们连接在一起的 `index` 代码中。
 
 Isolating a higher-level module like `index` is possible if we write **stub** versions of the modules that it calls. For example, a stub for `load` wouldn't access the filesystem at all, but instead would return mock file content no matter what `File` was passed to it. A stub for a class is often called a [**mock object**](http://en.wikipedia.org/wiki/Mock_object). Stubs are an important technique when building large systems, but we will generally not use them in 6.031.
-如果我们编写它所调用的模块的存根版本，则可以隔离像 `index` 这样的更高级别的模块。例如， `load` 的存根根本不会访问文件系统，而是无论向 `File` 传递什么，都会返回模拟文件内容。类的存根通常称为模拟对象。存根是构建大型系统时的一项重要技术，但我们通常不会在 6.031 中使用它们。
+
+---
 
 #### READING EXERCISES 阅读练习
 
 Pizza pizza 披萨披萨
 
-Automated regression testing
-自动回归测试
------------------------------------
+---
+
+## Automated regression testing
 
 Nothing makes tests easier to run, and more likely to be run, than complete automation. **Automated testing** means running the tests and checking their results automatically.
-没有什么比完全自动化更能使测试更容易运行，也更可能运行。自动测试意味着自动运行测试并检查其结果。
 
-The code that runs tests on a module is a *test driver* (also known as a test harness or test runner). A test driver should not be an interactive program that prompts you for inputs and prints out results for you to manually check. Instead, a test driver should invoke the module itself on fixed test cases and automatically check that the results are correct. The result of the test driver should be either "all tests OK" or "these tests failed: ..." A good testing framework, like JUnit, allows you to build and run this kind of test driver, with a suite of automated tests.
-运行模块上测试的代码是测试驱动程序（也称为测试工具或测试运行程序）。测试驱动程序不应是一个交互式程序，它会提示您输入并打印出结果供您手动检查。相反，测试驱动程序应在固定的测试用例上调用模块本身，并自动检查结果是否正确。测试驱动程序的结果应该是"所有测试均通过"或"这些测试失败：..."。像 JUnit 这样的良好测试框架允许您构建和运行这种测试驱动程序，并附带一套自动测试。
+The code that runs tests on a module is a **test driver** (also known as a test harness or test runner). A test driver should not be an interactive program that prompts you for inputs and prints out results for you to manually check. Instead, a test driver should invoke the module itself on fixed test cases and automatically check that the results are correct. The result of the test driver should be either "all tests OK" or "these tests failed: ..." A good testing framework, like JUnit, allows you to build and run this kind of test driver, with a suite of automated tests.
 
-Note that automated testing frameworks like JUnit make it easy to run the tests, but you still have to come up with good test cases yourself. *Automatic test generation* is a hard problem, still a subject of active computer science research.
-请注意，像 JUnit 这样的自动测试框架使运行测试变得容易，但您仍然必须自己想出好的测试用例。自动测试生成是一个难题，仍然是计算机科学研究的活跃课题。
+Note that automated testing frameworks like JUnit make it easy to run the tests, but you still have to come up with good test cases yourself. **Automatic test generation** is a hard problem, still a subject of active computer science research.
 
-Once you have test automation, it's very important to rerun your tests when you modify your code. Software engineers know from painful experience that *any* change to a large or complex program is dangerous. Whether you're fixing another bug, adding a new feature, or optimizing the code to make it faster, an automated test suite that preserves a baseline of correct behavior -- even if it's only a few tests -- will save your bacon. Running the tests frequently while you're changing the code prevents your program from *regressing* --- introducing other bugs when you fix new bugs or add new features. Running all your tests after every change is called **regression testing**.
-一旦您拥有测试自动化，在修改代码时重新运行测试非常重要。软件工程师从痛苦的经验中知道，对大型或复杂程序的任何更改都是危险的。无论您是修复另一个错误、添加新功能还是优化代码以使其更快，一个保留正确行为基准的自动化测试套件------即使它只有几个测试------都会为您节省时间。在更改代码时频繁运行测试可防止您的程序退化------在修复新错误或添加新功能时引入其他错误。每次更改后运行所有测试称为回归测试。
+Once you have test automation, it's very important to rerun your tests when you modify your code. Software engineers know from painful experience that **any** change to a large or complex program is dangerous. Whether you're fixing another bug, adding a new feature, or optimizing the code to make it faster, an automated test suite that preserves a baseline of correct behavior -- even if it's only a few tests -- will save your bacon. Running the tests frequently while you're changing the code prevents your program from **regressing** --- introducing other bugs when you fix new bugs or add new features. Running all your tests after every change is called **regression testing**.
 
-Whenever you find and fix a bug, take the input that elicited the bug and add it to your automated test suite as a test case. This kind of test case is called a *regression test*. This helps to populate your test suite with good test cases. Remember that a test is good if it elicits a bug --- and every regression test did in one version of your code! Saving regression tests also protects against reversions that reintroduce the bug. The bug may be an easy error to make, since it happened once already.
-每当您发现并修复错误时，请获取引发错误的输入，并将其作为测试用例添加到您的自动化测试套件中。这种测试用例称为回归测试。这有助于用良好的测试用例填充您的测试套件。请记住，如果测试引发错误，则测试是好的------并且每个回归测试都在您的代码的一个版本中执行！保存回归测试还可以防止重新引入错误的回归。该错误可能很容易犯，因为它已经发生过一次了。
+Whenever you find and fix a bug, take the input that elicited（引出） the bug and add it to your automated test suite as a test case. This kind of test case is called a **regression test**. This helps to populate your test suite with good test cases. Remember that a test is good if it elicits a bug --- and every regression test did in one version of your code! Saving regression tests also protects against reversions that reintroduce the bug. The bug may be an easy error to make, since it happened once already.
 
-This idea also leads to *test-first debugging*. When a bug arises, immediately write a test case for it that elicits it, and immediately add it to your test suite. Once you find and fix the bug, all your test cases will be passing, and you'll be done with debugging and have a regression test for that bug.
-这个想法也导致了测试优先调试。当出现错误时，立即为其编写一个引发它的测试用例，并立即将其添加到测试套件中。一旦您找到并修复了错误，您的所有测试用例都将通过，您将完成调试并对该错误进行回归测试。
+This idea also leads to **test-first debugging**. When a bug arises, immediately write a test case for it that elicits it, and immediately add it to your test suite. Once you find and fix the bug, all your test cases will be passing, and you'll be done with debugging and have a regression test for that bug.
 
 In practice, these two ideas, automated testing and regression testing, are almost always used in combination. Regression testing is only practical if the tests can be run often, automatically. Conversely, if you already have automated testing in place for your project, then you might as well use it to prevent regressions. So **automated regression testing** is a best-practice of modern software engineering.
-在实践中，这两个想法（自动化测试和回归测试）几乎总是结合使用。只有当测试可以经常自动运行时，回归测试才具有实用性。相反，如果您已经为项目设置了自动化测试，那么您不妨用它来防止回归。因此，自动化回归测试是现代软件工程的最佳实践。
-
-#### READING EXERCISES 阅读练习
-
-Regression testing 回归测试
-
-Running automated tests 运行自动化测试
 
 ---
 
-Iterative test-first programming 迭代式测试优先编程
-------------------------------------------
+#### READING EXERCISES 阅读练习
+
+---
+
+## Iterative test-first programming 迭代式测试优先编程
 
 Let's revisit the test-first programming idea that we introduced at the start of this reading, and refine it. Effective software engineering does not follow a linear process. Practice **iterative** test-first programming, in which you are prepared to go back and revise your work in previous steps:
 让我们重新审视我们在本文开头介绍的测试优先编程思想，并对其进行改进。有效的软件工程并不遵循线性过程。实践迭代式测试优先编程，您需要做好准备，以便回过头来修改您在先前步骤中的工作：
