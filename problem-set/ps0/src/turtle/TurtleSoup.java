@@ -21,6 +21,7 @@ public class TurtleSoup {
             turtle.forward(sideLength);
             turtle.turn(RIGHT_DEGREE);
         }
+        turtle.draw();
     }
 
     /**
@@ -72,6 +73,7 @@ public class TurtleSoup {
                 }
                 turtle.forward(sideLength);
         }
+        turtle.draw();
     }
 
     /**
@@ -137,7 +139,13 @@ public class TurtleSoup {
      * @param turtle the turtle context
      */
     public static void drawPersonalArt(Turtle turtle) {
-        throw new RuntimeException("implement me!");
+        // draw three circles with some colors.
+        PenColor[] colors = new PenColor[]{PenColor.RED, PenColor.YELLOW, PenColor.BLUE, PenColor.GREEN, PenColor.PINK};
+        for (PenColor color: colors) {
+            turtle.color(color);
+            drawRegularPolygon(turtle, 80, 4);
+        }
+        turtle.draw();
     }
 
     /**
@@ -150,10 +158,10 @@ public class TurtleSoup {
     public static void main(String args[]) {
         DrawableTurtle turtle = new DrawableTurtle();
         // drawSquare(turtle, 100);
-        // turtle.draw();
-        drawRegularPolygon(turtle, 6, 50);
-        turtle.draw();
 
+        drawRegularPolygon(turtle, 6, 50);
+        
+        // drawPersonalArt(turtle);
     }
 
 }
